@@ -30,7 +30,7 @@
             foreach($dataId as $donnees) {
                 # Pour chaque 'idDisponibilité' trouvé, on retourne un tableau contenant l'ensemble des véhicules diponibles
                 $idDate = $donnees['idDisponibilite'];
-                $reqAfficheVehicule = "SELECT DISTINCT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=?";
+                $reqAfficheVehicule = "SELECT DISTINCT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND v.idDate=idDisponibilite AND idDate=?";
                 $reponse1 = $bdd->prepare($reqAfficheVehicule);
                 $reponse1->execute(array($idDate));
                 $vehicules = array_merge_recursive($vehicules, $reponse1->fetchAll());  //Puis ce tableau est concaténé avec le prochain tableau trouvé grâce à l'éventuel prochain idDisponibilité.
@@ -47,12 +47,46 @@
             global $bdd;
             $reqAfficheVehicule = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite";
             $reponse = $bdd->query($reqAfficheVehicule);
-
+            
             $vehicules = $reponse->fetchAll();
             $reponse->closeCursor();
             //Conversion du format du tableau en JSON
             $vehicules = json_encode($vehicules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); //Conversion du format du tableau en JSON
             return $vehicules;
         } //End afficheVehicules()
+
+        public static function filtreVehicule($marque, $modele, $type, $energie, $climatisation){
+            global $bdd;
+            //Récupèration des id des données indiquées
+            $idType = Vehicule::returnId('idTypeVehicule', 'TypeVehicule', 'typeVehicule', $type);
+            $idCarburant = Vehicule::returnId('idCarburant', 'Carburant', 'carburant', $energie);
+            $idMarque = Vehicule::returnId('idMarque', 'Marque', 'marque', $marque);
+            $idModele = Vehicule::returnId('idModele', 'Modele', 'modele', $modele);
+            
+            $reqFiltreVehicule = "SELECT DISTINCT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=:idMarque AND v.idModele=:idModele AND idType=:idType AND climatisation=:climatisation AND v.idCarburant=:idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite";
+            $reponse = $bdd->prepare($reqFiltreVehicule);
+            $reponse->execute(array(
+                'idMarque' => $idMarque,
+                'idModele' => $idModele,
+                'idType' => $idType,
+                'idCarburant' => $idCarburant,
+                'climatisation' => $climatisation
+            ));
+            $vehicules = $reponse->fetchAll();
+            $vehicules = json_encode($vehicules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); //Conversion du format du tableau en JSON
+            $reponse->closeCursor();
+
+            return $vehicules;
+        } //End filtreVehicule()
+
+        public static function returnId($nomID, $table, $attribut, $valeur){
+            global $bdd;
+            $requete = "SELECT $nomID FROM $table WHERE $attribut='$valeur'";
+            $reponse = $bdd->query($requete);
+            $data = $reponse->fetch();
+            $id = $data[$nomID];
+            $reponse->closeCursor();
+            return $id;
+        } //End returnId()
 
     } //End Vehicule
