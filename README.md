@@ -51,7 +51,7 @@ Les requêtes devront être structurées de la sorte :
 * __ajoutUtilisateur(login, password, statut, numIdentite)__ : Ajout d'utilisateurs   
 > __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*  
 * __changerStatutReservation(idReservation, statut)__ : Changement du statut d'une reservation    
-> Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*  
+> __IMPORTANT:__ Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*  
 * __connexion(login, password)__ : connexion des utilisateurs  
 > __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté.  
 
