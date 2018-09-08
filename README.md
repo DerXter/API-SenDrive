@@ -1,21 +1,24 @@
 # API-SenDrive
 API gérant la partie backend de la plateforme S'en Drive Solutions.
-Cet API, réalisé en PHP Objet, contient une multitude de fonctions renvoyant des données au format JSON.
-Les requêtes devront être structurées de la sorte :
---> Pour les fonctions d'affichage (qui doivent retourner des données) :
-	get('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'nomDeLafonction',
-                Paramètre_1: 'valeur_1',
-                Paramètre_2: 'valeur_2',
-                ...,
-                Paramètre_n: 'valeur_n'
-                
-                } ,function(data){
-                
-                console.log(data)
-            })
+------------------------------------------------------------------
+Cet API, réalisé en __PHP Objet__, contient une multitude de *fonctions* renvoyant des données au format __JSON__.  
+Les requêtes devront être structurées de la sorte :  
+## Pour les fonctions d'affichage (qui doivent retourner des données) :  
 
---> Pour les fonctions d'upload de données (qui doivent recevoir des données):
+	get('http://localhost/API-SenDrive/senDrive.php',{  
+                fonction:'nomDeLafonction',  
+                Paramètre_1: 'valeur_1',  
+                Paramètre_2: 'valeur_2',  
+                ...,  
+                Paramètre_n: 'valeur_n'  
+                
+                } ,function(data){  
+                
+                console.log(data)  
+            })  
+  
+## Pour les fonctions d'upload de données (qui doivent recevoir des données):  
+
 	post('http://localhost/API-SenDrive/senDrive.php',{
                 fonction:'nomDeLafonction',
                 Paramètre_1: 'valeur_1',
@@ -27,25 +30,29 @@ Les requêtes devront être structurées de la sorte :
                 
                 console.log(data)
             })
-
-
-#Fonctions disponibles :
-##Fonctions d'affichage (get):
--> afficheChauffeurs () : Affichage de tous les chauffeurs
--> afficheChauffeur(dateDebut, dateFin) : Affichage des chauffeurs disponibles entre les dates indiquées
--> afficheVehicules() : Affichage de tous les véhicules
--> afficheVehicule(dateDebut, dateFin) : Affichage des véhicules disponibles entre les dates indiquées
--> filtreVehicule(marque, modele, type, energie, climatisation) : Affichage des véhicules selon les critères indiquées
--> afficheClients() : Affichage des clients
--> afficheReservations() : Affichage des réservations
--> afficheUtilisateurs() : Affichage des utilisateurs
-
-
-##Fonctions d'upload de données (post):
--> ajoutClient(nom, prenom, telephone, adresse, mail, destination) : Ajout de clients
--> ajoutReservation(idVehicule, idChauffeur, dateDebut, dateFin) : Ajout d'une réservation (IMPORTANT: Il faudra ajouter d'abord le client ensuite la reservation vue que dans la table Reservation, il y'aura l'id du client en question)
--> ajoutUtilisateur(login, password, statut, numIdentite) : Ajout d'utilisateurs (l'utilisateur doit être au préalable dans la table 'Personnel')
--> changerStatutReservation(idReservation, statut) : Changement du statut d'une reservation (les statuts possibles sont: 'En cours', 'En attente', 'Annulé', 'Terminé')
--> connexion(login, password) : connexion des utilisateurs (si réussie, la fonction retourne un array contenant les informations de l'utilisateur connecté)
+  
+  
+## Fonctions disponibles :  
+### Fonctions d'affichage (get):  
+* __afficheChauffeurs ()__ : Affichage de tous les chauffeurs  
+* __afficheChauffeur(dateDebut, dateFin)__ : Affichage des chauffeurs disponibles entre les dates indiquées  
+* __afficheVehicules()__ : Affichage de tous les véhicules  
+* __afficheVehicule(dateDebut, dateFin)__ : Affichage des véhicules disponibles entre les dates indiquées  
+* __filtreVehicule(marque, modele, type, energie, climatisation)__ : Affichage des véhicules selon les critères indiquées  
+* __afficheClients()__ : Affichage des clients  
+* __afficheReservations()__ : Affichage des réservations  
+* __afficheUtilisateurs()__ : Affichage des utilisateurs  
+  
+  
+### Fonctions d'upload de données (post):    
+* __ajoutClient(nom, prenom, telephone, adresse, mail, destination)__ : Ajout de clients    
+* __ajoutReservation(idVehicule, idChauffeur, dateDebut, dateFin)__ : Ajout d'une réservation   
+> __IMPORTANT:__ Il faudra ajouter d'abord le client ensuite la reservation vue que dans la table *Reservation*, il y'aura l'id du client en question.    
+* __ajoutUtilisateur(login, password, statut, numIdentite)__ : Ajout d'utilisateurs   
+> __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*  
+* __changerStatutReservation(idReservation, statut)__ : Changement du statut d'une reservation    
+> Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*  
+* __connexion(login, password)__ : connexion des utilisateurs  
+> __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté.  
 
 
