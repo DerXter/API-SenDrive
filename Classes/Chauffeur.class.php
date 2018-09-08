@@ -26,7 +26,7 @@
             foreach($dataId as $donnees) {
                 # Pour chaque 'idDisponibilité' trouvé, on retourne un tableau contenant l'ensemble des chauffeurs diponibles
                 $idDate = $donnees['idDisponibilite'];
-                $reqAfficheChauffeur = "SELECT prenom, nom, permis, adresse, telephone, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Chauffeur, Disponibilite WHERE idDate=idDisponibilite AND idDate=?";
+                $reqAfficheChauffeur = "SELECT idChauffeur, prenom, nom, permis, adresse, telephone, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Chauffeur, Disponibilite WHERE idDate=idDisponibilite AND idDate=?";
                 $reponse1 = $bdd->prepare($reqAfficheChauffeur);
                 $reponse1->execute(array($idDate));
                 $chauffeurs = array_merge_recursive($chauffeurs, $reponse1->fetchAll());  //Puis ce tableau est concaténé avec le prochain tableau trouvé grâce à l'éventuel prochain idDisponibilité.
