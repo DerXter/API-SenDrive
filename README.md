@@ -38,10 +38,14 @@ Les requêtes devront être structurées de la sorte :
 * __afficheChauffeur(dateDebut, dateFin)__ : Affichage des chauffeurs disponibles entre les dates indiquées  
 * __afficheVehicules()__ : Affichage de tous les véhicules  
 * __afficheVehicule(dateDebut, dateFin)__ : Affichage des véhicules disponibles entre les dates indiquées  
-* __filtreVehicule(marque, modele, type, energie, climatisation)__ : Affichage des véhicules selon les critères indiquées  
+* __filtreVehicule(filtre)__ : Affichage des critères de véhicule selon le filtre  
+> __IMPORTANT:__ Utiliser comme filtre, *clim-oui* pour afficher les véhicules climatisés et *clim-non*,  
+dans le cas contraire.
 * __afficheClients()__ : Affichage des clients  
 * __afficheReservations()__ : Affichage des réservations  
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
+  
+> __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune données à afficher n'a été trouvées.    
   
   
 ### Fonctions d'upload de données (post):    
@@ -51,8 +55,8 @@ Les requêtes devront être structurées de la sorte :
 * __ajoutUtilisateur(login, password, statut, numIdentite)__ : Ajout d'utilisateurs   
 > __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*  
 * __changerStatutReservation(idReservation, statut)__ : Changement du statut d'une reservation    
-> __IMPORTANT:__ Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*  
+> __IMPORTANT:__ Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*.  
 * __connexion(login, password)__ : connexion des utilisateurs  
-> __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté.  
+> __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté et retoune *false* si non.  
 
 
