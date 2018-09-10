@@ -41,20 +41,4 @@
             }
         } //End afficheClients()
 
-        public static function afficheIndicatifs(){
-            global $bdd;
-            $requete = 'SELECT indicatif FROM Clientele';
-            $reponse = $bdd->query($requete);
-            if($clients = $reponse->fetchAll()){
-                $clients = json_encode($clients, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            
-                $reponse->closeCursor();
-                return $clients;
-            }
-            else{
-                echo "Aucun indicatif trouvé !";
-                return false;
-            }
-        } //End afficheClients()
-
     } //End class Client
