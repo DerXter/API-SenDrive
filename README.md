@@ -45,7 +45,7 @@ dans le cas contraire.
 * __afficheReservations()__ : Affichage des réservations  
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
   
-> __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune données à afficher n'a été trouvées.    
+> __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune donnée à afficher n'a été trouvée.    
   
   
 ### Fonctions d'upload de données (post):    
