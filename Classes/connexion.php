@@ -1,7 +1,7 @@
 <?php
-    $login = 'derguene';
-    $password = 'ordinateur97';
-    $host = 'localhost';
+    $login = 'sendrive';
+    $password = 'sdsgestion*';
+    $host = 'den1.mysql4.gear.host';
     $db = 'sendrive';
 
     try{

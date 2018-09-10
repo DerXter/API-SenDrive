@@ -14,17 +14,20 @@
             global $bdd;
             $reponse = $bdd->prepare('SELECT * FROM Reservation WHERE id=?');
             $reponse->execute(array($id));
-            $data = $reponse->fetch();
+            if ($data = $reponse->fetch()){
+                //Affectation des données de la base à l'objet
+                $this->idReservation = $id;
+                $this->idClient = $data['idClient'];
+                $this->idVehicule = $data['idVehicule'];
+                $this->idChauffeur = $data['idChauffeur'];
+                $this->idDate = $data['idDate'];
+                $this->destination = $data['destination'];
 
-            //Affectation des données de la base à l'objet
-            $this->idReservation = $id;
-            $this->idClient = $data['idClient'];
-            $this->idVehicule = $data['idVehicule'];
-            $this->idChauffeur = $data['idChauffeur'];
-            $this->idDate = $data['idDate'];
-            $this->destination = $data['destination'];
-
-            $reponse->closeCursor();
+                $reponse->closeCursor();
+            }
+            else{
+                echo 'Client inexistant';
+            }
         } //End __construct
         
         //Accesseurs
@@ -65,10 +68,15 @@
             global $bdd;
             $requete = "SELECT $nomID FROM $table WHERE $attribut='$valeur'";
             $reponse = $bdd->query($requete);
-            $data = $reponse->fetch();
-            $id = $data[$nomID];
-            $reponse->closeCursor();
-            return $id;
+            if ($data = $reponse->fetch()){
+                $id = $data[$nomID];
+                $reponse->closeCursor();
+                return $id;
+            }
+            else{
+                echo "Pas de $table trouvé(e) !";
+                return false;
+            }
         } //End returnId()
 
         public static function ajoutReservation($idVehicule, $idChauffeur, $dateDepart, $dateArrivee){
@@ -109,11 +117,17 @@
             global $bdd;
             $reqAfficheReserv = 'SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, marque, modele, immatriculation, destination, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, dateDebut, dateFin, statut FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate';
             $reponse = $bdd->query($reqAfficheReserv);
-            $reservations = $reponse->fetchAll();
-            $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $reponse->closeCursor();
+            if ($reservations = $reponse->fetchAll()){
+                $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $reponse->closeCursor();
 
-            return $reservations;
+                return $reservations;
+            }
+            else {
+                echo "Aucune reservation trouvée !";
+                return false;
+            }
+            
         } //End afficheReservations()
 
         public static function changerStatutReservation($idReservation, $statut){

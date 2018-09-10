@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Sen Drive</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="content">
+
+    </div>
+    <script src="jquery.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.post('http://localhost/API-SenDrive/senDrive.php',{
+                fonction:'connexion',
+                login: 'derguene',
+                password: 'sedrive'
+                //numIdentite: '2985199865432',
+                //statut: 'normal'
+                
+                } ,function(data){
+                
+                console.log(data)
+            })
+        })
+    </script>
+</body>
+</html>

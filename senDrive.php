@@ -58,13 +58,9 @@
             case 'filtreVehicule': //Affichage des véhicules selon les critères indiquées
                 include_once('Classes/Vehicule.class.php');
                 //Sécurisation des données reçues
-                $marque = htmlspecialchars($_GET['marque']);
-                $modele = htmlspecialchars($_GET['modele']);
-                $type = htmlspecialchars($_GET['type']);
-                $energie = htmlspecialchars($_GET['energie']);
-                $climatisation = htmlspecialchars($_GET['climatisation']);
+                $filtre = htmlspecialchars($_GET['filtre']);
 
-                echo Vehicule::filtreVehicule($marque, $modele, $type, $energie, $climatisation);
+                echo Vehicule::filtreVehicule($filtre);
             break;
 
             //******************************Traitement des clients******************************
