@@ -80,29 +80,22 @@
 
         public static function filtreVehicule($filtre){ //Affiche des critères de véhicule selon le filtre
             global $bdd;
-            switch ($filtre){
-                case 'clim-oui':
-                    $requete = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite AND climatisation='oui' ";
-                break;
-                case 'clim-non':
-                    $requete = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite AND climatisation='non' ";
-                break;
-                case 'marque' :
-                    $requete = "SELECT * FROM $filtre";
-                break;
-                case 'modele' :
-                    $requete = "SELECT * FROM $filtre";
-                break;
-                case 'typevehicule' :
-                    $requete = "SELECT * FROM $filtre";
-                break;
-                case 'carburant' :
-                    $requete = "SELECT * FROM $filtre";
-                break;
-                default:
-                    echo 'Filtre inconnu !';
-                    return false;
-            } //End switch
+            if ($filtre=='marque' || $filtre=='modele' || $filtre=='typevehicule' || $filtre=='carburant'){
+                $requete = "SELECT * FROM $filtre";
+            }
+            else{
+                switch ($filtre){
+                    case 'clim-oui':
+                        $requete = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite AND climatisation='oui' ";
+                    break;
+                    case 'clim-non':
+                        $requete = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite AND climatisation='non' ";
+                    break;
+                    default:
+                        echo 'Filtre inconnu !';
+                        return false;
+                } //End switch
+            } //End else
             $reponse = $bdd->query($requete);
             if ($vehicules = $reponse->fetchAll()){
                 $reponse->closeCursor();
@@ -126,7 +119,7 @@
                 return $id;
             }
             else{
-                echo "Pas de $table trouvé(e) !";
+                echo "$table choisi(e) non disponible !";
                 return false;
             }
         } //End returnId()

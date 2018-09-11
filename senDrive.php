@@ -131,6 +131,47 @@
             echo Utilisateur::connexion($login, $password);
             break;
 
+            //******************************Traitement des propriétaires******************************
+            case 'afficheProprio': //Affichage des proprietaires
+            include_once('Classes/Proprietaire.class.php');
+            
+            echo Proprietaire::afficheProprio();
+            break;
+            case 'ajoutProprio': //Ajout de propriétaire
+            include_once('Classes/Proprietaire.class.php');
+            //Sécurisation des données reçues
+            $raisonSociale = htmlspecialchars($_POST['raisonSociale']);
+            $proprietaire = htmlspecialchars($_POST['proprietaire']);
+            $dateNaissance = htmlspecialchars($_POST['dateNaissance']);
+            $numIdentite = htmlspecialchars($_POST['numIdentite']);
+            $telephone = htmlspecialchars($_POST['telephone']);
+            $adresse= htmlspecialchars($_POST['adresse']);
+            $email= htmlspecialchars($_POST['email']);
+            
+            echo Proprietaire::ajoutProprio($raisonSociale, $proprietaire, $dateNaissance, $numIdentite, $telephone, $adresse, $email);
+            break;
+            case 'modifProprio': //Modification de propriétaire
+            include_once('Classes/Proprietaire.class.php');
+            //Sécurisation des données reçues
+            $idProprietaire = htmlspecialchars($_POST['idProprietaire']);
+            $raisonSociale = htmlspecialchars($_POST['raisonSociale']);
+            $proprietaire = htmlspecialchars($_POST['proprietaire']);
+            $dateNaissance = htmlspecialchars($_POST['dateNaissance']);
+            $numIdentite = htmlspecialchars($_POST['numIdentite']);
+            $telephone = htmlspecialchars($_POST['telephone']);
+            $adresse= htmlspecialchars($_POST['adresse']);
+            $email= htmlspecialchars($_POST['email']);
+            
+            echo Proprietaire::modifProprio($idProprietaire, $raisonSociale, $proprietaire, $dateNaissance, $numIdentite, $telephone, $adresse, $email);
+            break;
+            case 'supprimerProprio': //Suppression de proprietaires
+            include_once('Classes/Proprietaire.class.php');
+            //Sécurisation des données reçues
+            $idProprietaire = htmlspecialchars($_POST['id']);
+            
+            echo Proprietaire::supprimerProprio($idProprietaire);
+            break;
+
             default :
                 echo "La fonction demandée est inexistante !";
         } //End switch

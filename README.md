@@ -44,6 +44,7 @@ dans le cas contraire.
 * __afficheClients()__ : Affichage des clients  
 * __afficheReservations()__ : Affichage des réservations  
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
+* __afficheProprio()__ : Affichage des proprietaires
   
 > __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune donnée à afficher n'a été trouvée.    
   
@@ -58,5 +59,8 @@ dans le cas contraire.
 > __IMPORTANT:__ Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*.  
 * __connexion(login, password)__ : connexion des utilisateurs  
 > __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté et retoune *false* si non.  
+* __ajoutProprio(raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Ajout de propriétaire  
+> __IMPORTANT:__ Les raisons sociales possibles sont: *Particulier* et  *Professionnel*. 
+* __modifProprio(idProprietaire, raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Modification de propriétaire  
 
 

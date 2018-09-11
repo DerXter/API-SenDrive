@@ -98,7 +98,7 @@
                 return $id;
             }
             else{
-                echo "Pas de $table trouvé(e) !";
+                echo "$table choisi(e) non disponible !";
                 return false;
             }
         } //End returnId()
