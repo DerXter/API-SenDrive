@@ -14,22 +14,17 @@
     <script>
         $(document).ready(function(){
             $.post('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'modifierVehicule',
-                idVehicule : '1',
-                idMarque : '1',
-                idModele : '1',
-                idType : '1',
-                idProprietaire : '1',
-                idCarburant : '1',
-                dateDebut : '23-08-2018',
-                dateFin : '21-12-2018',
-                immatriculation : 'DK-3109-BE',
-                climatisation : 'oui',
-                nbPorte : '4',
-                nbPlace : '5',
-                description : 'Très confortable',
-                prix : '30000',
-                boiteDeVitesse : 'Manuelle'
+                fonction:'modifierPersonnel',
+                idPersonnel: '2',
+                civilite : 'Monsieur',
+                poste : 'CTO', 
+                nom : 'Bathiery', 
+                prenom : 'Mouhameth', 
+                dateNaissance : '15-08-1984', 
+                numeroIdentite : '76786786786', 
+                adresse : 'Paris', 
+                telephone : '0678678678687',
+                email : 'bdsbchj@ndjksncs.ju'
                 
                 } ,function(data){
                 

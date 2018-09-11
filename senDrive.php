@@ -221,6 +221,52 @@
             echo Proprietaire::supprimerProprio($idProprietaire);
             break;
 
+            //******************************Traitement du personnel******************************
+            case 'affichePersonnel': //Affichage du personnel
+            include_once('Classes/Personnel.class.php');
+            
+            echo Personnel::affichePersonnel();
+            break;
+            case 'ajoutPersonnel': //Ajout du personnel
+                include_once('Classes/Personnel.class.php');
+                //Sécurisation des données reçues
+                $civilite = htmlspecialchars($_POST['civilite']);
+                $poste = htmlspecialchars($_POST['poste']);
+                $nom = htmlspecialchars($_POST['nom']);
+                $prenom = htmlspecialchars($_POST['prenom']);
+                $dateNaissance = htmlspecialchars($_POST['dateNaissance']);
+                $numeroIdentite = htmlspecialchars($_POST['numeroIdentite']);
+                $adresse= htmlspecialchars($_POST['adresse']);
+                $telephone= htmlspecialchars($_POST['telephone']);
+                $email= htmlspecialchars($_POST['email']);
+                
+                echo Personnel::ajoutPersonnel($civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email);
+            break;
+            case 'modifierPersonnel': //Modification du personnel
+                include_once('Classes/Personnel.class.php');
+                //Sécurisation des données reçues
+                $idPersonnel = htmlspecialchars($_POST['idPersonnel']);
+                $civilite = htmlspecialchars($_POST['civilite']);
+                $poste = htmlspecialchars($_POST['poste']);
+                $nom = htmlspecialchars($_POST['nom']);
+                $prenom = htmlspecialchars($_POST['prenom']);
+                $dateNaissance = htmlspecialchars($_POST['dateNaissance']);
+                $numeroIdentite = htmlspecialchars($_POST['numeroIdentite']);
+                $adresse= htmlspecialchars($_POST['adresse']);
+                $telephone= htmlspecialchars($_POST['telephone']);
+                $email= htmlspecialchars($_POST['email']);
+                
+                echo Personnel::modifierPersonnel($idPersonnel, $civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email);
+            break;
+            case 'supprimerPersonnel': //Suppression de personnel
+            include_once('Classes/Personnel.class.php');
+            //Sécurisation des données reçues
+            $id = htmlspecialchars($_POST['id']);
+
+            echo Personnel::supprimerPersonnel($id);
+            break;
+
+
             default :
                 echo "La fonction demandée est inexistante !";
         } //End switch

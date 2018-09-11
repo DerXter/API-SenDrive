@@ -47,7 +47,7 @@ dans le cas contraire.
 * __afficheProprio()__ : Affichage des proprietaires
   
 > __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune donnée à afficher n'a été trouvée.    
-  
+* __affichePersonnel__ : Affichage du personnel    
   
 ### Fonctions d'upload de données (post):    
 * __ajoutClient(nom, prenom, telephone, adresse, mail, destination)__ : Ajout de clients    
@@ -65,4 +65,6 @@ dans le cas contraire.
 * __ajoutVehicule(idMarque, idModele, idType, idProprietaire, idCarburant, dateDebut, dateFin, immatriculation, climatisation, nbPorte, nbPlace, description, prix, boiteDeVitesse)__: Ajout de véhicule  
 * __modifierVehicule(idVehicule, idMarque, idModele, idType, idProprietaire, idCarburant, dateDebut, dateFin, immatriculation, climatisation, nbPorte, nbPlace, description, prix, boiteDeVitesse)__ : Modification de véhicule  
 * __supprimerVehicule(id)__ : Suppression de véhicule  
-
+* __ajoutPersonnel($civilite, poste, nom, prenom, dateNaissance, numeroIdentite, adresse, telephone, email)__: Ajout du personnel  
+* ___modifierPersonnel(idPersonnel, civilite, poste, nom, prenom, dateNaissance, numeroIdentite, adresse, telephone, email)__: Modification du personnel  
+* __supprimerPersonnel(id)__: Suppression de personnel  

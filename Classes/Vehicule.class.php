@@ -209,7 +209,7 @@
             $reponse->execute(array($id));
             $reponse->closeCursor();
 
-        } //End supprimerProprio($id)
+        } //End supprimerVehicule($id)
 
         public static function returnId($nomID, $table, $attribut, $valeur){
             global $bdd;
