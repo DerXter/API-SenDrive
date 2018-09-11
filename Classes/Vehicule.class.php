@@ -109,6 +109,108 @@
            
         } //End filtreVehicule()
 
+        public static function ajoutVehicule($idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse){
+            global $bdd;
+            //Ajustement du format des dates
+            $dateDebut = date("Y-m-d", strtotime($dateDebut));
+            $dateFin = date("Y-m-d", strtotime($dateFin));
+            //Vérification de la conformité de la période
+            if ($dateDebut >= $dateFin){
+                echo "La date d'arrivée ne peut être supérieure à la date de départ !";
+                return false;
+            }
+            else{  
+                //Ajout des dates dans la base
+                $requete = 'INSERT INTO Disponibilite (dateDebut, dateFin) VALUES(:dateDebut, :dateFin)';
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array(
+                    'dateDebut' => $dateDebut,
+                    'dateFin' => $dateFin
+                ));
+                //Récupération de l'Id de la dernière date entrée
+                $reqLastIdDate = 'SELECT idDisponibilite FROM Disponibilite ORDER BY idDisponibilite DESC LIMIT 0,1';
+                $reponse = $bdd->query($reqLastIdDate);
+                $data = $reponse->fetch();
+                $IdDisponibilite = $data['idDisponibilite'];
+
+                if (!empty($IdDisponibilite)){
+                    $requete = 'INSERT INTO Vehicule(idMarque, idModele, idType, idProprietaire, idCarburant, idDate, immatriculation, climatisation, nombreDePortes, nombreDePlaces, description, prix, boiteDeVitesse) VALUES(:idMarque, :idModele, :idType, :idProprietaire, :idCarburant, :idDate, :immatriculation, :climatisation, :nbPorte, :nbPlace, :description, :prix, :boiteDeVitesse)';
+                    $reponse = $bdd->prepare($requete);
+                    $reponse->execute(array(
+                    'idMarque' => $idMarque,
+                    'idModele' => $idModele,
+                    'idType' => $idType,
+                    'idProprietaire' => $idProprietaire,
+                    'idCarburant' => $idCarburant,
+                    'idDate' => $IdDisponibilite,
+                    'immatriculation' => $immatriculation,
+                    'climatisation' => $climatisation,
+                    'nbPorte' => $nbPorte,
+                    'nbPlace' => $nbPlace,
+                    'description' => $description,
+                    'prix' => $prix,
+                    'boiteDeVitesse' => $boiteDeVitesse
+                    ));
+                } //End if
+                
+                $reponse->closeCursor();
+            } //End else
+            
+        } //End ajoutVehicule()
+
+        public static function modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse){
+            global $bdd;
+            //Ajustement du format des dates
+            $dateDebut = date("Y-m-d", strtotime($dateDebut));
+            $dateFin = date("Y-m-d", strtotime($dateFin));
+            //Vérification de la conformité de la période
+            if ($dateDebut >= $dateFin){
+                echo "La date d'arrivée ne peut être supérieure à la date de départ !";
+                return false;
+            }
+            else{  
+                //Modification des dates de la base
+                $idDate = Vehicule::returnId('idDate', 'Vehicule', 'idVehicule', $idVehicule);
+                $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
+                $reponse = $bdd->prepare($reqIdDisponibilite);
+                $reponse->execute(array($dateDebut, $dateFin, $idDate));
+                //$reponse->closeCursor();
+
+                    $requete = 'UPDATE Vehicule SET idMarque=:idMarque, idModele=:idModele, idType=:idType, idProprietaire=:idProprietaire, idCarburant=:idCarburant, idDate=:idDate, immatriculation=:immatriculation, climatisation=:climatisation, nombreDePortes=:nombreDePortes, nombreDePlaces=:nombreDePlaces, description=:description, prix=:prix, boiteDeVitesse=:boiteDeVitesse WHERE idVehicule=:idVehicule';
+                    $reponse = $bdd->prepare($requete);
+                    $reponse->execute(array(
+                    'idVehicule' => $idVehicule,
+                    'idMarque' => $idMarque,
+                    'idModele' => $idModele,
+                    'idType' => $idType,
+                    'idProprietaire' => $idProprietaire,
+                    'idCarburant' => $idCarburant,
+                    'idDate' => $idDate,
+                    'immatriculation' => $immatriculation,
+                    'climatisation' => $climatisation,
+                    'nombreDePortes' => $nbPorte,
+                    'nombreDePlaces' => $nbPlace,
+                    'description' => $description,
+                    'prix' => $prix,
+                    'boiteDeVitesse' => $boiteDeVitesse
+            
+                    ));
+                
+                $reponse->closeCursor();
+            } //End else
+            
+        } //End modifierVehicule()
+
+
+        public static function supprimerVehicule($id){
+            global $bdd;
+            $requete = 'DELETE FROM Vehicule WHERE idVehicule=?';
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($id));
+            $reponse->closeCursor();
+
+        } //End supprimerProprio($id)
+
         public static function returnId($nomID, $table, $attribut, $valeur){
             global $bdd;
             $requete = "SELECT $nomID FROM $table WHERE $attribut='$valeur'";

@@ -62,6 +62,55 @@
 
                 echo Vehicule::filtreVehicule($filtre);
             break;
+            case 'ajoutVehicule': //Ajout de véhicule
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                $idMarque = htmlspecialchars($_POST['idMarque']);
+                $idModele = htmlspecialchars($_POST['idModele']);
+                $idType = htmlspecialchars($_POST['idType']);
+                $idProprietaire = htmlspecialchars($_POST['idProprietaire']);
+                $idCarburant = htmlspecialchars($_POST['idCarburant']);
+                $dateDebut = htmlspecialchars($_POST['dateDebut']);
+                $dateFin = htmlspecialchars($_POST['dateFin']);
+                $immatriculation = htmlspecialchars($_POST['immatriculation']);
+                $climatisation = htmlspecialchars($_POST['climatisation']);
+                $nbPorte = htmlspecialchars($_POST['nbPorte']);
+                $nbPlace = htmlspecialchars($_POST['nbPlace']);
+                $description = htmlspecialchars($_POST['description']);
+                $prix = htmlspecialchars($_POST['prix']);
+                $boiteDeVitesse = htmlspecialchars($_POST['boiteDeVitesse']);
+
+                echo Vehicule::ajoutVehicule($idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse);
+            break;
+            case 'modifierVehicule': //Modification de véhicule
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $idMarque = htmlspecialchars($_POST['idMarque']);
+                $idModele = htmlspecialchars($_POST['idModele']);
+                $idType = htmlspecialchars($_POST['idType']);
+                $idProprietaire = htmlspecialchars($_POST['idProprietaire']);
+                $idCarburant = htmlspecialchars($_POST['idCarburant']);
+                $dateDebut = htmlspecialchars($_POST['dateDebut']);
+                $dateFin = htmlspecialchars($_POST['dateFin']);
+                $immatriculation = htmlspecialchars($_POST['immatriculation']);
+                $climatisation = htmlspecialchars($_POST['climatisation']);
+                $nbPorte = htmlspecialchars($_POST['nbPorte']);
+                $nbPlace = htmlspecialchars($_POST['nbPlace']);
+                $description = htmlspecialchars($_POST['description']);
+                $prix = htmlspecialchars($_POST['prix']);
+                $boiteDeVitesse = htmlspecialchars($_POST['boiteDeVitesse']);
+
+                echo Vehicule::modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse);
+            break;
+            case 'supprimerVehicule': //Suppression de véhicule
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_POST['id']);
+
+                echo Vehicule::supprimerVehicule($id);
+            break;
+
 
             //******************************Traitement des clients******************************
             case 'ajoutClient': //Ajout de clients

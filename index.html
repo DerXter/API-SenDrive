@@ -14,15 +14,22 @@
     <script>
         $(document).ready(function(){
             $.post('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'modifProprio',
-                idProprietaire: '1',
-                raisonSociale: 'Professionnel',
-                proprietaire: 'SDS',
-                numIdentite: '2985199865432',
-                dateNaissance: '15-11-1997',
-                telephone: '771322302',
-                adresse: 'Mermoz',
-                email: 'itachi@kioh.ss'
+                fonction:'modifierVehicule',
+                idVehicule : '1',
+                idMarque : '1',
+                idModele : '1',
+                idType : '1',
+                idProprietaire : '1',
+                idCarburant : '1',
+                dateDebut : '23-08-2018',
+                dateFin : '21-12-2018',
+                immatriculation : 'DK-3109-BE',
+                climatisation : 'oui',
+                nbPorte : '4',
+                nbPlace : '5',
+                description : 'Très confortable',
+                prix : '30000',
+                boiteDeVitesse : 'Manuelle'
                 
                 } ,function(data){
                 
