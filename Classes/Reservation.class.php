@@ -81,7 +81,17 @@
 
         public static function ajoutReservation($idVehicule, $idChauffeur, $dateDepart, $dateArrivee){
             global $bdd;
+            //Mise à jour des statuts
             $statutReservation = 'En cours';
+            $statutVehicule = 'Réservé';
+            if(empty($idChauffeur)){
+                $idChauffeur = 'NULL';
+                $statutChauffeur = 'Libre';
+            }
+            else{
+                $statutChauffeur = $idChauffeur=='NULL' ? 'Libre' : 'Réservé';
+            }
+           
             //Récupération de l'Id du dernier client entré
             $reqLastIdClient = 'SELECT idClient FROM Clientele ORDER BY idClient DESC LIMIT 0,1';
             $reponse = $bdd->query($reqLastIdClient);
@@ -109,6 +119,19 @@
                 'idChauffeur' => $idChauffeur,
                 'statut' => $statutReservation
             ));
+            //Mise à jour du nombre de location et du statut du véhicule reservé
+            $nbLocation = Reservation::returnData('nbLocation', 'Vehicule', 'idVehicule', $idVehicule);
+            $nbLocation+=1; //Incrément du nombre de fois où le véhicule a été loué
+            $reqUpdateVehic = "UPDATE Vehicule SET nbLocation=$nbLocation, statut=$statutVehicule WHERE idVehicule=?";
+            $reponse = $bdd->prepare($reqUpdateVehic);
+            $reponse->execute(array($idVehicule));
+            //Mise à jour du statut du chauffeur
+            if($idChauffeur!='NULL'){
+                $reqUpdateChauff = "UPDATE Chauffeur SET statut=$statutChauffeur WHERE idChauffeur=?";
+                $reponse = $bdd->prepare($reqUpdateChauff);
+                $reponse->execute(array($idChauffeur));
+            }
+           
 
             $reponse->closeCursor();
         } //End ajoutReservation()
@@ -138,6 +161,21 @@
             $reponse->closeCursor();
             
         } //End annulerReservation()
+
+        public static function returnData($nomID, $table, $attribut, $valeur){
+            global $bdd;
+            $requete = "SELECT $nomID FROM $table WHERE $attribut='$valeur'";
+            $reponse = $bdd->query($requete);
+            if ($data = $reponse->fetch()){
+                $id = $data[$nomID];
+                $reponse->closeCursor();
+                return $id;
+            }
+            else{
+                echo "$table choisi(e) non disponible !";
+                return false;
+            }
+        } //End returnId()
     } //End Reservation
     
   

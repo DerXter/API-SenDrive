@@ -14,17 +14,21 @@
     <script>
         $(document).ready(function(){
             $.post('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'modifierPersonnel',
-                idPersonnel: '2',
-                civilite : 'Monsieur',
-                poste : 'CTO', 
-                nom : 'Bathiery', 
-                prenom : 'Mouhameth', 
-                dateNaissance : '15-08-1984', 
-                numeroIdentite : '76786786786', 
-                adresse : 'Paris', 
-                telephone : '0678678678687',
-                email : 'bdsbchj@ndjksncs.ju'
+                fonction:'supprimerChauffeur',
+                id : '9'
+                //statut: 'Réservé',
+                //idChauffeur : '7',
+                //dateDebut : '12-09-2018', 
+                //dateFin : '22-11-2018',
+                //prenom : 'Izoooooooo',
+                //nom : 'Mboukhoulane', 
+                //dateNaissance : '15-08-1984', 
+                //numeroIdentite : '76786786786', 
+                //adresse : 'Guineguinew', 
+                //telephone : '0678678678687',
+                //email : 'bdsbchj@ndjksncs.ju',
+                //permis : 'B',
+                //commentaire: 'Thiomo'
                 
                 } ,function(data){
                 

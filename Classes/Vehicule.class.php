@@ -40,17 +40,23 @@
                     foreach($dataId as $donnees) {
                         # Pour chaque 'idDisponibilité' trouvé, on retourne un tableau contenant l'ensemble des véhicules diponibles
                         $idDate = $donnees['idDisponibilite'];
-                        $reqAfficheVehicule = "SELECT DISTINCT idVehicule, marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND v.idDate=idDisponibilite AND idDate=?";
+                        $reqAfficheVehicule = "SELECT DISTINCT idVehicule, marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND v.idDate=idDisponibilite AND idDate=? AND statut=?";
                         $reponse1 = $bdd->prepare($reqAfficheVehicule);
-                        $reponse1->execute(array($idDate));
+                        $reponse1->execute(array($idDate, 'Libre'));
                         $vehicules = array_merge_recursive($vehicules, $reponse1->fetchAll());  //Puis ce tableau est concaténé avec le prochain tableau trouvé grâce à l'éventuel prochain idDisponibilité.
                         
                     } //End While($dataId)
                     $reponse->closeCursor();
-
-                    //Conversion du format du tableau en JSON
-                    $vehicules = json_encode($vehicules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                    return $vehicules;
+                    if(empty($vehicules)){
+                        echo "Aucun véhicule disponible à cette période !";
+                        return false;
+                    }
+                    else{
+                        //Conversion du format du tableau en JSON
+                        $vehicules = json_encode($vehicules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                        return $vehicules;
+                    }
+                    
                 } //End if(dataID)
                 else{
                     echo "Aucun véhicule disponible à cette période !";
@@ -60,10 +66,20 @@
     
         } //End afficheVehicules
 
-        public static function afficheVehicules(){
+        public static function afficheVehicules($statut){
             global $bdd;
-            $reqAfficheVehicule = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite";
-            $reponse = $bdd->query($reqAfficheVehicule);
+            if(empty($statut)){
+                $reqAfficheVehicule = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto, statut FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite";
+            }
+            else if ($statut=='Libre' || $statut=='Réservé'){
+                $reqAfficheVehicule = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto, statut FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite AND statut=?";
+            }
+            else{
+                echo 'Statut inconnu ! Les statuts disponibles sont : \'Libre\' et \'Réservé\' !';
+                return false;
+            }
+            $reponse = $bdd->prepare($reqAfficheVehicule);
+            $reponse->execute(array($statut));
             
             if($vehicules = $reponse->fetchAll()){
                 $reponse->closeCursor();
@@ -111,12 +127,13 @@
 
         public static function ajoutVehicule($idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse){
             global $bdd;
+            $statutVehicule = 'Libre';
             //Ajustement du format des dates
             $dateDebut = date("Y-m-d", strtotime($dateDebut));
             $dateFin = date("Y-m-d", strtotime($dateFin));
             //Vérification de la conformité de la période
             if ($dateDebut >= $dateFin){
-                echo "La date d'arrivée ne peut être supérieure à la date de départ !";
+                echo "La date de fin ne peut être supérieure à la date de début de disponibilité !";
                 return false;
             }
             else{  
@@ -134,7 +151,7 @@
                 $IdDisponibilite = $data['idDisponibilite'];
 
                 if (!empty($IdDisponibilite)){
-                    $requete = 'INSERT INTO Vehicule(idMarque, idModele, idType, idProprietaire, idCarburant, idDate, immatriculation, climatisation, nombreDePortes, nombreDePlaces, description, prix, boiteDeVitesse) VALUES(:idMarque, :idModele, :idType, :idProprietaire, :idCarburant, :idDate, :immatriculation, :climatisation, :nbPorte, :nbPlace, :description, :prix, :boiteDeVitesse)';
+                    $requete = 'INSERT INTO Vehicule(idMarque, idModele, idType, idProprietaire, idCarburant, idDate, immatriculation, climatisation, nombreDePortes, nombreDePlaces, description, prix, boiteDeVitesse, statut) VALUES(:idMarque, :idModele, :idType, :idProprietaire, :idCarburant, :idDate, :immatriculation, :climatisation, :nbPorte, :nbPlace, :description, :prix, :boiteDeVitesse, :statut)';
                     $reponse = $bdd->prepare($requete);
                     $reponse->execute(array(
                     'idMarque' => $idMarque,
@@ -149,7 +166,8 @@
                     'nbPlace' => $nbPlace,
                     'description' => $description,
                     'prix' => $prix,
-                    'boiteDeVitesse' => $boiteDeVitesse
+                    'boiteDeVitesse' => $boiteDeVitesse,
+                    'statut' => $statutVehicule
                     ));
                 } //End if
                 
@@ -158,7 +176,7 @@
             
         } //End ajoutVehicule()
 
-        public static function modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse){
+        public static function modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse, $statutVehicule){
             global $bdd;
             //Ajustement du format des dates
             $dateDebut = date("Y-m-d", strtotime($dateDebut));
@@ -176,7 +194,7 @@
                 $reponse->execute(array($dateDebut, $dateFin, $idDate));
                 //$reponse->closeCursor();
 
-                    $requete = 'UPDATE Vehicule SET idMarque=:idMarque, idModele=:idModele, idType=:idType, idProprietaire=:idProprietaire, idCarburant=:idCarburant, idDate=:idDate, immatriculation=:immatriculation, climatisation=:climatisation, nombreDePortes=:nombreDePortes, nombreDePlaces=:nombreDePlaces, description=:description, prix=:prix, boiteDeVitesse=:boiteDeVitesse WHERE idVehicule=:idVehicule';
+                    $requete = 'UPDATE Vehicule SET idMarque=:idMarque, idModele=:idModele, idType=:idType, idProprietaire=:idProprietaire, idCarburant=:idCarburant, idDate=:idDate, immatriculation=:immatriculation, climatisation=:climatisation, nombreDePortes=:nombreDePortes, nombreDePlaces=:nombreDePlaces, description=:description, prix=:prix, boiteDeVitesse=:boiteDeVitesse, statut=:statut WHERE idVehicule=:idVehicule';
                     $reponse = $bdd->prepare($requete);
                     $reponse->execute(array(
                     'idVehicule' => $idVehicule,
@@ -192,7 +210,8 @@
                     'nombreDePlaces' => $nbPlace,
                     'description' => $description,
                     'prix' => $prix,
-                    'boiteDeVitesse' => $boiteDeVitesse
+                    'boiteDeVitesse' => $boiteDeVitesse,
+                    'statut' => $statutVehicule
             
                     ));
                 
