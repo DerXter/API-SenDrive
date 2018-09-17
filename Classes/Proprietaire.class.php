@@ -46,9 +46,16 @@
                 'adresse' => $adresse,
                 'email' => $email
             ));
-            
+            //Vérification de la réussite de l'ajout
+            if($reponse->rowCount() > 0){
+                echo "Partenaire ajouté !";
+            } 
+            else{
+                echo "Une erreur est survenue lors de l'ajout du partenaire !";
+                return false;
+            }
             $reponse->closeCursor();
-            } //End else
+            } //End else (raisonSocial)
         } //End ajoutProprio()
 
         public static function modifProprio($idProprietaire, $raisonSociale, $proprietaire, $dateNaissance, $numIdentite, $telephone, $adresse, $email){
@@ -71,10 +78,18 @@
                 'email' => $email,
                 'idProprietaire' => $idProprietaire
             ));
+            //Vérification de la réussite de la mise à jour du propriétaire (qui est le partenaire)
+            if($reponse->rowCount() > 0){
+                echo "Partenaire mis à jour !";
+            } 
+            else{
+                echo "Une erreur est survenue lors de la mise à jour du partenaire !";
+                return false;
+            }
             
             $reponse->closeCursor();
 
-            } //End else
+            } //End else (raisonSocial)
 
         } //End modifProprio
 
@@ -83,6 +98,14 @@
             $requete = 'DELETE FROM Proprietaire WHERE idProprietaire=?';
             $reponse = $bdd->prepare($requete);
             $reponse->execute(array($id));
+            //Vérification de la réussite de la suppréssion
+            if($reponse->rowCount() > 0){
+                echo "Partenaire supprimé !";
+            } 
+            else{
+                echo "Une erreur est survenue lors de la suppréssion du partenaire !";
+                return false;
+            }
             $reponse->closeCursor();
 
         } //End supprimerProprio($id)

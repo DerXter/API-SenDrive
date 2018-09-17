@@ -14,13 +14,14 @@
     <script>
         $(document).ready(function(){
             $.post('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'supprimerChauffeur',
-                id : '9'
-                //statut: 'Réservé',
-                //idChauffeur : '7',
-                //dateDebut : '12-09-2018', 
-                //dateFin : '22-11-2018',
-                //prenom : 'Izoooooooo',
+                fonction:'modifierReservation',
+                idReservation : '10',
+                idVehicule : '3',
+                idClient: '1',
+                idChauffeur : '2',
+                dateDebut : '12-09-2018', 
+                dateFin : '22-11-2018',
+                statut : 'Terminé'
                 //nom : 'Mboukhoulane', 
                 //dateNaissance : '15-08-1984', 
                 //numeroIdentite : '76786786786', 

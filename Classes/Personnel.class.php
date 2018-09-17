@@ -47,11 +47,19 @@
                     'telephone' => $telephone,
                     'email' => $email
                 ));
+                //Vérification de la réussite de l'ajout
+                if($reponse->rowCount() > 0){
+                    echo "Ajout réussi !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de l'ajout du personnel !";
+                    return false;
+                }
             
             } //End if
             else{
                 echo "Civilité ou Fonction choisi(e) indisponible !";
-                return flase;
+                return false;
             }
             $reponse->closeCursor();
         } //End ajoutPersonnel()
@@ -76,6 +84,14 @@
                     'email' => $email,
                     'idPersonnel' => $idPersonnel
                 ));
+                //Vérification de la réussite de la modification
+                if($reponse->rowCount() > 0){
+                    echo "Personnel mis à jour !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de la mise à jour du personnel !";
+                    return false;
+                }
             
             } //End if
             else{
@@ -90,6 +106,14 @@
             $requete = 'DELETE FROM Personnel WHERE idPersonnel=?';
             $reponse = $bdd->prepare($requete);
             $reponse->execute(array($id));
+            //Vérification de la réussite de la suppréssion
+            if($reponse->rowCount() > 0){
+                echo "Personnel supprimé !";
+            } 
+            else{
+                echo "Une erreur est survenue lors de la suppréssion du personnel !";
+                return false;
+            }
             $reponse->closeCursor();
 
         } //End supprimerPersonnel($id)

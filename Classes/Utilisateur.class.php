@@ -41,6 +41,14 @@
                 'statut' => $statut,
                 'idPersonnel' => $idPersonnel 
             ));
+            //Vérification de la réussite de l'ajout
+            if($reponse->rowCount() > 0){
+                echo "Utilisateur ajouté !";
+            } 
+            else{
+                echo "Une erreur est survenue lors de l'ajout de l'utilisateur' !";
+                return false;
+            }
 
             $reponse->closeCursor();
         } //End ajoutUtilisateur()
