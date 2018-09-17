@@ -80,7 +80,7 @@ dans le cas contraire.
   
 
   
-> __*IMPORTANT*__ : Dans le fichier *connexion*, changer la ligne au niveau le bloc "*Try*" en le remplaçant par:  
+> __*IMPORTANT*__ : Dans le fichier *connexion.class.php*, changer la ligne au niveau du bloc "*Try*" en le remplaçant par:  
 
     $bdd = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $login, $password, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));  
   
