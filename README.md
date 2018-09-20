@@ -80,8 +80,29 @@ dans le cas contraire.
   
 
   
-> __*IMPORTANT*__ : Dans le fichier *connexion.class.php*, changer la ligne au niveau du bloc "*Try*" en le remplaçant par:  
+> __*IMPORTANT*__ : Dans le fichier *connexion.class.php*, changer la ligne au niveau du bloc "*Try*" en le remplaçant par :  
 
     $bdd = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $login, $password, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));  
   
-> Cela permet de prendre en compte les lignes affectées par les modifications lors de l'utilisation de la fonction *rowCount()*.
+> Cela permet de prendre en compte les lignes affectées par les modifications lors de l'utilisation de la fonction *rowCount()*.  
+  
+## Module documentation :  
+Un fichier *traitement.php* est dédié à ce module, il est structuré comme suit :  
+
+    traitement.php?nature=valeur1&cible=valeur2&id=valeur3  
+  
+* La *nature* est soit __photo__ pour indiquer que le fichier uploadé est une photo, soit __doc__ pour indiquer que c'est un fichier de documentation.
+* En fonction de la *nature* indiquée, la *cible* peut prendre comme valeurs :  
+    1. Pour la nature __photo__ :
+        * utilisateur  
+        * chauffeur  
+        * vehicule
+    2. Pour la nature __doc__ :
+        * contrat  
+        * fiche  
+        * processus
+        * facture  
+        * gestion  
+> __NOTE :__ *fiche* indique les fiches d'état des lieux.  
+* Lorsque la nature *photo* est choisie, il faudra préciser l'__id__ de l'élément (utilisateur, chaufeur ou véhicule) à qui on souhaite associer cette photo. L'id n'est obligatoire que pour ce cas.  
+> __NOTE :__ À chaque *upload* d'un fichier, son chemin dans le serveur est mis à jour dans la base de données.   
