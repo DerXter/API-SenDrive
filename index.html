@@ -10,6 +10,7 @@
     <div id="content">
 
     </div>
+    <!-- 
     <script src="jquery.js"></script>
     <script>
         $(document).ready(function(){
@@ -36,6 +37,13 @@
                 console.log(data)
             })
         })
-    </script>
+    </script> -->
+            <form action="traitement.php?nature=photo&cible=vehicule" method="post" enctype="multipart/form-data">
+                <p>
+                    Formulaire d'envoi de fichier :<br /><br />
+                    <input type="file" name="monfichier" /><br /><br />
+                    <input type="submit" value="Envoyer le fichier" />
+                </p>
+            </form>
 </body>
 </html>
