@@ -17,7 +17,7 @@ Les requêtes devront être structurées de la sorte :
                 console.log(data)  
             })  
   
-## Pour les fonctions d'upload de données (qui doivent recevoir des données):  
+## Pour les fonctions d'upload de données (qui doivent recevoir des données) :  
 
 	post('http://localhost/API-SenDrive/senDrive.php',{
                 fonction:'nomDeLafonction',
@@ -54,16 +54,20 @@ dans le cas contraire.
 ### Fonctions d'upload de données (post):    
 * __ajoutClient(nom, prenom, telephone, adresse, mail, destination)__ : Ajout de clients    
 * __ajoutReservation(idVehicule, idChauffeur, dateDebut, dateFin)__ : Ajout d'une réservation   
-> __IMPORTANT:__ Il faudra ajouter d'abord le client ensuite la reservation vue que dans la table *Reservation*, il y'aura l'id du client en question.    
+> __IMPORTANT:__ Il faudra ajouter d'abord le client ensuite la reservation vue que dans la table *Reservation*, il y'aura l'id du client en question.
+* __modifierReservation(idReservation, idClient, idVehicule, idChauffeur, dateDebut, dateFin, statut)__ : Modification d'une réservation  
+* __supprimerReservation(id)__ : Suppréssion d'une réservation  
+* __changerStatutReservation(idReservation, statut)__ : Changement du statut d'une reservation    
+> __IMPORTANT:__ Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*.      
 * __ajoutUtilisateur(login, password, statut, numIdentite)__ : Ajout d'utilisateurs   
 > __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*  
-* __changerStatutReservation(idReservation, statut)__ : Changement du statut d'une reservation    
-> __IMPORTANT:__ Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*.  
 * __connexion(login, password)__ : connexion des utilisateurs  
 > __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté et retoune *false* si non.  
 * __ajoutProprio(raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Ajout de propriétaire  
 > __IMPORTANT:__ Les raisons sociales possibles sont: *Particulier* et  *Professionnel*. 
 * __modifProprio(idProprietaire, raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Modification de propriétaire  
+* __supprimerProprio(id)__ : Suppréssion d'un propriétaire  
+> __NOTE__ : Le propriétaire est aussi le *Partenaire*.  
 * __ajoutVehicule(idMarque, idModele, idType, idProprietaire, idCarburant, dateDebut, dateFin, immatriculation, climatisation, nbPorte, nbPlace, description, prix, boiteDeVitesse)__: Ajout de véhicule  
 * __modifierVehicule(idVehicule, idMarque, idModele, idType, idProprietaire, idCarburant, dateDebut, dateFin, immatriculation, climatisation, nbPorte, nbPlace, description, prix, boiteDeVitesse, statut)__ : Modification de véhicule  
 * __supprimerVehicule(id)__ : Suppression de véhicule  
@@ -72,4 +76,33 @@ dans le cas contraire.
 * __supprimerPersonnel(id)__: Suppression de personnel  
 * __ajoutChauffeur (prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, dateDebut, dateFin, commentaire)__: Ajout de chauffeurs  
 * __modifierChauffeur(idChauffeur, prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, dateDebut, dateFin, commentaire, statut)__: Modification de chauffeurs  
-* __supprimerChauffeur (id)__: Suppréssion de chauffeurs 
+* __supprimerChauffeur (id)__: Suppréssion de chauffeurs  
+  
+
+  
+> __*IMPORTANT*__ : Dans le fichier *connexion.class.php*, changer la ligne au niveau du bloc "*Try*" en le remplaçant par :  
+
+    $bdd = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $login, $password, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));  
+  
+> Cela permet de prendre en compte les lignes affectées par les modifications lors de l'utilisation de la fonction *rowCount()*.  
+  
+## Module documentation :  
+Un fichier *traitement.php* est dédié à ce module, il est structuré comme suit :  
+
+    traitement.php?nature=valeur1&cible=valeur2&id=valeur3  
+  
+* La *nature* est soit __photo__ pour indiquer que le fichier uploadé est une photo, soit __doc__ pour indiquer que c'est un fichier de documentation.
+* En fonction de la *nature* indiquée, la *cible* peut prendre comme valeurs :  
+    1. Pour la nature __photo__ :
+        * utilisateur  
+        * chauffeur  
+        * vehicule
+    2. Pour la nature __doc__ :
+        * contrat  
+        * fiche  
+        * processus
+        * facture  
+        * gestion  
+> __NOTE :__ *fiche* indique les fiches d'état des lieux.  
+* Lorsque la nature *photo* est choisie, il faudra préciser l'__id__ de l'élément (utilisateur, chaufeur ou véhicule) à qui on souhaite associer cette photo. L'id n'est obligatoire que pour ce cas.  
+> __NOTE :__ À chaque *upload* d'un fichier, son chemin dans le serveur est mis à jour dans la base de données.   

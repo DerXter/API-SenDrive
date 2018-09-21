@@ -144,6 +144,14 @@
                     'dateDebut' => $dateDebut,
                     'dateFin' => $dateFin
                 ));
+                //Vérification de la réussite de l'ajout
+                if($reponse->rowCount() > 0){
+                    echo "Dates ajoutées !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de l'ajout des dates !";
+                    return false;
+                }
                 //Récupération de l'Id de la dernière date entrée
                 $reqLastIdDate = 'SELECT idDisponibilite FROM Disponibilite ORDER BY idDisponibilite DESC LIMIT 0,1';
                 $reponse = $bdd->query($reqLastIdDate);
@@ -169,7 +177,19 @@
                     'boiteDeVitesse' => $boiteDeVitesse,
                     'statut' => $statutVehicule
                     ));
+                    //Vérification de l'ajout de véhicule
+                    if($reponse->rowCount() > 0){
+                        echo "Véhicule ajouté !";
+                    } 
+                    else{
+                        echo "Une erreur est survenue lors de l'ajout du véhicule !";
+                        return false;
+                    }
                 } //End if
+                else{
+                    echo "Une erreur est survenue lors de l'ajout du véhicule !";
+                    return false;
+                }
                 
                 $reponse->closeCursor();
             } //End else
@@ -192,7 +212,14 @@
                 $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
                 $reponse = $bdd->prepare($reqIdDisponibilite);
                 $reponse->execute(array($dateDebut, $dateFin, $idDate));
-                //$reponse->closeCursor();
+                //Vérification de la réussite de l'ajout
+                if($reponse->rowCount() > 0){
+                    echo "Dates mises à jour !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de la mise à jour des dates !";
+                    return false;
+                }
 
                     $requete = 'UPDATE Vehicule SET idMarque=:idMarque, idModele=:idModele, idType=:idType, idProprietaire=:idProprietaire, idCarburant=:idCarburant, idDate=:idDate, immatriculation=:immatriculation, climatisation=:climatisation, nombreDePortes=:nombreDePortes, nombreDePlaces=:nombreDePlaces, description=:description, prix=:prix, boiteDeVitesse=:boiteDeVitesse, statut=:statut WHERE idVehicule=:idVehicule';
                     $reponse = $bdd->prepare($requete);
@@ -214,6 +241,14 @@
                     'statut' => $statutVehicule
             
                     ));
+                    //Vérification de la réussite de la mise à jour
+                    if($reponse->rowCount() > 0){
+                        echo "Véhicule mis à jour !";
+                    } 
+                    else{
+                        echo "Une erreur est survenue lors de la modification du véhicule !";
+                        return false;
+                    }
                 
                 $reponse->closeCursor();
             } //End else
@@ -226,6 +261,14 @@
             $requete = 'DELETE FROM Vehicule WHERE idVehicule=?';
             $reponse = $bdd->prepare($requete);
             $reponse->execute(array($id));
+            //Vérification de la réussite de la suppréssion
+            if($reponse->rowCount() > 0){
+                echo "Véhicule supprimé !";
+            } 
+            else{
+                echo "Une erreur est survenue lors de la suppréssion du véhicule !";
+                return false;
+            }
             $reponse->closeCursor();
 
         } //End supprimerVehicule($id)

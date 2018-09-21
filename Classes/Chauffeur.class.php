@@ -108,6 +108,14 @@
                     'dateDebut' => $dateDebut,
                     'dateFin' => $dateFin
                 ));
+                //Vérification de la réussite de l'ajout
+                if($reponse->rowCount() > 0){
+                    echo "Dates ajoutées !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de l'ajout des dates !";
+                    return false;
+                }
                 //Récupération de l'Id de la dernière date entrée
                 $reqLastIdDate = 'SELECT idDisponibilite FROM Disponibilite ORDER BY idDisponibilite DESC LIMIT 0,1';
                 $reponse = $bdd->query($reqLastIdDate);
@@ -128,7 +136,14 @@
                     'commentaire' => $commentaire, 
                     'statut' => $statut 
                 ));
-            
+                //Vérification de la réussite de l'ajout
+                if($reponse->rowCount() > 0){
+                    echo "Chauffeur ajouté !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de l'ajout du chauffeur !";
+                    return false;
+                }
             } //End else
 
         } //End ajoutChauffeur()
@@ -155,6 +170,14 @@
                     $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
                     $reponse = $bdd->prepare($reqIdDisponibilite);
                     $reponse->execute(array($dateDebut, $dateFin, $idDate));
+                    //Vérification de la réussite de la mise à jour des dates
+                    if($reponse->rowCount() > 0){
+                        echo "Dates mises à jour !";
+                    } 
+                    else{
+                        echo "Une erreur est survenue lors de la mise à jour des dates !";
+                        return false;
+                    }
 
                         $requete = 'UPDATE Chauffeur SET idDate=:idDate, prenom=:prenom, nom=:nom, dateNaissance=:dateNaissance, numeroIdentite=:numeroIdentite, permis=:permis, adresse=:adresse, telephone=:telephone, commentaire=:commentaire, statut=:statut WHERE idChauffeur=:idChauffeur';
                         $reponse = $bdd->prepare($requete);
@@ -172,6 +195,14 @@
                             'idChauffeur' => $idChauffeur
                 
                         ));
+                        //Vérification de la réussite de la mise à jour du chauffeur
+                        if($reponse->rowCount() > 0){
+                            echo "Chauffeur mis à jour !";
+                        } 
+                        else{
+                            echo "Une erreur est survenue lors de la modification du chauffeur !";
+                            return false;
+                        }
                     
                     $reponse->closeCursor();
                 } //End else
@@ -185,6 +216,14 @@
             $requete = 'DELETE FROM Chauffeur WHERE idChauffeur=?';
             $reponse = $bdd->prepare($requete);
             $reponse->execute(array($id));
+            //Vérification de la réussite de la suppréssion du chauffeur
+            if($reponse->rowCount() > 0){
+                echo "Chauffeur supprimé !";
+            } 
+            else{
+                echo "Une erreur est survenue lors de la suppréssion du chauffeur!";
+                return false;
+            }
             $reponse->closeCursor();
 
         } //End supprimerChauffeur($id)

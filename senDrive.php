@@ -92,8 +92,15 @@
             case 'afficheVehicules': //Affichage de tous les véhicules
                 include_once('Classes/Vehicule.class.php');
                 //Sécurisation des données reçues
-                $statut = htmlspecialchars($_GET['statut']);
-                echo Vehicule::afficheVehicules($statut);
+                if(isset($_GET['statut'])){
+                    $statut = htmlspecialchars($_GET['statut']);
+                    echo Vehicule::afficheVehicules($statut);
+                }
+                else{   
+                    $statut='';
+                    echo Vehicule::afficheVehicules($statut);
+                }
+                
             break;
             case 'afficheVehicule': //Affichage des véhicules disponibles entre les dates indiquées
                 include_once('Classes/Vehicule.class.php');
@@ -181,9 +188,16 @@
             //******************************Traitement des réservations******************************
             case 'ajoutReservation': //Ajout d'une réservation
                 include_once('Classes/Reservation.class.php');
+                //Vérification de l'id du chauffeur
+                if(!isset($_POST['idChauffeur'])){
+                    $idChauffeur = 'NULL';
+                }
+                else{
+                    //Sécurisation de l'id du chauffeur
+                    $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                }
                 //Sécurisation des données reçues
-                $idVehicule = htmlspecialchars($_POST['idVehicule']);
-                $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                $idVehicule = htmlspecialchars($_POST['idVehicule']); 
                 $dateDepart = htmlspecialchars($_POST['dateDebut']);
                 $dateArrivee = htmlspecialchars($_POST['dateFin']);
                 
@@ -197,10 +211,30 @@
                 
                 echo Reservation::changerStatutReservation($idReservation, $statut);
             break;
+            case 'modifierReservation': //modificaction d'une réservation
+                include_once('Classes/Reservation.class.php');
+                //Sécurisation des données reçues
+                $idReservation = htmlspecialchars($_POST['idReservation']);
+                $idVehicule = htmlspecialchars($_POST['idVehicule']); 
+                $idClient= htmlspecialchars($_POST['idClient']);
+                $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                $dateDepart = htmlspecialchars($_POST['dateDebut']);
+                $dateArrivee = htmlspecialchars($_POST['dateFin']);
+                $statut = htmlspecialchars($_POST['statut']);
+                
+                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut);
+            break;
+            case 'supprimerReservation': //Suppréssion de réservations
+            include_once('Classes/Reservation.class.php');
+            //Sécurisation des données reçues
+            $id = htmlspecialchars($_POST['id']);
+            
+            echo Reservation::supprimerReservation($id); 
+            break;
             case 'afficheReservations': //Affichage des réservations
             include_once('Classes/Reservation.class.php');
             
-            echo Reservation::afficheReservations();
+            echo Reservation::afficheReservations(); 
             break;
 
             //******************************Traitement des utilisateurs******************************
