@@ -158,6 +158,17 @@
 
                 echo Vehicule::modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse, $statut);
             break;
+            case 'filtrage': //filtrage de véhicule selon plusieurs critères
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                $idMarque = htmlspecialchars($_GET['idMarque']);
+                $idModele = htmlspecialchars($_GET['idModele']);
+                $idType = htmlspecialchars($_GET['idType']);
+                $idCarburant = htmlspecialchars($_GET['idCarburant']);
+                $climatisation = htmlspecialchars($_GET['climatisation']);
+
+                echo Vehicule::filtrage($idMarque, $idModele, $idType, $idCarburant, $climatisation);
+            break;
             case 'supprimerVehicule': //Suppression de véhicule
                 include_once('Classes/Vehicule.class.php');
                 //Sécurisation des données reçues
@@ -348,6 +359,21 @@
             echo Personnel::supprimerPersonnel($id);
             break;
 
+            //******************************Traitement de la documentation******************************
+            case 'afficheDoc': //Affichage des fichiers de documentation dont la nature est spécifiée
+            include_once('Classes/Doc.class.php');
+            //Sécurisation des données reçues
+            $nature = htmlspecialchars($_GET['nature']);
+
+            echo Doc::afficheDoc($nature);
+            break;
+            case 'supprimerDoc': //Suppression du fichier de documentation dont l'id est spécifié
+            include_once('Classes/Doc.class.php');
+            //Sécurisation des données reçues
+            $id = htmlspecialchars($_POST['id']);
+
+            echo Doc::supprimerDoc($id);
+            break;
 
             default :
                 echo "La fonction demandée est inexistante !";

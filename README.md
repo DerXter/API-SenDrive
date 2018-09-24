@@ -40,16 +40,26 @@ Les requêtes devront être structurées de la sorte :
 * __afficheVehicules(statut)__ : Affichage de tous les véhicules leurs statuts de disponibilité   
 > __INFO__: Le statut est facultatif. S'il n'est pas spécifié, tous les véhicules, *Libres* comme *Réservé*  seront affichés.
 * __afficheVehicule(dateDebut, dateFin)__ : Affichage des véhicules disponibles entre les dates indiquées  
-* __filtreVehicule(filtre)__ : Affichage des critères de véhicule selon le filtre  
-> __IMPORTANT:__ Utiliser comme filtre, *clim-oui* pour afficher les véhicules climatisés et *clim-non*,  
-dans le cas contraire.
+* __filtreVehicule(filtre)__ : Affichage des critères de véhicule selon __un__ filtre indiqué à la fois    
+> __IMPORTANT :__ Utiliser comme filtre, *clim-oui* pour afficher les véhicules climatisés et *clim-non*,  
+dans le cas contraire.  
+* __filtrage(idMarque, idModele, idType, idCarburant, climatisation) :__  Affichage des véhicules selon les critères indiqués.  
+> __NOTE :__ Indiquer la valeur __-1__ à la place d'un critère pour l'ignorer.  
 * __afficheClients()__ : Affichage des clients  
 * __afficheReservations()__ : Affichage des réservations  
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
 * __afficheProprio()__ : Affichage des proprietaires
   
 > __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune donnée à afficher n'a été trouvée.    
-* __affichePersonnel__ : Affichage du personnel    
+* __affichePersonnel__ : Affichage du personnel   
+* __afficheDoc(nature)__ : Affichage des fichiers de documentation dont la nature est spécifiée  
+> __NOTE :__ Les natures disponibles sont :  
+* contrat    
+* fiche  
+* processus  
+* facture  
+* gestion  
+> __NOTE :__ *fiche* indique les fiches d'état des lieux.  
   
 ### Fonctions d'upload de données (post):    
 * __ajoutClient(nom, prenom, telephone, adresse, mail, destination)__ : Ajout de clients    
@@ -105,4 +115,7 @@ Un fichier *traitement.php* est dédié à ce module, il est structuré comme su
         * gestion  
 > __NOTE :__ *fiche* indique les fiches d'état des lieux.  
 * Lorsque la nature *photo* est choisie, il faudra préciser l'__id__ de l'élément (utilisateur, chaufeur ou véhicule) à qui on souhaite associer cette photo. L'id n'est obligatoire que pour ce cas.  
-> __NOTE :__ À chaque *upload* d'un fichier, son chemin dans le serveur est mis à jour dans la base de données.   
+> __NOTE :__ À chaque *upload* d'un fichier, son chemin dans le serveur est mis à jour dans la base de données.  
+  
+> __IMPORTANT :__ Les dossiers *Images* et *documentation* ainsi que l'ensemble de leurs sous-dossiers doivent posséder les droits d'écriture. Un __CHMOD__ à __733__ sera ainsi nécéssaire. La taille des fichiers est limitée à __5 Mo__ extensible jusqu'à __8 Mo__.  
+* __supprimerDoc(id)__ : Suppression du fichier de documentation dont l'id est spécifié  
