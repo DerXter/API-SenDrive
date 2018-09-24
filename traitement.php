@@ -71,7 +71,7 @@
  //******************************Traitement de l'upload des chemins dans la base******************************
  include_once('Classes/connexion.php');
     //Fonction de mise à jour des chemins des fichiers dans la base de données
-    function uploadPath($table, $chemin, $nature, $titre, $id){
+    function uploadPath($table, $chemin, $nature, $titre, $id, $cible){
         global $bdd;
         switch ($nature){
             case 'photo':
@@ -86,8 +86,8 @@
                 }
             break;
             case 'doc':
-                $reponse = $bdd->prepare("INSERT INTO $table (titre, cheminDocument) VALUES (?, ?)");
-                $reponse->execute(array($titre, $chemin));
+                $reponse = $bdd->prepare("INSERT INTO $table (titre, cheminDocument, nature) VALUES (?, ?, ?)");
+                $reponse->execute(array($titre, $chemin, $cible));
             break;
             default :
                 echo "Nature inconnue !";
@@ -96,7 +96,8 @@
        
         
         if($reponse->rowCount() > 0){
-            echo " : Chemin mis à jour !";
+            echo "Chemin mis à jour : ";
+            return true;
         }
         else{
             echo "Une erreur est survenue lors de la mise à jour du chemin !";
@@ -119,9 +120,18 @@
                 // On peut valider le fichier et le stocker définitivement
                 $nomFichier = basename($_FILES['monfichier']['name']); //Récupération du nom du fichier dans le chemin absolu
                 $cheminFichier = $repertoire . $nomFichier; //Mise en place du chemin vers le repertoire où le fichier sera stocké
-                uploadPath($table, $cheminFichier, $nature, $nomFichier, $id); //Mise à jour du chemin du fichier dans la bdd
-                move_uploaded_file($_FILES['monfichier']['tmp_name'], $cheminFichier); //Déplacement du fichier dans le répertoire adéquoit
-                echo "L'envoi a bien été effectué !";
+                $etat = uploadPath($table, $cheminFichier, $nature, $nomFichier, $id, $cible); //Mise à jour du chemin du fichier dans la bdd
+                if($etat == false){
+                    echo ': Une erreur est survenue lors de l\'upload du fichier dans le serveur.';
+                }
+                else{
+                   if( move_uploaded_file($_FILES['monfichier']['tmp_name'], $cheminFichier) ){ //Déplacement du fichier dans le répertoire adéquoit
+                    echo "L'envoi a bien été effectué !";
+                    }
+                    else{
+                        echo ': Une erreur est survenue lors de l\'upload. Vérifier l\'éxistence du droit de suppression. ';
+                    }
+                } //End else if(etat)
                 
                 } //End if(in_array)
             else{
