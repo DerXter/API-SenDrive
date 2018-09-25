@@ -125,6 +125,52 @@
            
         } //End filtreVehicule()
 
+        public static function filtrage($idMarque, $idModele, $idType, $idCarburant, $climatisation){
+            global $bdd;
+            $val_interdit = -1; //Valeur prise si un critère n'est pas spécifié
+            //Formalisation de la requête à transmettre à la bdd
+            $suite1 = $idMarque==$val_interdit ? "v.idMarque=ma.idMarque AND " : "v.idMarque=:idMarque AND ";
+            $suite2 = $idModele==$val_interdit ? "v.idModele=mo.idModele AND " : "v.idModele=:idModele AND ";
+            $suite3 = $idType==$val_interdit ?   "v.idType=idTypeVehicule AND " : "v.idType=:idType AND ";
+            $suite4 = $idCarburant==$val_interdit ? "v.idCarburant=ca.idCarburant AND " : "v.idCarburant=:idCarburant AND ";
+            $suite5 = $climatisation==$val_interdit ? "climatisation=climatisation" : "climatisation=:climatisation";
+            
+            $requete_temp = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite AND "; 
+            $requete = $requete_temp . $suite1 . $suite2 . $suite3 . $suite4 . $suite5; //Requête finale
+            //echo $requete;
+            $reponse = $bdd->prepare($requete);
+            $data = array(); //Tableau qui va recevoir le array associatif associé à la requête
+         
+            //Formalisation de l'éxécution
+            if($idMarque!=$val_interdit){
+                $data['idMarque'] = $idMarque;
+            } //End if(Marque)
+            if ($idModele!=$val_interdit){
+                $data['idModele'] = $idModele; 
+            } //End if(Modele)
+            if($idType!=$val_interdit){
+                $data['idType'] = $idType;
+            } //End if(idType)
+            if ($idCarburant!=$val_interdit){
+                $data['idCarburant'] = $idCarburant;
+            } //End if(idCarburant)
+            if ($climatisation!=$val_interdit){
+                $data['climatisation'] = $climatisation;
+            } //End if(climatisation)
+          
+            $reponse->execute($data); 
+            if($vehicules = $reponse->fetchAll()){
+                $vehicules = json_encode($vehicules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); //Conversion du format du tableau en JSON
+                return $vehicules;
+            }
+            else{
+                echo 'Aucun Véhicule trouvé !';
+                return false;
+            }
+
+            //$reponse->closeCursor();
+        } //End filtrage
+
         public static function ajoutVehicule($idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse){
             global $bdd;
             $statutVehicule = 'Libre';
