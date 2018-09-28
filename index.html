@@ -14,13 +14,15 @@
     <script src="jquery.js"></script>
     <script>
         $(document).ready(function(){
-            $.get('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'filtrage',
-                idMarque : '1',
-                idModele : '-1',
-                idType: '-1',
-                idCarburant : '1',
-                climatisation : '-1' 
+            $.post('http://localhost/API-SenDrive/senDrive.php',{
+                fonction:'connexion',
+                login : 'derguene',
+                password: 'sendrive'
+                //id : '8'
+                //idModele : '-1',
+                //idType: '-1',
+                //idCarburant : '1',
+                //climatisation : '-1' 
                 //dateFin : '22-11-2018',
                 //statut : 'Terminé'
                 //nom : 'Mboukhoulane', 

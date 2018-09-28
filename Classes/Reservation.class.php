@@ -66,8 +66,12 @@
         //Autres fonctions
         public static function ajoutReservation($idVehicule, $idChauffeur, $dateDepart, $dateArrivee){
             global $bdd;
-            $statutActuel = Reservation::returnData('statut', 'Vehicule', 'idVehicule', $idVehicule);
-            if ($statutActuel=='Réservé'){
+            //Ajustement du format des dates
+            $dateDepart = date("Y-m-d", strtotime($dateDepart));
+            $dateArrivee = date("Y-m-d", strtotime($dateArrivee));
+
+            $statutActuelVehic = Reservation::returnData('statut', 'Vehicule', 'idVehicule', $idVehicule);
+            if ($statutActuelVehic=='Réservé'){
                 echo "Ce véhicule a déjà été réservé !";
                 return false;
             }
@@ -75,12 +79,20 @@
                 //Mise à jour des statuts
                 $statutReservation = 'En cours';
                 $statutVehicule = 'Réservé';
+            
                 if($idChauffeur == 'NULL'){        
                     $statutChauffeur = 'Libre';
                 }
                 else{
-                    $statutChauffeur = 'Réservé';
-                }
+                    $statutActuelChauff = Reservation::returnData('statut', 'Chauffeur', 'idChauffeur', $idChauffeur);
+                    if($statutActuelChauff=='Réservé'){
+                        echo "Ce chauffeur a déjà été réservé !";
+                        return false;
+                    }
+                    else{
+                        $statutChauffeur = 'Réservé';
+                    }      
+                } //End first else
             
                 //Récupération de l'Id du dernier client entré
                 $reqLastIdClient = 'SELECT idClient FROM Clientele ORDER BY idClient DESC LIMIT 0,1';
@@ -96,10 +108,10 @@
                 ));
                 //Vérification de la réussite de l'ajout
                 if($reponse->rowCount() > 0){
-                    echo "Dates ajoutées !";
+                    echo "Dates ajoutées / ";
                 } 
                 else{
-                    echo "Une erreur est survenue lors de l'ajout des dates !";
+                    echo "Une erreur est survenue lors de l'ajout des dates / ";
                     return false;
                 }
                 //Récupération de l'Id de la dernière date entrée
@@ -119,10 +131,10 @@
                 ));
                 //Vérification de la réussite de l'ajout
                 if($reponse->rowCount() > 0){
-                    echo "Réservation ajoutée !";
+                    echo "Réservation ajoutée / ";
                 } 
                 else{
-                    echo "Une erreur est survenue lors de l'ajout de la reservation !";
+                    echo "Une erreur est survenue lors de l'ajout de la reservation / ";
                     return false;
                 }
                 //Mise à jour du nombre de location et du statut du véhicule reservé
@@ -133,17 +145,17 @@
                 $reponse->execute(array($nbLocation, $statutVehicule, $idVehicule));
                 //Vérification de la réussite de la mise à jour
                 if($reponse->rowCount() > 0){
-                    echo "Nombre de location du véhicule mis à jour !";
+                    echo "Nombre de location du véhicule mis à jour / ";
                 } 
                 else{
-                    echo "Une erreur est survenue lors de la mise à jour du nombre de location !";
+                    echo "Une erreur est survenue lors de la mise à jour du nombre de location / ";
                     return false;
                 }
                 //Mise à jour du statut du chauffeur
                 if($idChauffeur!='NULL'){
-                    $reqUpdateChauff = "UPDATE Chauffeur SET statut=$statutChauffeur WHERE idChauffeur=?";
+                    $reqUpdateChauff = "UPDATE Chauffeur SET statut=? WHERE idChauffeur=?";
                     $reponse = $bdd->prepare($reqUpdateChauff);
-                    $reponse->execute(array($idChauffeur));
+                    $reponse->execute(array($statutChauffeur, $idChauffeur));
                     //Vérification de la réussite de la mise à jour du statut du chauffeur
                     if($reponse->rowCount() > 0){
                         echo "Statut chauffeur mis à jour !";
@@ -177,7 +189,7 @@
                 $reponse->execute(array($dateDebut, $dateFin, $idDate));
                 //Vérification de la réussite de l'ajout
                 if($reponse->rowCount() > 0){
-                    echo "Dates mises à jour !";
+                    echo "Dates mises à jour / ";
                 } 
                 else{
                     echo "Une erreur est survenue lors de la mise à jour des dates !";

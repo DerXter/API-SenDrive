@@ -37,6 +37,8 @@ Les requêtes devront être structurées de la sorte :
 * __afficheChauffeurs (statut)__ : Affichage de tous les chauffeurs selon leurs statuts de disponibilité.   
 > __INFO__: Le statut est facultatif. S'il n'est pas spécifié, tous les véhicules, *Libres* comme *Réservé*  seront affichés.    
 * __afficheChauffeur(dateDebut, dateFin)__ : Affichage des chauffeurs disponibles entre les dates indiquées  
+* __connexion(login, password)__ : connexion des utilisateurs  
+> __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté et retoune *false* si non.  
 * __afficheVehicules(statut)__ : Affichage de tous les véhicules leurs statuts de disponibilité   
 > __INFO__: Le statut est facultatif. S'il n'est pas spécifié, tous les véhicules, *Libres* comme *Réservé*  seront affichés.
 * __afficheVehicule(dateDebut, dateFin)__ : Affichage des véhicules disponibles entre les dates indiquées  
@@ -70,9 +72,7 @@ dans le cas contraire.
 * __changerStatutReservation(idReservation, statut)__ : Changement du statut d'une reservation    
 > __IMPORTANT:__ Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*.      
 * __ajoutUtilisateur(login, password, statut, numIdentite)__ : Ajout d'utilisateurs   
-> __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*  
-* __connexion(login, password)__ : connexion des utilisateurs  
-> __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté et retoune *false* si non.  
+> __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*   
 * __ajoutProprio(raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Ajout de propriétaire  
 > __IMPORTANT:__ Les raisons sociales possibles sont: *Particulier* et  *Professionnel*. 
 * __modifProprio(idProprietaire, raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Modification de propriétaire  
