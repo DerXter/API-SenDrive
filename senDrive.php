@@ -176,6 +176,36 @@
 
                 echo Vehicule::supprimerVehicule($id);
             break;
+            case 'ajoutMarque': //Ajout d'une marque de véhicule
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                $marque = htmlspecialchars($_POST['marque']);
+
+                echo Vehicule::ajoutMarque($marque);
+            break;
+            case 'ajoutModele': //Ajout d'un modele de véhicule
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_POST['id']);
+                $modele = htmlspecialchars($_POST['modele']);
+
+                echo Vehicule::ajoutModele($modele, $id);
+            break;
+            case 'ajoutTypeVehicule': //Ajout d'un type de véhicule
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                $type = htmlspecialchars($_POST['type']);
+
+                echo Vehicule::ajoutTypeVehicule($type);
+            break;
+            case 'supprimerCaracVehicule': //Suppréssion d'un attribut de véhicule
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_POST['id']);
+                $carac = htmlspecialchars($_POST['carac']);
+
+                echo Vehicule::supprimerCaracVehicule($carac, $id);
+            break;
 
 
             //******************************Traitement des clients******************************
