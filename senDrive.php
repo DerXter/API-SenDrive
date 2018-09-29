@@ -23,7 +23,7 @@
             $fonction = htmlspecialchars($_GET['fonction']); //Sécurisation de la donnée reçue
         }
         else if(isset($_POST['fonction'])){
-            $fonction = htmlspecialchars($_POST['fonction']); //Sécurisation de la donnée reçue
+            $fonction = htmlspecialchars($_POST['fonction']); //Sécurisation de la donnée reçue       
         }
         else{
             echo 'Veuillez renseigner une fonction svp !';

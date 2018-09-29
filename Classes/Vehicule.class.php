@@ -322,52 +322,75 @@
         public static function ajoutMarque($marque){
             global $bdd;
             $marque = strtoupper($marque); //Conversion en majuscule
-            $requete = "INSERT INTO Marque(marque) VALUES (?)";
-            $reponse = $bdd->prepare($requete);
-            $reponse->execute(array($marque));
-            if($reponse->rowCount() > 0){
-                echo "Marque ajoutée.";
-                return true;
-            }
-            else{
-                echo "Une erreur est survenue lors de l'ajout de la marque !";
+            if (Vehicule::verifDoublons('marque', 'Marque', $marque)){
+                echo "Cette marque existe déja !";
                 return false;
             }
-            $reponse->closeCursor();
+            else{
+                $requete = "INSERT INTO Marque(marque) VALUES (?)";
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($marque));
+                if($reponse->rowCount() > 0){
+                    echo "Marque ajoutée.";
+                    return true;
+                }
+                else{
+                    echo "Une erreur est survenue lors de l'ajout de la marque !";
+                    return false;
+                }
+                $reponse->closeCursor();
+            } //End else
+            
         } //End ajoutmarque()
 
         public static function ajoutModele($modele, $idMarque){
             global $bdd;
             $modele = strtoupper($modele); //Conversion en majuscule
-            $requete = "INSERT INTO Modele(idMarque, modele) VALUES (?, ?)";
-            $reponse = $bdd->prepare($requete);
-            $reponse->execute(array($idMarque, $modele));
-            if($reponse->rowCount() > 0){
-                echo "Modele ajouté.";
-                return true;
-            }
-            else{
-                echo "Une erreur est survenue lors de l'ajout du modele !";
+            if (Vehicule::verifDoublons('modele', 'Modele', $modele)){
+                echo "Ce modele existe déja !";
                 return false;
             }
-            $reponse->closeCursor();
+            else{
+                $requete = "INSERT INTO Modele(idMarque, modele) VALUES (?, ?)";
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($idMarque, $modele));
+                if($reponse->rowCount() > 0){
+                    echo "Modele ajouté.";
+                    return true;
+                }
+                else{
+                    echo "Une erreur est survenue lors de l'ajout du modele !";
+                    return false;
+                }
+                $reponse->closeCursor();
+            } //End first else
+            
         } //End ajoutModele()
+
         public static function ajoutTypeVehicule($type){
             global $bdd;
             $type = strtoupper($type); //Conversion en majuscule
-            $requete = "INSERT INTO TypeVehicule(typeVehicule) VALUES (?)";
-            $reponse = $bdd->prepare($requete);
-            $reponse->execute(array($type));
-            if($reponse->rowCount() > 0){
-                echo "Type de véhicule ajouté.";
-                return true;
-            }
-            else{
-                echo "Une erreur est survenue lors de l'ajout du type de véhicule !";
+            if (Vehicule::verifDoublons('typeVehicule', 'TypeVehicule', $type)){
+                echo "Ce type de véhicule existe déja !";
                 return false;
             }
-            $reponse->closeCursor();
+            else{
+                $requete = "INSERT INTO TypeVehicule(typeVehicule) VALUES (?)";
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($type));
+                if($reponse->rowCount() > 0){
+                    echo "Type de véhicule ajouté.";
+                    return true;
+                }
+                else{
+                    echo "Une erreur est survenue lors de l'ajout du type de véhicule !";
+                    return false;
+                }
+                $reponse->closeCursor();
+            } //End first else
+            
         } //End ajoutType()
+
         public static function supprimerCaracVehicule($carac, $id){
             global $bdd;
             $idName = 'id'.$carac;
@@ -386,14 +409,13 @@
 
         } //End supprimerVehicule($id)
 
-        public static function verifDoublons($table, $donnee){
+        public static function verifDoublons($donnee, $table, $valeur){
             global $bdd;
             $result=false; //Flag me permettant de savoir s'il y'a un doublon ou pas
             $requete = "SELECT $donnee FROM $table";
-            $reponse = $bdd->prepare($requete);
+            $reponse = $bdd->query($requete);
             while($data = $reponse->fetch()){
-                if($donnee==$data[$donnee]){
-                    echo "$donnee déjà existant(e).";
+                if($valeur==$data[$donnee]){
                     $result = true;
                     break;
                 } //End if
