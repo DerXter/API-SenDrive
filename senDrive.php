@@ -83,7 +83,7 @@
             case 'supprimerChauffeur': //Suppréssion de chauffeurs
                 include_once('Classes/Chauffeur.class.php');
                 //Sécurisation des données reçues
-                $id = htmlspecialchars($_POST['id']);
+                $id = htmlspecialchars($_GET['id']);
 
                 echo Chauffeur::supprimerChauffeur($id);
             break;
@@ -172,7 +172,7 @@
             case 'supprimerVehicule': //Suppression de véhicule
                 include_once('Classes/Vehicule.class.php');
                 //Sécurisation des données reçues
-                $id = htmlspecialchars($_POST['id']);
+                $id = htmlspecialchars($_GET['id']);
 
                 echo Vehicule::supprimerVehicule($id);
             break;
@@ -198,11 +198,26 @@
 
                 echo Vehicule::ajoutTypeVehicule($type);
             break;
+            case 'modifierCaracVehicule': //Modification d'un attribut de véhicule
+                include_once('Classes/Vehicule.class.php');
+                //Sécurisation des données reçues
+                if(isset($_POST['idMarque'])){
+                    $idMarque = htmlspecialchars($_POST['idMarque']);
+                }
+                else{
+                    $idMarque = '';
+                }
+                $id = htmlspecialchars($_POST['idCarac']);
+                $carac = htmlspecialchars($_POST['carac']);
+                $valeur = htmlspecialchars($_POST['valeur']);
+
+                echo Vehicule::modifierCaracVehicule($carac, $id, $valeur, $idMarque);
+            break;
             case 'supprimerCaracVehicule': //Suppréssion d'un attribut de véhicule
                 include_once('Classes/Vehicule.class.php');
                 //Sécurisation des données reçues
-                $id = htmlspecialchars($_POST['id']);
-                $carac = htmlspecialchars($_POST['carac']);
+                $id = htmlspecialchars($_GET['id']);
+                $carac = htmlspecialchars($_GET['carac']);
 
                 echo Vehicule::supprimerCaracVehicule($carac, $id);
             break;
@@ -268,7 +283,7 @@
             case 'supprimerReservation': //Suppréssion de réservations
             include_once('Classes/Reservation.class.php');
             //Sécurisation des données reçues
-            $id = htmlspecialchars($_POST['id']);
+            $id = htmlspecialchars($_GET['id']);
             
             echo Reservation::supprimerReservation($id); 
             break;
@@ -339,7 +354,7 @@
             case 'supprimerProprio': //Suppression de proprietaires
             include_once('Classes/Proprietaire.class.php');
             //Sécurisation des données reçues
-            $idProprietaire = htmlspecialchars($_POST['id']);
+            $idProprietaire = htmlspecialchars($_GET['id']);
             
             echo Proprietaire::supprimerProprio($idProprietaire);
             break;
@@ -384,7 +399,7 @@
             case 'supprimerPersonnel': //Suppression de personnel
             include_once('Classes/Personnel.class.php');
             //Sécurisation des données reçues
-            $id = htmlspecialchars($_POST['id']);
+            $id = htmlspecialchars($_GET['id']);
 
             echo Personnel::supprimerPersonnel($id);
             break;
@@ -400,7 +415,7 @@
             case 'supprimerDoc': //Suppression du fichier de documentation dont l'id est spécifié
             include_once('Classes/Doc.class.php');
             //Sécurisation des données reçues
-            $id = htmlspecialchars($_POST['id']);
+            $id = htmlspecialchars($_GET['id']);
 
             echo Doc::supprimerDoc($id);
             break;

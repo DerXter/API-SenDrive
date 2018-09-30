@@ -15,26 +15,26 @@
     <script>
         $(document).ready(function(){
             $.post('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'ajoutChauffeur',
-                prenom : 'mansour',
-                //id : '1'
+                fonction:'modifierCaracVehicule',
+                carac : 'typeVehicule',
+                //idMarque : '2',
                 //password: 'sendrive'
-                //id : '8'
+                //id : '8',
                 //idModele : '-1',
                 //idType: '-1',
                 //idCarburant : '1',
-                //climatisation : '-1' 
-                dateFin : '22-11-2018',
+                valeur: 'berline',
+                idCarac: '6'
                 //statut : 'Terminé'
-                dateDebut : '22-11-2018',
-                nom : 'Mboukhoulane', 
-                dateNaissance : '15-08-1984', 
-                numeroIdentite : '76786786786', 
-                adresse : 'Guineguinew', 
-                telephone : '0678678678687',
+                //dateDebut : '22-11-2018',
+                //nom : 'Mboukhoulane', 
+                //dateNaissance : '15-08-1984', 
+                //numeroIdentite : '76786786786', 
+                //adresse : 'Guineguinew', 
+                //telephone : '0678678678687',
                 //email : 'bdsbchj@ndjksncs.ju',
-                permis : 'B',
-                commentaire: 'Thiomo'
+                //permis : 'B',
+                //commentaire: 'Thiomo'
                 
                 } ,function(data){
                 

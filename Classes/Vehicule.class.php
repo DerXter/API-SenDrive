@@ -301,7 +301,6 @@
             
         } //End modifierVehicule()
 
-
         public static function supprimerVehicule($id){
             global $bdd;
             $requete = 'DELETE FROM Vehicule WHERE idVehicule=?';
@@ -393,21 +392,80 @@
 
         public static function supprimerCaracVehicule($carac, $id){
             global $bdd;
-            $idName = 'id'.$carac;
-            $requete = "DELETE FROM $carac WHERE $idName=?";
-            $reponse = $bdd->prepare($requete);
-            $reponse->execute(array($id));
-            //Vérification de la réussite de la suppréssion
-            if($reponse->rowCount() > 0){
-                echo "$carac supprimé(e) !";
-            } 
+            $type_authorise = array('marque', 'modele', 'typevoiture', 'typeVoiture');
+            if(in_array($carac, $type_authorise)){
+                $idName = 'id'.$carac;
+                $requete = "DELETE FROM $carac WHERE $idName=?";
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($id));
+                //Vérification de la réussite de la suppréssion
+                if($reponse->rowCount() > 0){
+                    echo "$carac supprimé(e) !";
+                    return true;
+                } 
+                else{
+                    echo "Une erreur est survenue lors de la suppréssion de la/du $carac !";
+                    return false;
+                }
+                $reponse->closeCursor();
+
+            } //End if in_array()
             else{
-                echo "Une erreur est survenue lors de la suppréssion de la/du $carac !";
+                echo "Type choisi non autorisé !";
+                return false;
+            }
+            
+        } //End supprimerVehicule($id)
+
+        public static function modifierCaracVehicule($carac, $id, $valeur, $id2){
+            global $bdd;
+            $idName = 'id'.$carac;
+            $valeur = strtoupper($valeur); //Conversion en majuscule
+            if($carac=='marque' || $carac=='typeVehicule' || $carac=='typevehicule' ){
+                if (Vehicule::verifDoublons($carac, $carac, $valeur)){
+                    echo "Ce/Cette $carac existe déja !";
+                    return false;
+                }
+                else{
+                    $requete = "UPDATE $carac SET $carac=? WHERE $idName=?";
+                    $reponse = $bdd->prepare($requete);
+                    $reponse->execute(array($valeur, $id));
+                    if ($reponse->rowCount() > 0){
+                        echo "$carac mis à jour !";
+                        return true;
+                    }
+                    else{
+                        echo "Une erreur est survenue lors de l'ajout du caractère $carac";
+                        return false;
+                        }
+                } //End else if(verifDoublons) 
+                
+            } //End if(carac==marque)
+            else if($carac=='modele'){
+                if (Vehicule::verifDoublons($carac, $carac, $valeur)){
+                    echo "Ce/Cette $carac existe déja !";
+                    return false;
+                }
+                else{
+                    $requete = "UPDATE $carac SET idMarque=? ,$carac=? WHERE $idName=?";
+                    $reponse = $bdd->prepare($requete);
+                    $reponse->execute(array($id2, $valeur, $id));
+                    if ($reponse->rowCount() > 0){
+                        echo "$carac mis à jour !";
+                        return true;
+                    }
+                    else{
+                        echo "Une erreur est survenue lors de l'ajout du caractère $carac";
+                        return false;
+                    }
+                } //End else if(verifDoublons)
+            } //End else if(carac==modele)
+            else{
+                echo "Caractère non autorisé !";
                 return false;
             }
             $reponse->closeCursor();
-
-        } //End supprimerVehicule($id)
+        } //End modifierCaracVehicule()
 
         public static function verifDoublons($donnee, $table, $valeur){
             global $bdd;
