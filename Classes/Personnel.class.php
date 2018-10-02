@@ -30,75 +30,89 @@
 
         public static function ajoutPersonnel($civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email){
             global $bdd;
-            $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
-            $idCivilite = Personnel::returnId('idCivilite', 'Civilite', 'civilite', $civilite);
-            $idFonction = Personnel::returnId('idFonction', 'Fonction', 'fonction', $poste);
-            if($idCivilite!=false && $idFonction!=false){
-                $requete = "INSERT INTO Personnel (idCivilite, idFonction, nom, prenom, dateNaissance, numeroIdentite, adresse, telephone, email) VALUES (:idCivilite, :idFonction, :nom, :prenom, :dateNaissance, :numeroIdentite, :adresse, :telephone, :email)";
-                $reponse = $bdd->prepare($requete);
-                $reponse->execute(array(
-                    'idCivilite' => $idCivilite,
-                    'idFonction' => $idFonction, 
-                    'nom' => $nom, 
-                    'prenom' => $prenom, 
-                    'dateNaissance' => $dateNaissance, 
-                    'numeroIdentite' => $numeroIdentite, 
-                    'adresse' => $adresse, 
-                    'telephone' => $telephone,
-                    'email' => $email
-                ));
-                //Vérification de la réussite de l'ajout
-                if($reponse->rowCount() > 0){
-                    echo "Ajout réussi !";
-                } 
-                else{
-                    echo "Une erreur est survenue lors de l'ajout du personnel !";
-                    return false;
-                }
-            
-            } //End if
-            else{
-                echo "Civilité ou Fonction choisi(e) indisponible !";
+            //Vérification de l'unicité du personnel ajouté
+            if(Personnel::verifDoublons('numeroIdentite', 'Personnel', $numeroIdentite)){
+                echo "Numéro d'identité déjà utilisé !";
                 return false;
             }
-            $reponse->closeCursor();
+            else{
+                $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
+                $idCivilite = Personnel::returnId('idCivilite', 'Civilite', 'civilite', $civilite);
+                $idFonction = Personnel::returnId('idFonction', 'Fonction', 'fonction', $poste);
+                if($idCivilite!=false && $idFonction!=false){
+                    $requete = "INSERT INTO Personnel (idCivilite, idFonction, nom, prenom, dateNaissance, numeroIdentite, adresse, telephone, email) VALUES (:idCivilite, :idFonction, :nom, :prenom, :dateNaissance, :numeroIdentite, :adresse, :telephone, :email)";
+                    $reponse = $bdd->prepare($requete);
+                    $reponse->execute(array(
+                        'idCivilite' => $idCivilite,
+                        'idFonction' => $idFonction, 
+                        'nom' => $nom, 
+                        'prenom' => $prenom, 
+                        'dateNaissance' => $dateNaissance, 
+                        'numeroIdentite' => $numeroIdentite, 
+                        'adresse' => $adresse, 
+                        'telephone' => $telephone,
+                        'email' => $email
+                    ));
+                    //Vérification de la réussite de l'ajout
+                    if($reponse->rowCount() > 0){
+                        echo "Ajout réussi !";
+                    } 
+                    else{
+                        echo "Une erreur est survenue lors de l'ajout du personnel !";
+                        return false;
+                    }
+                
+                } //End if
+                else{
+                    echo "Civilité ou Fonction choisi(e) indisponible !";
+                    return false;
+                }
+                $reponse->closeCursor();
+            } //End else if(verifDoublons)
         } //End ajoutPersonnel()
 
         public static function modifierPersonnel($idPersonnel, $civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email){
             global $bdd;
-            $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
-            $idCivilite = Personnel::returnId('idCivilite', 'Civilite', 'civilite', $civilite);
-            $idFonction = Personnel::returnId('idFonction', 'Fonction', 'fonction', $poste);
-            if($idCivilite!=false && $idFonction!=false){
-                $requete = "UPDATE Personnel SET idCivilite=:idCivilite, idFonction=:idFonction, nom=:nom, prenom=:prenom, dateNaissance=:dateNaissance, numeroIdentite=:numeroIdentite, adresse=:adresse, telephone=:telephone, email=:email WHERE idPersonnel=:idPersonnel";
-                $reponse = $bdd->prepare($requete);
-                $reponse->execute(array(
-                    'idCivilite' => $idCivilite,
-                    'idFonction' => $idFonction, 
-                    'nom' => $nom, 
-                    'prenom' => $prenom, 
-                    'dateNaissance' => $dateNaissance, 
-                    'numeroIdentite' => $numeroIdentite, 
-                    'adresse' => $adresse, 
-                    'telephone' => $telephone,
-                    'email' => $email,
-                    'idPersonnel' => $idPersonnel
-                ));
-                //Vérification de la réussite de la modification
-                if($reponse->rowCount() > 0){
-                    echo "Personnel mis à jour !";
-                } 
-                else{
-                    echo "Une erreur est survenue lors de la mise à jour du personnel !";
-                    return false;
-                }
-            
-            } //End if
-            else{
-                echo "Civilité ou Fonction choisi(e) indisponible !";
-                return flase;
+            //Vérification de l'unicité du personnel ajouté
+            if(Personnel::verifDoublons('numeroIdentite', 'Personnel', $numeroIdentite)){
+                echo "Numéro d'identité déjà utilisé !";
+                return false;
             }
-            $reponse->closeCursor();
+            else{
+                $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
+                $idCivilite = Personnel::returnId('idCivilite', 'Civilite', 'civilite', $civilite);
+                $idFonction = Personnel::returnId('idFonction', 'Fonction', 'fonction', $poste);
+                if($idCivilite!=false && $idFonction!=false){
+                    $requete = "UPDATE Personnel SET idCivilite=:idCivilite, idFonction=:idFonction, nom=:nom, prenom=:prenom, dateNaissance=:dateNaissance, numeroIdentite=:numeroIdentite, adresse=:adresse, telephone=:telephone, email=:email WHERE idPersonnel=:idPersonnel";
+                    $reponse = $bdd->prepare($requete);
+                    $reponse->execute(array(
+                        'idCivilite' => $idCivilite,
+                        'idFonction' => $idFonction, 
+                        'nom' => $nom, 
+                        'prenom' => $prenom, 
+                        'dateNaissance' => $dateNaissance, 
+                        'numeroIdentite' => $numeroIdentite, 
+                        'adresse' => $adresse, 
+                        'telephone' => $telephone,
+                        'email' => $email,
+                        'idPersonnel' => $idPersonnel
+                    ));
+                    //Vérification de la réussite de la modification
+                    if($reponse->rowCount() > 0){
+                        echo "Personnel mis à jour !";
+                    } 
+                    else{
+                        echo "Une erreur est survenue lors de la mise à jour du personnel !";
+                        return false;
+                    }
+                
+                } //End if
+                else{
+                    echo "Civilité ou Fonction choisi(e) indisponible !";
+                    return flase;
+                }
+                $reponse->closeCursor();
+            } //End else if (VerifDoublons)
         } //End modifierPersonnel()
 
         public static function supprimerPersonnel($id){
@@ -132,5 +146,20 @@
                 return false;
             }
         } //End returnId()
+
+        public static function verifDoublons($donnee, $table, $valeur){
+            global $bdd;
+            $result=false; //Flag me permettant de savoir s'il y'a un doublon ou pas
+            $requete = "SELECT $donnee FROM $table";
+            $reponse = $bdd->query($requete);
+            while($data = $reponse->fetch()){
+                if($valeur==$data[$donnee]){
+                    $result = true;
+                    break;
+                } //End if
+            } //End while ()
+            $reponse->closeCursor();
+            return $result==true ? true : false; //Retourne true s'il y'a un doublon et false dans le cas contraire
+        } //End verifDoublons()
 
     } //End Personnel
