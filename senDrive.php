@@ -279,6 +279,14 @@
             
             echo Reservation::afficheReservations(); 
             break;
+            case 'afficheReservation': //Affichage des réservations
+            include_once('Classes/Reservation.class.php');
+            //Sécurisation des données reçues
+            $statut = htmlspecialchars($_GET['statut']);
+            
+            echo Reservation::afficheReservation($statut); 
+            break;
+
 
             //******************************Traitement des utilisateurs******************************
             case 'ajoutUtilisateur': //Ajout d'utilisateurs

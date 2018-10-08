@@ -26,7 +26,7 @@
                 return false;
             }
             else{
-                $reqRecupIdDisponibilite = "SELECT DISTINCT idChauffeur FROM Reservation, Disponibilite WHERE (dateDebut<=:dateDebut AND dateFin>=:dateFin) OR (dateDebut>:dateDebut AND dateFin<:dateFin) OR (dateDebut>:dateDebut AND dateFin>:dateFin) OR (dateDebut<:dateDebut AND dateFin<:dateFin) AND idDisponibilite=idDate";
+                $reqRecupIdDisponibilite = "SELECT DISTINCT idChauffeur FROM Reservation, Disponibilite WHERE (dateDebut<=:dateDebut AND dateFin>=:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin<:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin>:dateFin AND statut='En cours') OR (dateDebut<:dateDebut AND dateFin<:dateFin AND statut='En cours') AND idDisponibilite=idDate ";
                 $reponse = $bdd->prepare($reqRecupIdDisponibilite);
                 $reponse->execute(array(
                     'dateDebut' => $dateDebut, 

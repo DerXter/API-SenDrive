@@ -64,6 +64,51 @@
         }
 
         //Autres fonctions
+        public static function afficheReservations(){
+            global $bdd;
+            $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, statut FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate";
+            $reponse = $bdd->query($reqAfficheReserv);
+            if ($reservations = $reponse->fetchAll()){
+                $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $reponse->closeCursor();
+
+                return $reservations;
+            }
+            else {
+                echo "Aucune reservation trouvée !";
+                return false;
+            }
+            
+        } //End afficheReservations()
+
+        public static function afficheReservation($statut){
+            global $bdd;
+            $statut_autorises = array('En cours', 'Annulé', 'Terminé');
+            if(in_array($statut, $statut_autorises)){
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND statut=?";
+                $reponse = $bdd->prepare($reqAfficheReserv);
+                $reponse->execute(array($statut));
+                //var_dump ($reponse->fetchAll());
+                if ($reponse->rowCount() > 0){
+                    $reservations = $reponse->fetchAll();
+                    $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $reponse->closeCursor();
+
+                    return $reservations;
+                }
+                else {
+                    echo "Aucune réservation dont le statut est '$statut' n'a été trouvée !";
+                    return false;
+                }
+            } //End if(array)
+            else{
+                echo "Statut non disponible. Les statuts disponibles sont: 'En cours', 'Annulé' ou 'Terminé'.";
+                return false;
+            }
+            
+            
+        } //End afficheReservation(statut)
+
         public static function ajoutReservation($idVehicule, $idChauffeur, $dateDepart, $dateArrivee){
             global $bdd;
             //Ajustement du format des dates
@@ -238,23 +283,6 @@
             $reponse->closeCursor();
 
         } //End supprimerProprio($id)
-
-        public static function afficheReservations(){
-            global $bdd;
-            $reqAfficheReserv = 'SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, statut FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate';
-            $reponse = $bdd->query($reqAfficheReserv);
-            if ($reservations = $reponse->fetchAll()){
-                $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                $reponse->closeCursor();
-
-                return $reservations;
-            }
-            else {
-                echo "Aucune reservation trouvée !";
-                return false;
-            }
-            
-        } //End afficheReservations()
 
         public static function changerStatutReservation($idReservation, $statut){
             global $bdd;
