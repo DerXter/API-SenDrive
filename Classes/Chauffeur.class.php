@@ -26,60 +26,65 @@
                 return false;
             }
             else{
-                $chauffeurs = array(); //Tableau qui va contenir les chauffeurs diponibles entre les deux dates spécifiées
-                $reqRecupIdDisponibilite = "SELECT idDisponibilite FROM Disponibilite WHERE dateDebut<=? AND dateFin>=?";
+                $reqRecupIdDisponibilite = "SELECT DISTINCT idChauffeur FROM Reservation, Disponibilite WHERE (dateDebut<=:dateDebut AND dateFin>=:dateFin) OR (dateDebut>:dateDebut AND dateFin<:dateFin) OR (dateDebut>:dateDebut AND dateFin>:dateFin) OR (dateDebut<:dateDebut AND dateFin<:dateFin) AND idDisponibilite=idDate";
                 $reponse = $bdd->prepare($reqRecupIdDisponibilite);
-                $reponse->execute(array($dateDebut, $dateFin));
+                $reponse->execute(array(
+                    'dateDebut' => $dateDebut, 
+                    'dateFin' => $dateFin));
                 if ($dataId=$reponse->fetchAll()){ //Tableau contenant tous les 'idDisponibilité' correspondants aux dates spécifiées
+                   //Récupération de l'ensemble des chauffeurs
+                   $reqAfficheChauffeur = "SELECT idChauffeur, prenom, nom, permis, adresse, telephone, commentaire, cheminPhoto FROM Chauffeur WHERE 1";
                     foreach($dataId as $donnees) {
-                        # Pour chaque 'idDisponibilité' trouvé, on retourne un tableau contenant l'ensemble des chauffeurs diponibles
-                        $idDate = $donnees['idDisponibilite'];
-                        $reqAfficheChauffeur = "SELECT idChauffeur, prenom, nom, permis, adresse, telephone, commentaire, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto FROM Chauffeur, Disponibilite WHERE idDate=idDisponibilite AND idDate=? AND statut=?";
-                        $reponse1 = $bdd->prepare($reqAfficheChauffeur);
-                        $reponse1->execute(array($idDate, 'Libre'));
-                        $chauffeurs = array_merge_recursive($chauffeurs, $reponse1->fetchAll());  //Puis ce tableau est concaténé avec le prochain tableau trouvé grâce à l'éventuel prochain idDisponibilité.
+                        # Pour chaque 'idDisponibilité' trouvé, on enlève les chcauffeurs réservés de la liste des chauffeurs à afficher
+                        $idChauffeur = $donnees['idChauffeur'];
+                        $reqAfficheChauffeur .= " AND idChauffeur!=$idChauffeur ";
                         
                     } //End While($dataId)
-                    if(empty($chauffeurs)){
-                        echo "Aucun chauffeur disponible à cette période !";
-                        return false;
-                    }
-                    else{
-                        $reponse->closeCursor();
+
+                     //Vérification et retour du résultat
+                    if($reponse = $bdd->query($reqAfficheChauffeur)){
+                        $chauffeurs = $reponse->fetchAll();
                         //Conversion du format du tableau en JSON
                         $chauffeurs = json_encode($chauffeurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                        $reponse->closeCursor();
+
                         return $chauffeurs;
+                    }
+                    else{
+                        echo "Aucun chauffeur disponible à cette période !";
+                        return false;
                     }         
                     
                 } //End if($dataId)
                 else{
-                    echo "Aucun chauffeur disponible à cette période !";
-                    return false;
+                    //Récupération de l'ensemble des chauffeurs
+                   $reqAfficheChauffeur = "SELECT idChauffeur, prenom, nom, permis, adresse, telephone, commentaire, cheminPhoto FROM Chauffeur WHERE 1";
+                    //Vérification et retour du résultat
+                    if($reponse = $bdd->query($reqAfficheChauffeur)){
+                        $chauffeurs = $reponse->fetchAll();
+                        //Conversion du format du tableau en JSON
+                        $chauffeurs = json_encode($chauffeurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                        $reponse->closeCursor();
+
+                        return $chauffeurs;
+                    }
+                    else{
+                        echo "Aucun chauffeur disponible à cette période !";
+                        return false;
+                    }
                 } //End else if ($dataId)
             } //End else (dateDebut >= dateFin)
         } //End afficheChauffeur($dateDebut, $dateFin)
 
-        public static function afficheChauffeurs($statut){
+        public static function afficheChauffeurs(){
             global $bdd;
-            if(empty($statut)){
-                $reqAfficheChauffeur = "SELECT prenom, nom, permis, adresse, telephone, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto, statut FROM Chauffeur, Disponibilite WHERE idDate=idDisponibilite";
-            }
-            else if ($statut=='Libre' || $statut=='Réservé'){
-                $reqAfficheChauffeur = "SELECT prenom, nom, permis, adresse, telephone, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, cheminPhoto, statut FROM Chauffeur, Disponibilite WHERE idDate=idDisponibilite AND statut=?";
-            }
-            else{
-                echo 'Statut inconnu ! Les statuts disponibles sont : \'Libre\' et \'Réservé\' !';
-                return false;
-            }
-            
-            $reponse = $bdd->prepare($reqAfficheChauffeur);
-            $reponse->execute(array($statut));
+            $reqAfficheChauffeur = "SELECT DISTINCT idChauffeur, prenom, nom, permis, adresse, telephone, cheminPhoto, statut FROM Chauffeur";
+            $reponse = $bdd->query($reqAfficheChauffeur);
 
             if ($chauffeurs = $reponse->fetchAll()){
-                $reponse->closeCursor();
                 //Conversion du format du tableau en JSON
                 $chauffeurs = json_encode($chauffeurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    
+                $reponse->closeCursor();
                 return $chauffeurs;
             } //End if($chauffeurs)
             else{
@@ -90,7 +95,6 @@
 
         public static function ajoutChauffeur($prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire){
             global $bdd;
-            $statut = 'Libre';
             //Vérification de l'unicité du chauffeur ajouté
             if(Chauffeur::verifDoublons('numeroIdentite', 'Chauffeur', $numeroIdentite)){
                 echo "Numéro d'identité déjà utilisé !";
@@ -128,7 +132,7 @@
                     $data = $reponse->fetch();
                     $idDisponibilite = $data['idDisponibilite'];
                     //Insertion du Chauffeur dans la base
-                    $reqInsertChauffeur = "INSERT INTO Chauffeur (idDate, prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, commentaire, statut) VALUES (:idDate, :prenom, :nom, :dateNaissance, :numeroIdentite, :permis, :adresse, :telephone, :commentaire, :statut)";
+                    $reqInsertChauffeur = "INSERT INTO Chauffeur (idDate, prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, commentaire) VALUES (:idDate, :prenom, :nom, :dateNaissance, :numeroIdentite, :permis, :adresse, :telephone, :commentaire)";
                     $reponse = $bdd->prepare($reqInsertChauffeur);
                     $reponse->execute(array(
                         'idDate' => $idDisponibilite,
@@ -139,8 +143,7 @@
                         'permis' => $permis, 
                         'adresse' => $adresse, 
                         'telephone' => $telephone, 
-                        'commentaire' => $commentaire, 
-                        'statut' => $statut 
+                        'commentaire' => $commentaire
                     ));
                     //Vérification de la réussite de l'ajout
                     if($reponse->rowCount() > 0){
@@ -155,7 +158,7 @@
 
         } //End ajoutChauffeur()
 
-        public static function modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire, $statut){
+        public static function modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire){
             global $bdd;
             //Vérification de l'unicité du chauffeur ajouté
             if(Chauffeur::verifDoublons('numeroIdentite', 'Chauffeur', $numeroIdentite)){
@@ -163,63 +166,56 @@
                 return false;
             }
             else{
-                if ($statut!='Libre' && $statut!='Réservé'){
-                    echo 'Statut inconnu ! Les statuts disponibles sont : \'Libre\' et \'Réservé\' !';
+                //Mie en conformité des dates
+                $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
+                $dateDebut = date("Y-m-d", strtotime($dateDebut));
+                $dateFin = date("Y-m-d", strtotime($dateFin));
+                //Vérification de la conformité de la période
+                if ($dateDebut >= $dateFin){
+                    echo "La date de fin ne peut être supérieure à la date de début de disponibilité !";
                     return false;
                 }
-                else{
-                    //Mie en conformité des dates
-                    $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
-                    $dateDebut = date("Y-m-d", strtotime($dateDebut));
-                    $dateFin = date("Y-m-d", strtotime($dateFin));
-                    //Vérification de la conformité de la période
-                    if ($dateDebut >= $dateFin){
-                        echo "La date de fin ne peut être supérieure à la date de début de disponibilité !";
+                else{  
+                    //Modification des dates de la base
+                    $idDate = Chauffeur::returnId('idDate', 'Chauffeur', 'idChauffeur', $idChauffeur);
+                    $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
+                    $reponse = $bdd->prepare($reqIdDisponibilite);
+                    $reponse->execute(array($dateDebut, $dateFin, $idDate));
+                    //Vérification de la réussite de la mise à jour des dates
+                    if($reponse->rowCount() > 0){
+                        echo "Dates mises à jour !";
+                    } 
+                    else{
+                        echo "Une erreur est survenue lors de la mise à jour des dates !";
                         return false;
                     }
-                    else{  
-                        //Modification des dates de la base
-                        $idDate = Chauffeur::returnId('idDate', 'Chauffeur', 'idChauffeur', $idChauffeur);
-                        $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
-                        $reponse = $bdd->prepare($reqIdDisponibilite);
-                        $reponse->execute(array($dateDebut, $dateFin, $idDate));
-                        //Vérification de la réussite de la mise à jour des dates
+
+                        $requete = 'UPDATE Chauffeur SET idDate=:idDate, prenom=:prenom, nom=:nom, dateNaissance=:dateNaissance, numeroIdentite=:numeroIdentite, permis=:permis, adresse=:adresse, telephone=:telephone, commentaire=:commentaire WHERE idChauffeur=:idChauffeur';
+                        $reponse = $bdd->prepare($requete);
+                        $reponse->execute(array(
+                            'idDate' => $idDate,
+                            'prenom' => $prenom, 
+                            'nom' => $nom, 
+                            'dateNaissance' => $dateNaissance, 
+                            'numeroIdentite' => $numeroIdentite, 
+                            'permis' => $permis, 
+                            'adresse' => $adresse, 
+                            'telephone' => $telephone, 
+                            'commentaire' => $commentaire,
+                            'idChauffeur' => $idChauffeur
+                
+                        ));
+                        //Vérification de la réussite de la mise à jour du chauffeur
                         if($reponse->rowCount() > 0){
-                            echo "Dates mises à jour !";
+                            echo "Chauffeur mis à jour !";
                         } 
                         else{
-                            echo "Une erreur est survenue lors de la mise à jour des dates !";
-                            return false;
+                            echo "Une erreur est survenue lors de la modification du chauffeur !";
+                        return false;
                         }
-
-                            $requete = 'UPDATE Chauffeur SET idDate=:idDate, prenom=:prenom, nom=:nom, dateNaissance=:dateNaissance, numeroIdentite=:numeroIdentite, permis=:permis, adresse=:adresse, telephone=:telephone, commentaire=:commentaire, statut=:statut WHERE idChauffeur=:idChauffeur';
-                            $reponse = $bdd->prepare($requete);
-                            $reponse->execute(array(
-                                'idDate' => $idDate,
-                                'prenom' => $prenom, 
-                                'nom' => $nom, 
-                                'dateNaissance' => $dateNaissance, 
-                                'numeroIdentite' => $numeroIdentite, 
-                                'permis' => $permis, 
-                                'adresse' => $adresse, 
-                                'telephone' => $telephone, 
-                                'commentaire' => $commentaire, 
-                                'statut' => $statut,
-                                'idChauffeur' => $idChauffeur
-                    
-                            ));
-                            //Vérification de la réussite de la mise à jour du chauffeur
-                            if($reponse->rowCount() > 0){
-                                echo "Chauffeur mis à jour !";
-                            } 
-                            else{
-                                echo "Une erreur est survenue lors de la modification du chauffeur !";
-                                return false;
-                            }
-                        
-                        $reponse->closeCursor();
-                    } //End else
-                } //End else if (statut)
+                     
+                    $reponse->closeCursor();
+                    } //End else (dateDebut, dateFin)
             } //End else if(verifDoublons)
 
         } //End modifierChauffeur()

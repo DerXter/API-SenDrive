@@ -14,17 +14,18 @@
     <script src="jquery.js"></script>
     <script>
         $(document).ready(function(){
-            $.post('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'modifierCaracVehicule',
-                carac : 'typeVehicule',
+            $.get('http://localhost/API-SenDrive/senDrive.php',{
+                fonction:'afficheChauffeur',
+                dateDebut : '2018-09-12',
+                dateFin :'09-11-2020'
                 //idMarque : '2',
                 //password: 'sendrive'
                 //id : '8',
                 //idModele : '-1',
                 //idType: '-1',
                 //idCarburant : '1',
-                valeur: 'berline',
-                idCarac: '6'
+                //valeur: 'berline',
+                //idCarac: '6'
                 //statut : 'Terminé'
                 //dateDebut : '22-11-2018',
                 //nom : 'Mboukhoulane', 

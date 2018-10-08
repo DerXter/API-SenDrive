@@ -32,11 +32,8 @@
         //******************************Traitement des chauffeurs******************************
             case 'afficheChauffeurs': //Affichage de tous les chauffeurs
                 include_once('Classes/Chauffeur.class.php');
-                //Sécurisation des données reçues
-                $statut = htmlspecialchars($_GET['statut']);
 
-                echo Chauffeur::afficheChauffeurs($statut);
-                
+                echo Chauffeur::afficheChauffeurs();       
             break;
             case 'afficheChauffeur': //Affichage des chauffeurs disponibles entre les dates indiquées
                 include_once('Classes/Chauffeur.class.php');
@@ -76,9 +73,8 @@
                 $commentaire = htmlspecialchars($_POST['commentaire']);
                 $dateDebut = htmlspecialchars($_POST['dateDebut']);
                 $dateFin = htmlspecialchars($_POST['dateFin']);
-                $statut = htmlspecialchars($_POST['statut']);
 
-                echo Chauffeur::modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire, $statut);
+                echo Chauffeur::modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire);
             break;
             case 'supprimerChauffeur': //Suppréssion de chauffeurs
                 include_once('Classes/Chauffeur.class.php');
@@ -91,16 +87,8 @@
         //******************************Traitement des véhicules******************************
             case 'afficheVehicules': //Affichage de tous les véhicules
                 include_once('Classes/Vehicule.class.php');
-                //Sécurisation des données reçues
-                if(isset($_GET['statut'])){
-                    $statut = htmlspecialchars($_GET['statut']);
-                    echo Vehicule::afficheVehicules($statut);
-                }
-                else{   
-                    $statut='';
-                    echo Vehicule::afficheVehicules($statut);
-                }
-                
+    
+                echo Vehicule::afficheVehicules();
             break;
             case 'afficheVehicule': //Affichage des véhicules disponibles entre les dates indiquées
                 include_once('Classes/Vehicule.class.php');
@@ -154,9 +142,8 @@
                 $description = htmlspecialchars($_POST['description']);
                 $prix = htmlspecialchars($_POST['prix']);
                 $boiteDeVitesse = htmlspecialchars($_POST['boiteDeVitesse']);
-                $statut = htmlspecialchars($_POST['statut']);
 
-                echo Vehicule::modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse, $statut);
+                echo Vehicule::modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse);
             break;
             case 'filtrage': //filtrage de véhicule selon plusieurs critères
                 include_once('Classes/Vehicule.class.php');
