@@ -34,13 +34,11 @@ Les requêtes devront être structurées de la sorte :
   
 ## Fonctions disponibles :  
 ### Fonctions d'affichage (get):  
-* __afficheChauffeurs (statut)__ : Affichage de tous les chauffeurs selon leurs statuts de disponibilité.   
-> __INFO__: Le statut est facultatif. S'il n'est pas spécifié, tous les véhicules, *Libres* comme *Réservé*  seront affichés.    
+* __afficheChauffeurs ()__ : Affichage de tous les chauffeurs.     
 * __afficheChauffeur(dateDebut, dateFin)__ : Affichage des chauffeurs disponibles entre les dates indiquées  
 * __connexion(login, password)__ : connexion des utilisateurs  
 > __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté et retoune *false* si non.  
-* __afficheVehicules(statut)__ : Affichage de tous les véhicules leurs statuts de disponibilité   
-> __INFO__: Le statut est facultatif. S'il n'est pas spécifié, tous les véhicules, *Libres* comme *Réservé*  seront affichés.
+* __afficheVehicules()__ : Affichage de tous les véhicules
 * __afficheVehicule(dateDebut, dateFin)__ : Affichage des véhicules disponibles entre les dates indiquées  
 * __filtreVehicule(filtre)__ : Affichage des critères de véhicule selon __un__ filtre indiqué à la fois    
 > __IMPORTANT :__ Utiliser comme filtre, *clim-oui* pour afficher les véhicules climatisés et *clim-non*,  
@@ -85,12 +83,12 @@ dans le cas contraire.
 > __IMPORTANT:__ Les raisons sociales possibles sont: *Particulier* et  *Professionnel*. 
 * __modifProprio(idProprietaire, raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Modification de propriétaire  
 * __ajoutVehicule(idMarque, idModele, idType, idProprietaire, idCarburant, dateDebut, dateFin, immatriculation, climatisation, nbPorte, nbPlace, description, prix, boiteDeVitesse)__: Ajout de véhicule  
-* __modifierVehicule(idVehicule, idMarque, idModele, idType, idProprietaire, idCarburant, dateDebut, dateFin, immatriculation, climatisation, nbPorte, nbPlace, description, prix, boiteDeVitesse, statut)__ : Modification de véhicule    
+* __modifierVehicule(idVehicule, idMarque, idModele, idType, idProprietaire, idCarburant, dateDebut, dateFin, immatriculation, climatisation, nbPorte, nbPlace, description, prix, boiteDeVitesse)__ : Modification de véhicule    
 * __ajoutPersonnel(civilite, poste, nom, prenom, dateNaissance, numeroIdentite, adresse, telephone, email)__: Ajout du personnel  
 * __modifierPersonnel(idPersonnel, civilite, poste, nom, prenom, dateNaissance, numeroIdentite, adresse, telephone, email)__: Modification du personnel  
 
 * __ajoutChauffeur (prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, dateDebut, dateFin, commentaire)__: Ajout de chauffeurs  
-* __modifierChauffeur(idChauffeur, prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, dateDebut, dateFin, commentaire, statut)__: Modification de chauffeurs  
+* __modifierChauffeur(idChauffeur, prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, dateDebut, dateFin, commentaire)__: Modification de chauffeurs  
 * __ajoutMarque(marque)__ : Ajout d'une marque de véhicule  
 * __ajoutModele(modele, id)__ : Ajout d'un modéle de véhicule  
 * __ajoutTypeVehicule(type)__ : Ajout d'un type de véhicule  
