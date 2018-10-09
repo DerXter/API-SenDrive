@@ -114,40 +114,22 @@
             //Ajustement du format des dates
             $dateDepart = date("Y-m-d", strtotime($dateDepart));
             $dateArrivee = date("Y-m-d", strtotime($dateArrivee));
-            //On récupère l'ensemble des idVehicules des véhicules qui ont été réservés à la période spécifiée
-            $vehiculesReserves = Reservation::getReserve('vehicule', $dateDepart, $dateArrivee);
             //On vérifie si l'id du véhicule choisi fait ou non partie des véhicules réservés à cette période
-            if ($vehiculesReserves != -1){
-                // $dataId contient les id de tous les véhicules qui ont été réservés
-                if(in_array($idVehicule, $vehiculesReserves)){
-                    echo "Ce véhicule a déjà été réservé à cette période !";
-                    return false;
-                }
-                else{
-                    //Le véhicule est disponible, on passe à la vérification de la disponibilité du chauffeur
-                    goto verifChauffeur;
-                }
-
-            } //End if($dataId vehicule)
+            if (Reservation::checkReserve($idVehicule, 'vehicule', $dateDepart, $dateArrivee)){
+                // Le véhicule n'est pas disponible
+                echo "Ce véhicule a déjà été réservé à cette période !";
+                return false;
+            }
             
             else{
-            //Le véhicule choisi est disponible
-verifChauffeur: if($idChauffeur != 'NULL'){   
-                    //On récupère l'ensemble des idChauffeurs des chauffeurs qui ont été réservés à la période spécifiée
-                    $chauffeursReserves = Reservation::getReserve('chauffeur', $dateDepart, $dateArrivee);
+                //Le véhicule choisi est disponible
+                if($idChauffeur != 'NULL'){   
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
-                    if ($chauffeursReserves != -1){
-                        # $dataId contient les id de tous les chauffeurs qui ont été réservés
-                        if(in_array($idChauffeur, $chauffeursReserves)){
-                            echo "Ce chauffeur a déjà été réservé à cette période !";
-                            return false;
-                        }
-                        else{
-                            //Le chauffeur est disponible, on passe à l'insertion de la réservation dans la base de données
-                            goto insertReservation;
-                        }     
+                    if (Reservation::checkReserve($idChauffeur, 'chauffeur', $dateDepart, $dateArrivee)){
+                        echo "Ce chauffeur a déjà été réservé à cette période !";
+                        return false;
+                        }    
                     
-                    } //End if($dataId chauffeur)
                     else{
                         #Le chauffeur choisi est disponible
                         //Mise à jour du statut de la réservation
@@ -172,7 +154,7 @@ verifChauffeur: if($idChauffeur != 'NULL'){
                         //Récupération de l'Id de la dernière date entrée
                         $lastIdDisponibilite = Reservation::returnLastId('idDisponibilite', 'Disponibilite');
                         #Cette deuxiéme vérification aura du sens quand l'éxécution du programme sera positionnée ici par le goto insertReservation
-                        #Dans ce cas, on se retrouve dans le bloc 'if($idChauffeur!='NULL')' alors que $idChauffeur vaut 'NULL'
+                        #se trouvant à la fin de cette fonction. Dans ce cas, on se retrouve dans le bloc 'if($idChauffeur!='NULL')' alors que $idChauffeur vaut 'NULL'
                         if ($idChauffeur != 'NULL'){
                             //Ajout de la reservation avec chauffeur
                             $reqAjoutReserv = 'INSERT INTO Reservation (idClient, idVehicule, idChauffeur, idDate, statut) VALUES (:idClient, :idVehicule, :idChauffeur, :idDate, :statut)';
@@ -251,40 +233,25 @@ verifChauffeur: if($idChauffeur != 'NULL'){
             //Ajustement du format des dates
             $dateDebut = date("Y-m-d", strtotime($dateDebut));
             $dateFin = date("Y-m-d", strtotime($dateFin));
-            //On récupère l'ensemble des idVehicules des véhicules qui ont été réservés à la période spécifiée
-            $vehiculesReserves = Reservation::getReserve('vehicule', $dateDebut, $dateFin);
+
             //On vérifie si l'id du véhicule choisi fait ou non partie des véhicules réservés à cette période
-            if ($vehiculesReserves != -1){
-                // $dataId contient les id de tous les véhicules qui ont été réservés
-                if(in_array($idVehicule, $vehiculesReserves)){
+            if (Reservation::checkReserve($idVehicule, 'vehicule', $dateDebut, $dateFin)){
+                //Si le véhicule est réservé
                     echo "Ce véhicule a déjà été réservé à cette période !";
                     return false;
-                }
-                else{
-                    //Le véhicule est disponible, on passe à la vérification de la disponibilité du chauffeur
-                    goto verifChauffeur;
-                }
-
-            } //End if($dataId vehicule)
-            
+            }
+            //Le véhicule est disponible, on passe à la vérification de la disponibilité du chauffeur
+ 
             else{
             //Le véhicule choisi est disponible
-    verifChauffeur: if($idChauffeur != 'NULL'){   
-                    //On récupère l'ensemble des idChauffeurs des chauffeurs qui ont été réservés à la période spécifiée
-                    $chauffeursReserves = Reservation::getReserve('chauffeur', $dateDebut, $dateFin);
+verifChauffeur: if($idChauffeur != 'NULL'){   
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
-                    if ($chauffeursReserves != -1){
-                        # $dataId contient les id de tous les chauffeurs qui ont été réservés
-                        if(in_array($idChauffeur, $chauffeursReserves)){
-                            echo "Ce chauffeur a déjà été réservé à cette période !";
-                            return false;
-                        }
-                        else{
-                            //Le chauffeur est disponible, on passe à l'insertion de la réservation dans la base de données
-                            goto updateReservation;
-                        }     
+                    if (Reservation::checkReserve($idChauffeur, 'chauffeur', $dateDebut, $dateFin)){
+                        # Le chauffeur est réservé
+                        echo "Ce chauffeur a déjà été réservé à cette période !";
+                        return false;
+                    }    
                     
-                    } //End if($dataId chauffeur)
                     else{
                         #Le chauffeur choisi est disponible
                         //Modification des dates de la base
@@ -335,31 +302,29 @@ verifChauffeur: if($idChauffeur != 'NULL'){
             
         } //End modifierReservation()
 
-        public static function getReserve($nature, $dateDepart, $dateArrivee){
+        public static function checkReserve($id, $nature, $dateDepart, $dateArrivee){
             global $bdd;
             $nameId = 'id'.$nature;
+            $result=false; //Flag nous permettant de savoir si l'id indiqué correspond ou pas à un chauffeur/véhicule réservé
             //On récupère l'ensemble des id$nature des $nature qui ont été réservés à la période spécifiée
-            $reqRecupIdDisponibilite = "SELECT DISTINCT $nameId FROM Reservation, Disponibilite WHERE (dateDebut<=:dateDebut AND dateFin>=:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin<:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin>:dateFin AND statut='En cours') OR (dateDebut<:dateDebut AND dateFin<:dateFin AND statut='En cours') AND idDisponibilite=idDate";
+            $reqRecupIdDisponibilite = "SELECT DISTINCT $nameId FROM Reservation, Disponibilite WHERE dateDebut<=:dateFin AND dateFin>=:dateDebut AND statut='En cours' AND idDate=idDisponibilite";
             $reponse = $bdd->prepare($reqRecupIdDisponibilite);
             $reponse->execute(array(
                 'dateDebut' => $dateDepart, 
                 'dateFin' => $dateArrivee));
-             //On vérifie si l'id du véhicule choisi fait ou non partie des $nature réservés à cette période
-             $data = array();
+             //On vérifie si l'id du véhicule/chauffeur choisi fait ou non partie des $nature réservés à cette période
              while ($dataId=$reponse->fetch()){
                 // $dataId contient les id de tous les $nature qui ont été réservés
-                $data = array_merge_recursive($data, $dataId);
+                // Et chaque id est comparé avec l'id fourni      
+                if($dataId[$nameId]==$id){
+                    $result=true; //Alors le véhicule/chauffeur est réservé
+                    break;
+                }
               
             }
-            if(!empty($data)){
-                return $data[$nameId];
-            }
-            else{
-                echo "Aucun $nature n'a été réservé à cette période.";
-                return -1;
-            }
+            return $result==true ? true : false;
             
-        } //End getReserve()
+        } //End checkReserve()
 
 
         public static function supprimerReservation($id){
