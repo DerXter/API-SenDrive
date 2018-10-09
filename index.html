@@ -14,10 +14,15 @@
     <script src="jquery.js"></script>
     <script>
         $(document).ready(function(){
-            $.get('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'afficheReservation',
-                statut : 'Annulé'
-                //dateFin :'2020-11-09'
+            $.post('http://localhost/API-SenDrive/senDrive.php',{
+                fonction:'modifierReservation',
+                idReservation : '4',
+                idClient : '1',
+                idVehicule: '4',
+                idChauffeur: 'NULL',
+                dateDebut : '2018-09-12',
+                dateFin :'2020-11-09',
+                statut : 'Terminé'
                 //idMarque : '2',
                 //password: 'sendrive'
                 //id : '8',

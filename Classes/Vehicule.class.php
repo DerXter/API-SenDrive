@@ -32,7 +32,7 @@
             }
             else{
                 //On récupère l'ensemble des idVehicules des véhicules qui ont été réservés
-                $reqRecupIdDisponibilite = "SELECT DISTINCT idVehicule FROM Reservation, Disponibilite WHERE (dateDebut<='2018-09-12' AND dateFin>='2020-11-09' AND statut='En cours') OR (dateDebut>'2018-09-12' AND dateFin<'2020-11-09' AND statut='En cours') OR (dateDebut>'2018-09-12' AND dateFin>'2020-11-09' AND statut='En cours') OR (dateDebut<'2018-09-12' AND dateFin<'2020-11-09' AND statut='En cours') AND idDisponibilite=idDate";
+                $reqRecupIdDisponibilite = "SELECT DISTINCT idVehicule FROM Reservation, Disponibilite WHERE (dateDebut<=:dateDebut AND dateFin>=:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin<:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin>:dateFin AND statut='En cours') OR (dateDebut<:dateDebut AND dateFin<:dateFin AND statut='En cours') AND idDisponibilite=idDate";
                 $reponse = $bdd->prepare($reqRecupIdDisponibilite);
                 $reponse->execute(array(
                     'dateDebut' => $dateDebut, 
