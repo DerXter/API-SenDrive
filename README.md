@@ -48,6 +48,7 @@ dans le cas contraire.
 * __supprimerVehicule(id)__ : Suppression de véhicule  
 * __afficheClients()__ : Affichage des clients  
 * __afficheReservations()__ : Affichage des réservations  
+* __afficheReservation(statut)__ : Affichage des réservations selon le statut : 'En cours', 'Annulé' ou 'Terminé'.    
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
 * __afficheProprio()__ : Affichage des proprietaires
   
