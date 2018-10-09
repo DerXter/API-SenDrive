@@ -31,11 +31,11 @@
                 $reponse->execute(array(
                     'dateDebut' => $dateDebut, 
                     'dateFin' => $dateFin));
-                if ($dataId=$reponse->fetchAll()){ //Tableau contenant tous les 'idDisponibilité' correspondants aux dates spécifiées
+                if ($dataId=$reponse->fetchAll()){ //Tableau contenant tous les 'idDisponibilité' correspondants aux chauffeurs réservés
                    //Récupération de l'ensemble des chauffeurs
                    $reqAfficheChauffeur = "SELECT idChauffeur, prenom, nom, permis, adresse, telephone, commentaire, cheminPhoto FROM Chauffeur WHERE 1";
                     foreach($dataId as $donnees) {
-                        # Pour chaque 'idDisponibilité' trouvé, on enlève les chcauffeurs réservés de la liste des chauffeurs à afficher
+                        # Pour chaque 'idDisponibilité' trouvé, on enlève les chauffeurs réservés de la liste des chauffeurs à afficher
                         $idChauffeur = $donnees['idChauffeur'];
                         $reqAfficheChauffeur .= " AND idChauffeur!=$idChauffeur ";
                         
