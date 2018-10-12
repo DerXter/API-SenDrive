@@ -276,8 +276,10 @@
             break;
             case 'afficheReservations': //Affichage des réservations
             include_once('Classes/Reservation.class.php');
+            //Sécurisation des données reçues
+            $choix = htmlspecialchars($_GET['choix']);
             
-            echo Reservation::afficheReservations(); 
+            echo Reservation::afficheReservations($choix); 
             break;
             case 'afficheReservation': //Affichage des réservations
             include_once('Classes/Reservation.class.php');

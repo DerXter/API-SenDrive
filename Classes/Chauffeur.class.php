@@ -22,22 +22,22 @@
             $dateFin = date("Y-m-d", strtotime($dateFin));
             //Vérification de la conformité de la période
             if ($dateDebut >= $dateFin){
-                echo "La date d'arrivée ne peut être supérieure à la date de départ !";
+                echo "La date de départ ne peut être supérieure à la date de d'arrivée !";
                 return false;
             }
             else{
-                $reqRecupIdDisponibilite = "SELECT DISTINCT idChauffeur FROM Reservation, Disponibilite WHERE (dateDebut<=:dateDebut AND dateFin>=:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin<:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin>:dateFin AND statut='En cours') OR (dateDebut<:dateDebut AND dateFin<:dateFin AND statut='En cours') AND idDisponibilite=idDate ";
-                $reponse = $bdd->prepare($reqRecupIdDisponibilite);
-                $reponse->execute(array(
-                    'dateDebut' => $dateDebut, 
-                    'dateFin' => $dateFin));
-                if ($dataId=$reponse->fetchAll()){ //Tableau contenant tous les 'idDisponibilité' correspondants aux chauffeurs réservés
+               //On récupère l'ensemble des idchauffeurs des chauffeurs qui ont été réservés
+               $dataId = Chauffeur::getReserve($dateDebut, $dateFin);
+               //var_dump($dataId);
+                if (!empty($dataId)){ //Tableau contenant tous les 'idDisponibilité' correspondants aux chauffeurs réservés
                    //Récupération de l'ensemble des chauffeurs
                    $reqAfficheChauffeur = "SELECT idChauffeur, prenom, nom, permis, adresse, telephone, commentaire, cheminPhoto FROM Chauffeur WHERE 1";
-                    foreach($dataId as $donnees) {
+                   for($i=0; $i<count($dataId); $i++) {
                         # Pour chaque 'idDisponibilité' trouvé, on enlève les chauffeurs réservés de la liste des chauffeurs à afficher
-                        $idChauffeur = $donnees['idChauffeur'];
-                        $reqAfficheChauffeur .= " AND idChauffeur!=$idChauffeur ";
+                        if(!empty($dataId[$i])){
+                            $idChauffeur = $dataId[$i];
+                            $reqAfficheChauffeur .= " AND idChauffeur!=$idChauffeur ";
+                        }
                         
                     } //End While($dataId)
 
@@ -267,6 +267,28 @@
             $reponse->closeCursor();
             return $result==true ? true : false; //Retourne true s'il y'a un doublon et false dans le cas contraire
         } //End verifDoublons()
-    
+        
+        public static function getReserve($dateDepart, $dateArrivee){
+            global $bdd;
+            $data = array();
+            //On récupère l'ensemble des id$nature des vehicules qui ont été réservés à la période spécifiée
+            $reqRecupIdDisponibilite = "SELECT DISTINCT idChauffeur FROM Reservation, Disponibilite WHERE dateDebut<=:dateFin AND dateFin>=:dateDebut AND statut='En cours' AND idDate=idDisponibilite";
+            $reponse = $bdd->prepare($reqRecupIdDisponibilite);
+            $reponse->execute(array(
+                'dateDebut' => $dateDepart, 
+                'dateFin' => $dateArrivee));
+             //On retourne l'ensemble des chauffeurs réservés
+             while ($dataId=$reponse->fetch()){
+                array_push($data, $dataId['idChauffeur']);
+            }
+            if(empty($data)){
+                echo "Aucun chauffeur trouvé";
+                return false;
+            }
+            else{
+                return $data;
+            }
+            
+        } //End getReserve()
 
     } //End class Chauffeur
