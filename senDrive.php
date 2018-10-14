@@ -246,13 +246,12 @@
                 
                 echo Reservation::ajoutReservation($idVehicule, $idChauffeur, $dateDepart, $dateArrivee);
             break;
-            case 'changerStatutReservation': //Changement du statut d'une reservation
+            case 'annulerReservation': //Annulation d'une reservation
                 include_once('Classes/Reservation.class.php');
                 //Sécurisation des données reçues
-                $idReservation = htmlspecialchars($_POST['idReservation']);
-                $statut = htmlspecialchars($_POST['statut']);
+                $idReservation = htmlspecialchars($_GET['idReservation']);
                 
-                echo Reservation::changerStatutReservation($idReservation, $statut);
+                echo Reservation::changerStatutReservation($idReservation, 'Annulé');
             break;
             case 'modifierReservation': //modificaction d'une réservation
                 include_once('Classes/Reservation.class.php');
@@ -264,8 +263,9 @@
                 $dateDepart = htmlspecialchars($_POST['dateDebut']);
                 $dateArrivee = htmlspecialchars($_POST['dateFin']);
                 $statut = htmlspecialchars($_POST['statut']);
+                $prix = htmlspecialchars($_POST['prix']);
                 
-                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut);
+                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut, $prix);
             break;
             case 'supprimerReservation': //Suppréssion de réservations
             include_once('Classes/Reservation.class.php');

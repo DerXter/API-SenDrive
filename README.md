@@ -49,6 +49,7 @@ dans le cas contraire.
 * __afficheClients()__ : Affichage des clients  
 * __afficheReservations(choix)__ : Affichage des réservations selon le choix *avec* ou *sans* chauffeur.  
 * __afficheReservation(statut)__ : Affichage des réservations selon le statut : 'En cours', 'Annulé' ou 'Terminé'.    
+* __annulerReservation(idReservation)__ : Annulation d'une reservation     
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
 * __afficheProprio()__ : Affichage des proprietaires
   
@@ -75,9 +76,7 @@ dans le cas contraire.
 * __ajoutClient(nom, prenom, telephone, adresse, mail, destination)__ : Ajout de clients    
 * __ajoutReservation(idVehicule, idChauffeur, dateDebut, dateFin)__ : Ajout d'une réservation   
 > __IMPORTANT:__ Il faudra ajouter d'abord le client ensuite la reservation vue que dans la table *Reservation*, il y'aura l'id du client en question.
-* __modifierReservation(idReservation, idClient, idVehicule, idChauffeur, dateDebut, dateFin, statut)__ : Modification d'une réservation   
-* __changerStatutReservation(idReservation, statut)__ : Changement du statut d'une reservation    
-> __IMPORTANT:__ Les statuts possibles sont: *En cours*, *En attente*, *Annulé*, *Terminé*.      
+* __modifierReservation(idReservation, idClient, idVehicule, idChauffeur, dateDebut, dateFin, statut, prix)__ : Modification d'une réservation       
 * __ajoutUtilisateur(login, password, statut, numIdentite)__ : Ajout d'utilisateurs   
 > __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*   
 * __ajoutProprio(raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Ajout de propriétaire  
