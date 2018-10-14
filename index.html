@@ -14,15 +14,25 @@
     <script src="jquery.js"></script>
     <script>
         $(document).ready(function(){
-            $.get('http://localhost/API-SenDrive/senDrive.php',{
-                fonction:'filtrage',
-                idMarque : '1',
-                idModele : '-1',
-                idType: '-1',
-                idCarburant : '1',
-                climatisation : '-1' 
-                //dateFin : '22-11-2018',
+            $.post('http://localhost/API-SenDrive/senDrive.php',{
+                fonction:'modifierReservation',
+                idReservation : '4',
+                idClient : '1',
+                idVehicule: '4',
+                idChauffeur: 'NULL',
+                dateDebut : '2018-09-12',
+                dateFin :'2020-11-09',
+                statut : 'Terminé'
+                //idMarque : '2',
+                //password: 'sendrive'
+                //id : '8',
+                //idModele : '-1',
+                //idType: '-1',
+                //idCarburant : '1',
+                //valeur: 'berline',
+                //idCarac: '6'
                 //statut : 'Terminé'
+                //dateDebut : '22-11-2018',
                 //nom : 'Mboukhoulane', 
                 //dateNaissance : '15-08-1984', 
                 //numeroIdentite : '76786786786', 
