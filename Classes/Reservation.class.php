@@ -408,7 +408,7 @@ verifChauffeur: if($idChauffeur != 'NULL'){
             $diff = abs($date2 - $date1);
             $nbJours = round($diff / (60 * 60 * 24)); #Conversion en jours
 
-            return intval($nbJours);
+            return intval($nbJours)+1;
         } //End getNbJours(date1, date2)
 
         public static function checkPromo($idVehicule){
