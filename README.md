@@ -47,7 +47,7 @@ dans le cas contraire.
 > __NOTE :__ Indiquer la valeur __-1__ à la place d'un critère pour l'ignorer.  
 * __supprimerVehicule(id)__ : Suppression de véhicule  
 * __afficheClients()__ : Affichage des clients  
-* __afficheReservations()__ : Affichage des réservations  
+* __afficheReservations(choix)__ : Affichage des réservations selon le choix *avec* ou *sans* chauffeur.  
 * __afficheReservation(statut)__ : Affichage des réservations selon le statut : 'En cours', 'Annulé' ou 'Terminé'.    
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
 * __afficheProprio()__ : Affichage des proprietaires

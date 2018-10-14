@@ -27,25 +27,21 @@
 
             //Vérification de la conformité de la période
             if ($dateDebut >= $dateFin){
-                echo "La date d'arrivée ne peut être supérieure à la date de départ !";
+                echo "La date de départ ne peut être supérieure à la date de d'arrivée !";
                 return false;
             }
             else{
                 //On récupère l'ensemble des idVehicules des véhicules qui ont été réservés
-                $reqRecupIdDisponibilite = "SELECT DISTINCT idVehicule FROM Reservation, Disponibilite WHERE (dateDebut<=:dateDebut AND dateFin>=:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin<:dateFin AND statut='En cours') OR (dateDebut>:dateDebut AND dateFin>:dateFin AND statut='En cours') OR (dateDebut<:dateDebut AND dateFin<:dateFin AND statut='En cours') AND idDisponibilite=idDate";
-                $reponse = $bdd->prepare($reqRecupIdDisponibilite);
-                $reponse->execute(array(
-                    'dateDebut' => $dateDebut, 
-                    'dateFin' => $dateFin));
-                if ($dataId=$reponse->fetchAll()){ //Tableau contenant tous les 'idDisponibilité' correspondants aux dates spécifiées
+                $dataId = Vehicule::getReserve($dateDebut, $dateFin);
+                if (!empty($dataId)){ //Tableau contenant tous les 'idDisponibilité' correspondants aux dates spécifiées
                     //Récupération de l'ensemble des véhicules
                     $reqAfficheVehicule = "SELECT DISTINCT idVehicule, marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
-                    foreach($dataId as $donnees) {
+                    for($i=0; $i<count($dataId); $i++) {
                         # Pour chaque 'idDisponibilité' trouvé, on enlève les véhicules réservés de la liste des véhicules à afficher
-                        $idVehicule = $donnees['idVehicule'];
+                        $idVehicule = $dataId[$i];
                         $reqAfficheVehicule .= " AND idVehicule!=$idVehicule ";
                        
-                    } //End foreach($dataId)   
+                    } //End foreach($dataId)  
                     
                     //Vérification et retour du résultat
                     if($reponse = $bdd->query($reqAfficheVehicule) ){
@@ -485,6 +481,29 @@
             $reponse->closeCursor();
             return $result==true ? true : false; //Retourne true s'il y'a un doublon et false dans le cas contraire
         } //End verifDoublons()
+
+        public static function getReserve($dateDepart, $dateArrivee){
+            global $bdd;
+            $data = array();
+            //On récupère l'ensemble des id$nature des vehicules qui ont été réservés à la période spécifiée
+            $reqRecupIdDisponibilite = "SELECT DISTINCT idVehicule FROM Reservation, Disponibilite WHERE dateDebut<=:dateFin AND dateFin>=:dateDebut AND statut='En cours' AND idDate=idDisponibilite";
+            $reponse = $bdd->prepare($reqRecupIdDisponibilite);
+            $reponse->execute(array(
+                'dateDebut' => $dateDepart, 
+                'dateFin' => $dateArrivee));
+             //On retourne l'ensemble des vehicules réservés
+             while ($dataId=$reponse->fetch()){
+                array_push($data, $dataId['idVehicule']);
+            }
+            if(empty($data)){
+                echo "Aucun vehicule trouvé";
+                return false;
+            }
+            else{
+                return $data;
+            }
+            
+        } //End getReserve()
 
         public static function returnId($nomID, $table, $attribut, $valeur){
             global $bdd;
