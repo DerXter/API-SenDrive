@@ -412,13 +412,66 @@
             echo Doc::afficheDoc($nature);
             break;
             case 'supprimerDoc': //Suppression du fichier de documentation dont l'id est spécifié
-            include_once('Classes/Doc.class.php');
-            //Sécurisation des données reçues
-            $id = htmlspecialchars($_GET['id']);
+                include_once('Classes/Doc.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_GET['id']);
 
-            echo Doc::supprimerDoc($id);
+                echo Doc::supprimerDoc($id);
             break;
 
+
+            //******************************Traitement des promotions******************************
+            case 'affichePromo': //Affichage des promotions selon le statut spécifié
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                if(isset($_GET['statut'])){
+                    $statut = htmlspecialchars($_GET['statut']);
+                }
+                else{
+                    $statut='';
+                }
+
+                echo Promotion::affichePromo($statut);
+            break;
+            case 'affichePromos': //Affichage des promotions comprises entre deux dates
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                $dateDebut = htmlspecialchars($_GET['dateDebut']);
+                $dateFin = htmlspecialchars($_GET['dateFin']);
+
+                echo Promotion::affichePromos($dateDebut, $dateFin);
+            break;
+            case 'ajoutPromo': //Ajout d'une promotion
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $nom = htmlspecialchars($_POST['nom']);
+                $taux = htmlspecialchars($_POST['taux']);
+                $dateDebut = htmlspecialchars($_POST['dateDebut']);
+                $dateFin = htmlspecialchars($_POST['dateFin']);
+
+                echo Promotion::ajoutPromo($idVehicule, $nom, $taux, $dateDebut, $dateFin);
+            break;
+            case 'modifierPromo': //Modification de promotion
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                $idPromo = htmlspecialchars($_POST['idPromo']);
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $nom = htmlspecialchars($_POST['nom']);
+                $statut = htmlspecialchars($_POST['statut']);
+                $taux = htmlspecialchars($_POST['taux']);
+                $dateDebut = htmlspecialchars($_POST['dateDebut']);
+                $dateFin = htmlspecialchars($_POST['dateFin']);
+
+                echo Promotion::modifierPromo($idPromo, $idVehicule, $nom, $taux, $statut, $dateDebut, $dateFin);
+            break;
+            case 'supprimerPromo': //Suppréssion de promotion
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_GET['id']);
+
+                echo Promotion::supprimerPromo($id);
+            break;
             default :
                 echo "La fonction demandée est inexistante !";
         } //End switch

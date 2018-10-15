@@ -1,5 +1,5 @@
 <?php
-
+    include_once('Promotion.class.php');
     class Reservation{
         //Attributs
         private $idReservation;
@@ -68,7 +68,7 @@
             global $bdd;
             //Avec chauffeur
             if($choix=='avec'){
-                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, re.prix, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, statut FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate";
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, CONCAT(re.prix, ' FCFA') AS prix, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, statut FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate";
                 $reponse = $bdd->query($reqAfficheReserv);
                 if ($reservations = $reponse->fetchAll()){
                     $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -83,7 +83,7 @@
             } //End avec chauffeur
             elseif ($choix=='sans'){
                 //Sans Chauffeur
-                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, re.prix, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, statut FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate";
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, CONCAT(re.prix, ' FCFA') AS prix, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, statut FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate";
                 $reponse = $bdd->query($reqAfficheReserv);
                 if ($reservations = $reponse->fetchAll()){
                     $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -107,7 +107,7 @@
             global $bdd;
             $statut_autorises = array('En cours', 'Annulé', 'Terminé');
             if(in_array($statut, $statut_autorises)){
-                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, re.prix, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND statut=?";
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, CONCAT(re.prix, ' FCFA') AS prix, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND statut=?";
                 $reponse = $bdd->prepare($reqAfficheReserv);
                 $reponse->execute(array($statut));
                 //var_dump ($reponse->fetchAll());
@@ -411,20 +411,7 @@ verifChauffeur: if($idChauffeur != 'NULL'){
             return intval($nbJours);
         } //End getNbJours(date1, date2)
 
-        public static function checkPromo($idVehicule){
-            //Fonction qui vérifie si un véhicule est en promotion ou pas
-            global $bdd;
-            $result=-1;
-            $reqCheckPromo = "SELECT idVehicule, idDate FROM Promotion";
-            $reponse = $bdd->query($reqCheckPromo);
-            while($data = $reponse->fetch()){
-                if($idVehicule==$data['idVehicule']){
-                    $result=$data['idDate'];
-                    break;
-                }
-            } //End while
-            return $result;
-        }
+        
 
         public static function getPrix($idVehicule){
             global $bdd;
@@ -450,27 +437,14 @@ verifChauffeur: if($idChauffeur != 'NULL'){
             //Vérifie si une date se trouve entre deux dates
             return (($dateChoisi >= $dateDebut) && ($dateChoisi <= $dateFin));
         }
-
-        public static function getTaux($idVehicule){
-            global $bdd;
-            $reqTaux = "SELECT taux FROM Promotion WHERE idVehicule=?";
-            $reponse = $bdd->prepare($reqTaux);
-            $reponse->execute(array($idVehicule));
-            if($data = $reponse->fetch()){
-                return intval($data['taux']);
-            }
-            else{
-                echo "Aucun taux trouvé !";
-                return -1;
-            }
-        }      
+      
 
         public static function calculPrix($idVehicule, $dateDepart, $dateArrivee){
             global $bdd;
             #On récupère le prix journalier du véhicule
             $prixJournalier = Reservation::getPrix($idVehicule);
             //Vérification si le véhicule est en promo ou pas
-            $check = Reservation::checkPromo($idVehicule);
+            $check = Promotion::checkPromo($idVehicule);
             if($check==-1){
                 #Le véhicule n'est pas en promotion
                 #On récupère le nombre de jours sur lequel le véhicule sera réservé
@@ -520,7 +494,7 @@ verifChauffeur: if($idChauffeur != 'NULL'){
                 if(Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateDepart)==false && Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateArrivee)==false){
                     #La période de réservation est hors promotion
                     $nbJoursPromo = 0;
-                    $nbJourRestant = getNbJours($dateDepart, $dateArrivee);
+                    $nbJourRestant = Reservation::getNbJours($dateDepart, $dateArrivee);
                     $nbJourRestant+=1;
 
                 }
@@ -528,7 +502,7 @@ verifChauffeur: if($idChauffeur != 'NULL'){
             } //End else if(check)
 
             #On calcul le montant à payer pour cette réservation
-            $taux = Reservation::getTaux($idVehicule); //Taux de réduction
+            $taux = Promotion::getTaux($idVehicule); //Taux de réduction
             $prixPromoJournalier = $prixJournalier - (($prixJournalier*$taux)/100);
             $prixPromo = $nbJoursPromo*$prixPromoJournalier;
             $prix = $prixPromo + ($prixJournalier*$nbJourRestant);
