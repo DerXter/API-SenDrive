@@ -43,7 +43,7 @@ Les requêtes devront être structurées de la sorte :
 * __filtreVehicule(filtre)__ : Affichage des critères de véhicule selon __un__ filtre indiqué à la fois    
 > __IMPORTANT :__ Utiliser comme filtre, *clim-oui* pour afficher les véhicules climatisés et *clim-non*,  
 dans le cas contraire.  
-* __filtrage(idMarque, idModele, idType, idCarburant, climatisation) :__  Affichage des véhicules selon les critères indiqués.  
+* __filtrage(idMarque, idModele, idType, idCarburant, climatisation, dateDebut, dateFin) :__  Affichage des véhicules selon les critères indiqués.  
 > __NOTE :__ Indiquer la valeur __-1__ à la place d'un critère pour l'ignorer.  
 * __supprimerVehicule(id)__ : Suppression de véhicule  
 * __afficheClients()__ : Affichage des clients  

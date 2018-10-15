@@ -153,8 +153,10 @@
                 $idType = htmlspecialchars($_GET['idType']);
                 $idCarburant = htmlspecialchars($_GET['idCarburant']);
                 $climatisation = htmlspecialchars($_GET['climatisation']);
+                $dateDebut = htmlspecialchars($_GET['dateDebut']);
+                $dateFin = htmlspecialchars($_GET['dateFin']);
 
-                echo Vehicule::filtrage($idMarque, $idModele, $idType, $idCarburant, $climatisation);
+                echo Vehicule::filtrage($idMarque, $idModele, $idType, $idCarburant, $climatisation, $dateDebut, $dateFin);
             break;
             case 'supprimerVehicule': //Suppression de véhicule
                 include_once('Classes/Vehicule.class.php');

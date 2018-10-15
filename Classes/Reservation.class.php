@@ -408,7 +408,7 @@ verifChauffeur: if($idChauffeur != 'NULL'){
             $diff = abs($date2 - $date1);
             $nbJours = round($diff / (60 * 60 * 24)); #Conversion en jours
 
-            return intval($nbJours)+1;
+            return intval($nbJours);
         } //End getNbJours(date1, date2)
 
         public static function checkPromo($idVehicule){
@@ -475,6 +475,7 @@ verifChauffeur: if($idChauffeur != 'NULL'){
                 #Le véhicule n'est pas en promotion
                 #On récupère le nombre de jours sur lequel le véhicule sera réservé
                 $nbJours = Reservation::getNbJours($dateDepart, $dateArrivee);
+                $nbJours+=1; //Inclusion du jour de la réservtaion
                 #On calcul le montant à payer pour cette réservation
                 $prix = $nbJours*$prixJournalier;
                 return $prix;
@@ -497,18 +498,21 @@ verifChauffeur: if($idChauffeur != 'NULL'){
                 if(Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateArrivee) && $dateDepart<=$dateDebutPromo){
                     #La période de promotion se trouve entre la date de début de la promo et la date de fin de la réservation
                     $nbJoursPromo = Reservation::getNbJours($dateDebutPromo, $dateArrivee);
+                    $nbJoursPromo+=1;
                     $nbJourRestant = Reservation::getNbJours($dateDepart, $dateDebutPromo);
                     
                 } //End if
                 if(Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateDepart) && Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateArrivee)){
                     #La période de réservation se trouve entre la date de début et la date de fin de la promo
                     $nbJoursPromo = Reservation::getNbJours($dateDepart, $dateArrivee);
+                    $nbJoursPromo+=1;
                     $nbJourRestant = 0; //Le client bénéficie de la promo durant toute la durée de la réservation
 
                 } //End if
                 if(Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateDepart) && $dateArrivee>=$dateFinPromo){
                     #La période de promotion se trouve entre la date de début de la réservation et la date de fin de la promotion
                     $nbJoursPromo = Reservation::getNbJours($dateDepart, $dateFinPromo);
+                    $nbJoursPromo+=1;
                     $nbJourRestant = Reservation::getNbJours($dateFinPromo, $dateArrivee);
 
                 } //End if
@@ -517,7 +521,8 @@ verifChauffeur: if($idChauffeur != 'NULL'){
                     #La période de réservation est hors promotion
                     $nbJoursPromo = 0;
                     $nbJourRestant = getNbJours($dateDepart, $dateArrivee);
-                    
+                    $nbJourRestant+=1;
+
                 }
 
             } //End else if(check)
