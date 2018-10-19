@@ -208,19 +208,21 @@
 
         public static function modifierDate($idPromo, $dateDebut, $dateFin){
             global $bdd;
-             //Modification des dates de la base
-             $idDate = Promotion::returnId('idDate', 'Promotion', 'idPromo', $idPromo);
-             $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
-             $reponse = $bdd->prepare($reqIdDisponibilite);
-             $reponse->execute(array($dateDebut, $dateFin, $idDate));
-             //Vérification de la réussite de la mise à jour des dates
-             if($reponse->rowCount() > 0){
-                 echo "Dates mises à jour / ";
-             } 
-             else{
-                 echo "Une erreur est survenue lors de la mise à jour des dates !";
-                 return false;
-             }
+            //Modification des dates de la base
+            $idDate = Promotion::returnId('idDate', 'Promotion', 'idPromo', $idPromo);
+            $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
+            $reponse = $bdd->prepare($reqIdDisponibilite);
+            $reponse->execute(array($dateDebut, $dateFin, $idDate));
+            //Vérification de la réussite de la mise à jour des dates
+            if($reponse->rowCount() > 0){
+            echo "Dates mises à jour / ";
+            $reponse->closeCursor();
+            return true;
+            } 
+            else{
+                echo "Une erreur est survenue lors de la mise à jour des dates !";
+                return false;
+            }
         
         } //End modifierDate
 

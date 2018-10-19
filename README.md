@@ -73,13 +73,17 @@ dans le cas contraire.
 * __affichePromo(statut)__: Affichage des promotions selon le statut spécifié  
 * __affichePromos(dateDebut, dateFin)__: Affichage des promotions comprises entre deux dates  
 * __supprimerPromo(id)__ : Suppréssion de promotion   
+* __afficheNavette(choix, statut)__: Affichage des navettes  
+> __NOTE:__ Le statut est facultatif. S'il n'est pas indiqué, toutes les navettes *En cours*, *Annulé* comme *Terminé* sont affichées. Le choix est quant à lui obligatoire et permet de spécifier une affichage de navettes *sans* ou *avec* chauffeur.  
+* __supprimerNavette(id)__: Suppression de navette  
+* __annulerNavette(id)__: Annulation de navette
 
   
 ### Fonctions d'upload de données (post):    
 * __ajoutClient(nom, prenom, telephone, adresse, mail, destination)__ : Ajout de clients    
-* __ajoutReservation(idVehicule, idChauffeur, dateDebut, dateFin)__ : Ajout d'une réservation   
+* __ajoutReservation(idVehicule, idChauffeur, dateDebut, dateFin, destination)__ : Ajout d'une réservation   
 > __IMPORTANT:__ Il faudra ajouter d'abord le client ensuite la reservation vue que dans la table *Reservation*, il y'aura l'id du client en question.
-* __modifierReservation(idReservation, idClient, idVehicule, idChauffeur, dateDebut, dateFin, statut, prix)__ : Modification d'une réservation       
+* __modifierReservation(idReservation, idClient, idVehicule, idChauffeur, dateDebut, dateFin, statut, prix, destination)__ : Modification d'une réservation       
 * __ajoutUtilisateur(login, password, statut, numIdentite)__ : Ajout d'utilisateurs   
 > __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*   
 * __ajoutProprio(raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Ajout de propriétaire  
@@ -99,6 +103,8 @@ dans le cas contraire.
 > __NOTE :__ Cet attribut est défini par *carac* et peut valoir soit *marque*, *modele* ou *typeVehicule*. Dans le cas où il vaut *modele*, il faudra renseigner le paramètre *idMarque* car le modèle d'un véhicule dépend de la marque. C'est le seul cas où l'*idMarque* est obligatoire.  
 * __ajoutPromo(idVehicule, nom, taux, dateDebut, dateFin)__ : Ajout de promotion  
 * __modifierPromo(idPromo, idVehicule, nom, taux, statut, dateDebut, dateFin)__ : Modification de promotion  
+* __ajoutNavette(idClient, idVehicule, idChauffeur, date, destination, heureDebut, heureFin)__: Ajout d'une navette  
+* __modifierNavette(idNavette, idClient, idVehicule, idChauffeur, date, destination, heureDebut, heureFin)__: Modification d'une navette
 
   
 > __*IMPORTANT*__ : Dans le fichier *connexion.class.php*, il faudra mettre à jour la ligne au niveau du bloc "*Try*" en le remplaçant par :  

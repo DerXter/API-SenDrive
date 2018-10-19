@@ -472,6 +472,63 @@
 
                 echo Promotion::supprimerPromo($id);
             break;
+
+            //******************************Traitement des navettes******************************
+            case 'ajoutNavette': //Ajout d'une navette
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                $idClient = htmlspecialchars($_POST['idClient']);
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                $date = htmlspecialchars($_POST['date']);
+                $destination = htmlspecialchars($_POST['destination']);
+                $heureDebut = htmlspecialchars($_POST['heureDebut']);
+                $heureFin = htmlspecialchars($_POST['heureFin']);
+
+                echo Navette::ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $destination, $heureDebut, $heureFin);
+            break;
+            case 'modifierNavette': //Modification d'une navette
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                $idNavette = htmlspecialchars($_POST['idNavette']);
+                $idClient = htmlspecialchars($_POST['idClient']);
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                $date = htmlspecialchars($_POST['date']);
+                $destination = htmlspecialchars($_POST['destination']);
+                $heureDebut = htmlspecialchars($_POST['heureDebut']);
+                $heureFin = htmlspecialchars($_POST['heureFin']);
+
+                echo Navette::modifierNavette($idNavette, $idClient, $idVehicule, $idChauffeur, $date, $destination, $heureDebut, $heureFin);
+            break;
+            case 'afficheNavette': //Affichage des navettes
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                if(isset($_GET['statut'])){
+                    $statut = htmlspecialchars($_GET['statut']);
+                }
+                else{
+                    $statut = '';
+                }
+                $choix = htmlspecialchars($_GET['choix']);
+
+                echo Navette::afficheNavette($choix, $statut);
+            break;
+            case 'supprimerNavette': //Suppression de navette
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_GET['id']);
+
+                echo Navette::supprimerNavette($id);
+            break;
+            case 'annulerNavette': //Annulation de navette
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_GET['id']);
+
+                echo Navette::changerStatutNavette($id, 'Annulé');
+            break;
+
             default :
                 echo "La fonction demandée est inexistante !";
         } //End switch
