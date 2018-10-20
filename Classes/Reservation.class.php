@@ -1,5 +1,5 @@
 <?php
-
+    include_once('Promotion.class.php');
     class Reservation{
         //Attributs
         private $idReservation;
@@ -64,46 +64,11 @@
         }
 
         //Autres fonctions
-        public static function afficheReservationSelonChauffeur($choix){
+        public static function afficheReservations($choix){
             global $bdd;
-            $statutActuel = Reservation::returnData('statut', 'vehicule', 'idVehicule', $idVehicule);
-            if ($statutActuel=='Réservé'){
-                echo "Ce véhicule a déjà été réservé !";
-                return false;
-            }
-            else{
-                //Mise à jour des statuts
-                $statutReservation = 'En cours';
-                $statutVehicule = 'Réservé';
-                if($idChauffeur == 'NULL'){        
-                    $statutChauffeur = 'Libre';
-                }
-                else{
-                    $statutChauffeur = 'Réservé';
-                }
-            
-                //Récupération de l'Id du dernier client entré
-                $reqLastIdClient = 'SELECT idClient FROM Clientele ORDER BY idClient DESC LIMIT 0,1';
-                $reponse = $bdd->query($reqLastIdClient);
-                $data = $reponse->fetch();
-                $lastIdClient = $data['idClient'];
-                //Ajout des dates dans la base            
-                $reqAjoutDates = 'INSERT INTO Disponibilite (dateDebut, dateFin) VALUES (DATE :dateDebut, :dateFin)';
-                $reponse = $bdd->prepare($reqAjoutDates);
-                $reponse->execute(array(
-                    'dateDebut' => $dateDepart,
-                    'dateFin' => $dateArrivee
-                ));
-                //Vérification de la réussite de l'ajout
-                if($reponse->rowCount() > 0){
-                    echo "Dates ajoutées !";
-                } 
-                else{
-                    echo "Une erreur est survenue lors de l'ajout des dates !";
-                }
             //Avec chauffeur
             if($choix=='avec'){
-                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, statut FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate";
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, v.cheminPhoto, CONCAT(re.prix, ' FCFA') AS prix, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate";
                 $reponse = $bdd->query($reqAfficheReserv);
                 if ($reservations = $reponse->fetchAll()){
                     $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -118,7 +83,8 @@
             } //End avec chauffeur
             elseif ($choix=='sans'){
                 //Sans Chauffeur
-                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, statut FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate";
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation,CONCAT(re.prix, ' FCFA') AS prix, v.cheminPhoto, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate";
+
                 $reponse = $bdd->query($reqAfficheReserv);
                 if ($reservations = $reponse->fetchAll()){
                     $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -135,7 +101,6 @@
                 echo "Choix non autorisé !";
                 return false;
             }
-            }
             
         } //End afficheReservations(choix)
 
@@ -143,7 +108,8 @@
             global $bdd;
             $statut_autorises = array('En cours', 'Annulé', 'Terminé');
             if(in_array($statut, $statut_autorises)){
-                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND statut=?";
+
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation,CONCAT(re.prix, ' FCFA') AS prix, v.cheminPhoto, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND statut=?";
                 $reponse = $bdd->prepare($reqAfficheReserv);
                 $reponse->execute(array($statut));
                 //var_dump ($reponse->fetchAll());
@@ -167,7 +133,8 @@
             
         } //End afficheReservation(statut)
 
-        public static function ajoutReservation($idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee){
+
+        public static function ajoutReservation($idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination){
             global $bdd;
             //Ajustement du format des dates
             $dateDepart = date("Y-m-d", strtotime($dateDepart));
@@ -181,7 +148,10 @@
             
             else{
                 //Le véhicule choisi est disponible
-                if($idChauffeur != 'NULL'){   
+                //On calcule le montant que va couter la reservation
+                $prix = Reservation::calculPrix($idVehicule, $dateDepart, $dateArrivee);
+
+                if($idChauffeur != -1){   
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
                     if (Reservation::checkReserve($idChauffeur, 'chauffeur', $dateDepart, $dateArrivee)){
                         echo "Ce chauffeur a déjà été réservé à cette période !";
@@ -216,47 +186,27 @@
                         }
                         //Récupération de l'Id de la dernière date entrée
                         $lastIdDisponibilite = Reservation::returnLastId('idDisponibilite', 'Disponibilite');
-                        #Cette deuxiéme vérification aura du sens quand l'éxécution du programme sera positionnée ici par le goto insertReservation
-                        #se trouvant à la fin de cette fonction. Dans ce cas, on se retrouve dans le bloc 'if($idChauffeur!='NULL')' alors que $idChauffeur vaut 'NULL'
-                        if ($idChauffeur != 'NULL'){
-                            //Ajout de la reservation avec chauffeur
-                            $reqAjoutReserv = 'INSERT INTO Reservation (idClient, idVehicule, idChauffeur, idDate, statut) VALUES (:idClient, :idVehicule, :idChauffeur, :idDate, :statut)';
-                            $reponse = $bdd->prepare($reqAjoutReserv);
-                            $reponse->execute(array(
-                                'idClient' => $clientID,
-                                'idDate' => $lastIdDisponibilite,
-                                'idVehicule' => $idVehicule,
-                                'idChauffeur' => $idChauffeur,
-                                'statut' => $statutReservation
-                            ));
-                            //Vérification de la réussite de l'ajout
-                            if($reponse->rowCount() > 0){
-                                echo "Réservation ajoutée / ";
-                            } 
-                            else{
-                                echo "Une erreur est survenue lors de l'ajout de la reservation / ";
-                                return false;
-                            }
-                        } //End second if($idChauffeur!='NULL')
+                        //Ajout de la reservation avec chauffeur
+                        $reqAjoutReserv = 'INSERT INTO Reservation (idClient, idVehicule, idChauffeur, idDate, statut, prix, destination) VALUES (:idClient, :idVehicule, :idChauffeur, :idDate, :statut, :prix, :destination)';
+                        $reponse = $bdd->prepare($reqAjoutReserv);
+                        $reponse->execute(array(
+                            'idClient' => $clientID,
+                            'idDate' => $lastIdDisponibilite,
+                            'idVehicule' => $idVehicule,
+                            'idChauffeur' => $idChauffeur,
+                            'statut' => $statutReservation,
+                            'prix' => $prix,
+                            'destination' => $destination
+                        ));
+                        //Vérification de la réussite de l'ajout
+                        if($reponse->rowCount() > 0){
+                            echo "Réservation ajoutée / ";
+                        } 
                         else{
-                            //Ajout de la reservation sans chauffeur
-                            $reqAjoutReserv = 'INSERT INTO Reservation (idClient, idVehicule, idDate, statut) VALUES (:idClient, :idVehicule, :idDate, :statut)';
-                            $reponse = $bdd->prepare($reqAjoutReserv);
-                            $reponse->execute(array(
-                                'idClient' => $clientID,
-                                'idDate' => $lastIdDisponibilite,
-                                'idVehicule' => $idVehicule,
-                                'statut' => $statutReservation
-                            ));
-                            //Vérification de la réussite de l'ajout
-                            if($reponse->rowCount() > 0){
-                                echo "Réservation ajoutée / ";
-                            } 
-                            else{
-                                echo "Une erreur est survenue lors de l'ajout de la reservation / ";
-                                return false;
-                            }
-                        } //End else second if($idChauffeur!='NULL')
+                            echo "Une erreur est survenue lors de l'ajout de la reservation / ";
+                            return false;
+                        }
+
                         //Mise à jour du nombre de location du véhicule choisi
                         $nbLocation = Reservation::returnData('nbLocation', 'Vehicule', 'idVehicule', $idVehicule);
                         $nbLocation+=1; //Incrément du nombre de fois où le véhicule a été loué
@@ -274,9 +224,10 @@
 
                     } //End else if($dataId chauffeur)
 
-                } //End if($idChauffeur!='NULL')
+                } //End if($idChauffeur!=-1)
                 else{
                     //Aucun chauffeur n'est choisi, on passe directement à l'insertion de la réservation dans la base de données
+                    $idChauffeur = NULL;
                     goto insertReservation;
                 } 
             
@@ -285,7 +236,7 @@
             } //End else if ($dataId vehicule)
         } //End ajoutReservation()
 
-        public static function modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDebut, $dateFin, $statut){
+        public static function modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDebut, $dateFin, $statut, $prix, $destination){
             global $bdd;
             //Vérification du statut
             $statut_autorises = array('En cours', 'Annulé', 'Terminé');
@@ -307,7 +258,7 @@
  
             else{
             //Le véhicule choisi est disponible
-verifChauffeur: if($idChauffeur != 'NULL'){   
+verifChauffeur: if($idChauffeur != -1){   
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
                     if (Reservation::checkReserve($idChauffeur, 'chauffeur', $dateDebut, $dateFin)){
                         # Le chauffeur est réservé
@@ -331,7 +282,7 @@ verifChauffeur: if($idChauffeur != 'NULL'){
                             return false;
                         }
                         //Mise à jour de la réservation
-                        $requete = 'UPDATE Reservation SET idVehicule=:idVehicule, idClient=:idClient, idChauffeur=:idChauffeur, idDate=:idDate, statut=:statut WHERE idReservation=:idReservation';
+                        $requete = 'UPDATE Reservation SET idVehicule=:idVehicule, idClient=:idClient, idChauffeur=:idChauffeur, idDate=:idDate, statut=:statut, prix=:prix, destination=:destination WHERE idReservation=:idReservation';
                         $reponse = $bdd->prepare($requete);
                         $reponse->execute(array(
                             'idReservation' => $idReservation,
@@ -339,7 +290,9 @@ verifChauffeur: if($idChauffeur != 'NULL'){
                             'idClient' => $idClient,
                             'idDate' => $idDate,
                             'idChauffeur' => $idChauffeur,
-                            'statut' => $statut
+                            'statut' => $statut,
+                            'prix' => $prix,
+                            'destination' => $destination
                             
                         ));
                         //Vérification de la réussite de la mise à jour
@@ -353,9 +306,10 @@ verifChauffeur: if($idChauffeur != 'NULL'){
 
                     } //End else if($dataId chauffeur)
 
-                } //End if($idChauffeur!='NULL')
+                } //End if($idChauffeur!=-1)
                 else{
                     //Aucun chauffeur n'est choisi, on passe directement à l'insertion de la réservation dans la base de données
+                    $idChauffeur=NULL;
                     goto updateReservation;
                 } 
             
@@ -405,41 +359,146 @@ verifChauffeur: if($idChauffeur != 'NULL'){
             }
             $reponse->closeCursor();
 
-        } //End supprimerProprio($id)
-
-        public static function afficheReservations(){
-            global $bdd;
-            $reqAfficheReserv = 'SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation, v.cheminPhoto, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate';
-            $reponse = $bdd->query($reqAfficheReserv);
-            if ($reservations = $reponse->fetchAll()){
-                $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                $reponse->closeCursor();
-
-                return $reservations;
-            }
-            else {
-                echo "Aucune reservation trouvée !";
-                return false;
-            }
-            
-        } //End afficheReservations()
+        } //End supprimerReservation($id)
 
         public static function changerStatutReservation($idReservation, $statut){
             global $bdd;
-            $reqAnnulleReserv = "UPDATE Reservation SET statut=? WHERE idReservation=?";
-            $reponse = $bdd->prepare($reqAnnulleReserv);
-            $reponse->execute(array($statut, $idReservation));
-            //Vérification de la réussite de la mise à jour du statut
-            if($reponse->rowCount() > 0){
-                echo "Statut de la réservation mis à jour !";
-            } 
-            else{
-                echo "Une erreur est survenue lors de la mise à jour du statut de la réservation !";
+            if($statut != 'En cours' && $statut != 'Annulé' && $statut != 'Terminé'){
+                echo "Statut non autorisé !";
                 return false;
-            }
-            $reponse->closeCursor();
+                
+            } //End if
+            else{
+                $reqReserv = "UPDATE Reservation SET statut=? WHERE idReservation=?";
+                $reponse = $bdd->prepare($reqReserv);
+                $reponse->execute(array($statut, $idReservation));
+                //Vérification de la réussite de la mise à jour du statut
+                if($reponse->rowCount() > 0){
+                    echo "Statut de la réservation mis à jour !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de la mise à jour du statut de la réservation !";
+                    return false;
+                }
+                $reponse->closeCursor();
+            } //End first else
             
-        } //End annulerReservation()
+            
+        } //End changerStatutReservation()
+
+        public static function getNbJours($date1, $date2){
+            //Changement du format de la date en yyyy-mm-dd
+            $date1 = date("Y-m-d", strtotime($date1));
+            $date2 = date("Y-m-d", strtotime($date2));
+            //Conversion en secondes
+            $date1 = strtotime($date1);
+            $date2 = strtotime($date2);
+            //Calcul de la différence entre les deux dates
+            $diff = abs($date2 - $date1);
+            $nbJours = round($diff / (60 * 60 * 24)); #Conversion en jours
+
+            return intval($nbJours);
+        } //End getNbJours(date1, date2)
+
+        
+
+        public static function getPrix($idVehicule){
+            global $bdd;
+            $reqPrix = "SELECT prix FROM Vehicule WHERE idVehicule=?";
+            $reponse = $bdd->prepare($reqPrix);
+            $reponse->execute(array($idVehicule));
+            if($data = $reponse->fetch()){
+                return intval($data['prix']);
+            }
+            else{
+                echo "Aucun prix trouvé !";
+                return -1;
+            }
+
+        } //End getPrix
+
+        function check_in_range($dateDebut, $dateFin, $dateChoisi){
+            // Convertion en timestamp
+            $dateDebut = strtotime($dateDebut);
+            $dateFin = strtotime($dateFin);
+            $dateChoisi = strtotime($dateChoisi);
+
+            //Vérifie si une date se trouve entre deux dates
+            return (($dateChoisi >= $dateDebut) && ($dateChoisi <= $dateFin));
+        }
+      
+
+        public static function calculPrix($idVehicule, $dateDepart, $dateArrivee){
+            global $bdd;
+            #On récupère le prix journalier du véhicule
+            $prixJournalier = Reservation::getPrix($idVehicule);
+            //Vérification si le véhicule est en promo ou pas
+            $check = Promotion::checkPromo($idVehicule);
+            if($check==-1){
+                #Le véhicule n'est pas en promotion
+                #On récupère le nombre de jours sur lequel le véhicule sera réservé
+                $nbJours = Reservation::getNbJours($dateDepart, $dateArrivee);
+                $nbJours+=1; //Inclusion du jour de la réservtaion
+                #On calcul le montant à payer pour cette réservation
+                $prix = $nbJours*$prixJournalier;
+                return $prix;
+            } //End if(checkPromo)
+            else{
+                #Le véhicule est en promotion
+                #Récupération de la période de promotion
+                $reqPromo = "SELECT dateDebut, dateFin FROM Disponibilite WHERE idDisponibilite=?";
+                $reponse = $bdd->prepare($reqPromo);
+                $reponse->execute(array($check));
+                if($data = $reponse->fetch()){
+                    $dateDebutPromo = $data['dateDebut'];
+                    $dateFinPromo = $data['dateFin'];
+                }
+                else{
+                    echo "Aucune promotion trouvée !";
+                    return -1;
+                }
+                #Calcul du prix à payer en fonction de la période de promotion
+                if(Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateArrivee) && $dateDepart<=$dateDebutPromo){
+                    #La période de promotion se trouve entre la date de début de la promo et la date de fin de la réservation
+                    $nbJoursPromo = Reservation::getNbJours($dateDebutPromo, $dateArrivee);
+                    $nbJoursPromo+=1;
+                    $nbJourRestant = Reservation::getNbJours($dateDepart, $dateDebutPromo);
+                    
+                } //End if
+                if(Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateDepart) && Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateArrivee)){
+                    #La période de réservation se trouve entre la date de début et la date de fin de la promo
+                    $nbJoursPromo = Reservation::getNbJours($dateDepart, $dateArrivee);
+                    $nbJoursPromo+=1;
+                    $nbJourRestant = 0; //Le client bénéficie de la promo durant toute la durée de la réservation
+
+                } //End if
+                if(Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateDepart) && $dateArrivee>=$dateFinPromo){
+                    #La période de promotion se trouve entre la date de début de la réservation et la date de fin de la promotion
+                    $nbJoursPromo = Reservation::getNbJours($dateDepart, $dateFinPromo);
+                    $nbJoursPromo+=1;
+                    $nbJourRestant = Reservation::getNbJours($dateFinPromo, $dateArrivee);
+
+                } //End if
+                
+                if(Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateDepart)==false && Reservation::check_in_range($dateDebutPromo, $dateFinPromo, $dateArrivee)==false){
+                    #La période de réservation est hors promotion
+                    $nbJoursPromo = 0;
+                    $nbJourRestant = Reservation::getNbJours($dateDepart, $dateArrivee);
+                    $nbJourRestant+=1;
+
+                }
+
+            } //End else if(check)
+
+            #On calcul le montant à payer pour cette réservation
+            $taux = Promotion::getTaux($idVehicule); //Taux de réduction
+            $prixPromoJournalier = $prixJournalier - (($prixJournalier*$taux)/100);
+            $prixPromo = $nbJoursPromo*$prixPromoJournalier;
+            $prix = $prixPromo + ($prixJournalier*$nbJourRestant);
+
+            return $prix;
+        } //End CalculPrix(idVehicule, dateDepart, dateArrivee)
+
         public static function returnId($nomID, $table, $attribut, $valeur){
             global $bdd;
             $requete = "SELECT $nomID FROM $table WHERE $attribut='$valeur'";

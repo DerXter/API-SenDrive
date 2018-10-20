@@ -26,13 +26,8 @@
             $dateFin = date("Y-m-d", strtotime($dateFin));
 
             //Vérification de la conformité de la période
-<<<<<<< HEAD
             if ($dateDebut > $dateFin){
-                echo "La date d'arrivée ne peut être supérieure à la date de départ !";
-=======
-            if ($dateDebut >= $dateFin){
                 echo "La date de départ ne peut être supérieure à la date de d'arrivée !";
->>>>>>> master
                 return false;
             }
             else{
@@ -40,7 +35,7 @@
                 $dataId = Vehicule::getReserve($dateDebut, $dateFin);
                 if (!empty($dataId)){ //Tableau contenant tous les 'idDisponibilité' correspondants aux dates spécifiées
                     //Récupération de l'ensemble des véhicules
-                    $reqAfficheVehicule = "SELECT DISTINCT idVehicule, marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
+                    $reqAfficheVehicule = "SELECT DISTINCT idVehicule, marque, modele, typeVehicule, CONCAT(prix, ' FCFA') AS prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
                     for($i=0; $i<count($dataId); $i++) {
                         # Pour chaque 'idDisponibilité' trouvé, on enlève les véhicules réservés de la liste des véhicules à afficher
                         $idVehicule = $dataId[$i];
@@ -64,7 +59,7 @@
                 } //End if($dataID)
                 else{
                     //Récupération de l'ensemble des véhicules car aucun véhicule n'est reservé
-                    $reqAfficheVehicule = "SELECT DISTINCT idVehicule, marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
+                    $reqAfficheVehicule = "SELECT DISTINCT idVehicule, marque, modele, typeVehicule, CONCAT(prix, ' FCFA') AS prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
                     //Vérification et retour du résultat
                     if($reponse = $bdd->query($reqAfficheVehicule) ){
                         #Pour se retrouver au final, qu'avec les véhicules libres entre les dates spécifiées
@@ -86,7 +81,7 @@
 
         public static function afficheVehicules(){
             global $bdd;
-            $reqAfficheVehicule = "SELECT DISTINCT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
+            $reqAfficheVehicule = "SELECT DISTINCT marque, modele, typeVehicule, CONCAT(prix, ' FCFA') AS prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
             $reponse = $bdd->query($reqAfficheVehicule);
             
             if($vehicules = $reponse->fetchAll()){
@@ -133,21 +128,47 @@
            
         } //End filtreVehicule()
 
-        public static function filtrage($idMarque, $idModele, $idType, $idCarburant, $climatisation){
+        public static function filtrage($idMarque, $idModele, $idType, $idCarburant, $climatisation, $dateDebut, $dateFin){
             global $bdd;
             $val_interdit = -1; //Valeur prise si un critère n'est pas spécifié
+            $data = array(); //Tableau qui va recevoir le array associatif associé à la requête
+            //Base de la requête
+            $requete_temp = "SELECT DISTINCT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND "; 
             //Formalisation de la requête à transmettre à la bdd
             $suite1 = $idMarque==$val_interdit ? "v.idMarque=ma.idMarque AND " : "v.idMarque=:idMarque AND ";
             $suite2 = $idModele==$val_interdit ? "v.idModele=mo.idModele AND " : "v.idModele=:idModele AND ";
             $suite3 = $idType==$val_interdit ?   "v.idType=idTypeVehicule AND " : "v.idType=:idType AND ";
             $suite4 = $idCarburant==$val_interdit ? "v.idCarburant=ca.idCarburant AND " : "v.idCarburant=:idCarburant AND ";
             $suite5 = $climatisation==$val_interdit ? "climatisation=climatisation" : "climatisation=:climatisation";
-            
-            $requete_temp = "SELECT marque, modele, typeVehicule, prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire AND idDate=idDisponibilite AND "; 
-            $requete = $requete_temp . $suite1 . $suite2 . $suite3 . $suite4 . $suite5; //Requête finale
-            //echo $requete;
+            if($dateDebut==$val_interdit || $dateFin==$val_interdit){
+                $suite6 = '';
+            } //End if($dateDebut || $dateFin)
+            else{
+                //Ajustement du format des dates
+                $dateDebut = date("Y-m-d", strtotime($dateDebut));
+                $dateFin = date("Y-m-d", strtotime($dateFin));
+                //Vérification de la conformité de la période
+                if ($dateDebut >= $dateFin){
+                    echo "La date de début ne peut être supérieure à la date de fin !";
+                    return false;
+                }
+                else{
+                    //On récupère les ids de l'ensemble des véhicules réservés
+                    $vehicReserve = Vehicule::getReserve($dateDebut, $dateFin);
+                    $suite6 = ' ';
+                    //Formalisation de la requête
+                    for($i=0; $i<count($vehicReserve); $i++){
+                        $cle = 'idVehic'.$i;
+                        $suite6 .= "AND v.idVehicule!=:$cle ";
+                        //Formalisation de la requête
+                        $data[$cle] = $vehicReserve[$i];
+                        
+                    } //End for
+                } //End else (date)
+            } //End else
+            //Requête finale
+            $requete = $requete_temp . $suite1 . $suite2 . $suite3 . $suite4 . $suite5 . $suite6; //Requête finale
             $reponse = $bdd->prepare($requete);
-            $data = array(); //Tableau qui va recevoir le array associatif associé à la requête
          
             //Formalisation de l'éxécution
             if($idMarque!=$val_interdit){
@@ -186,7 +207,7 @@
             $dateFin = date("Y-m-d", strtotime($dateFin));
             //Vérification de la conformité de la période
             if ($dateDebut >= $dateFin){
-                echo "La date de fin ne peut être supérieure à la date de début de disponibilité !";
+                echo "La date de début ne peut être supérieure à la date de fin !";
                 return false;
             }
             else{  

@@ -21,7 +21,7 @@
             $dateDebut = date("Y-m-d", strtotime($dateDebut));
             $dateFin = date("Y-m-d", strtotime($dateFin));
             //Vérification de la conformité de la période
-            if ($dateDebut >= $dateFin){
+            if ($dateDebut > $dateFin){
                 echo "La date de départ ne peut être supérieure à la date de d'arrivée !";
                 return false;
             }
@@ -79,12 +79,12 @@
         public static function afficheChauffeurs(){
             global $bdd;
             $reqAfficheChauffeur = "SELECT DISTINCT idChauffeur, prenom, nom, permis, adresse, telephone, cheminPhoto, statut FROM Chauffeur";
-            $reponse = $bdd->query($reqAfficheChauffeur);
-
-            if ($chauffeurs = $reponse->fetchAll()){
+            if($reponse = $bdd->query($reqAfficheChauffeur)){
+                $chauffeurs = $reponse->fetchAll();
                 //Conversion du format du tableau en JSON
                 $chauffeurs = json_encode($chauffeurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 $reponse->closeCursor();
+                
                 return $chauffeurs;
             } //End if($chauffeurs)
             else{
