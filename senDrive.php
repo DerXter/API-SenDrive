@@ -153,8 +153,10 @@
                 $idType = htmlspecialchars($_GET['idType']);
                 $idCarburant = htmlspecialchars($_GET['idCarburant']);
                 $climatisation = htmlspecialchars($_GET['climatisation']);
+                $dateDebut = htmlspecialchars($_GET['dateDebut']);
+                $dateFin = htmlspecialchars($_GET['dateFin']);
 
-                echo Vehicule::filtrage($idMarque, $idModele, $idType, $idCarburant, $climatisation);
+                echo Vehicule::filtrage($idMarque, $idModele, $idType, $idCarburant, $climatisation, $dateDebut, $dateFin);
             break;
             case 'supprimerVehicule': //Suppression de véhicule
                 include_once('Classes/Vehicule.class.php');
@@ -246,13 +248,12 @@
                 
                 echo Reservation::ajoutReservation($idVehicule, $idChauffeur, $dateDepart, $dateArrivee);
             break;
-            case 'changerStatutReservation': //Changement du statut d'une reservation
+            case 'annulerReservation': //Annulation d'une reservation
                 include_once('Classes/Reservation.class.php');
                 //Sécurisation des données reçues
-                $idReservation = htmlspecialchars($_POST['idReservation']);
-                $statut = htmlspecialchars($_POST['statut']);
+                $idReservation = htmlspecialchars($_GET['idReservation']);
                 
-                echo Reservation::changerStatutReservation($idReservation, $statut);
+                echo Reservation::changerStatutReservation($idReservation, 'Annulé');
             break;
             case 'modifierReservation': //modificaction d'une réservation
                 include_once('Classes/Reservation.class.php');
@@ -264,8 +265,9 @@
                 $dateDepart = htmlspecialchars($_POST['dateDebut']);
                 $dateArrivee = htmlspecialchars($_POST['dateFin']);
                 $statut = htmlspecialchars($_POST['statut']);
+                $prix = htmlspecialchars($_POST['prix']);
                 
-                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut);
+                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut, $prix);
             break;
             case 'supprimerReservation': //Suppréssion de réservations
             include_once('Classes/Reservation.class.php');
@@ -410,11 +412,121 @@
             echo Doc::afficheDoc($nature);
             break;
             case 'supprimerDoc': //Suppression du fichier de documentation dont l'id est spécifié
-            include_once('Classes/Doc.class.php');
-            //Sécurisation des données reçues
-            $id = htmlspecialchars($_GET['id']);
+                include_once('Classes/Doc.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_GET['id']);
 
-            echo Doc::supprimerDoc($id);
+                echo Doc::supprimerDoc($id);
+            break;
+
+
+            //******************************Traitement des promotions******************************
+            case 'affichePromo': //Affichage des promotions selon le statut spécifié
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                if(isset($_GET['statut'])){
+                    $statut = htmlspecialchars($_GET['statut']);
+                }
+                else{
+                    $statut='';
+                }
+
+                echo Promotion::affichePromo($statut);
+            break;
+            case 'affichePromos': //Affichage des promotions comprises entre deux dates
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                $dateDebut = htmlspecialchars($_GET['dateDebut']);
+                $dateFin = htmlspecialchars($_GET['dateFin']);
+
+                echo Promotion::affichePromos($dateDebut, $dateFin);
+            break;
+            case 'ajoutPromo': //Ajout d'une promotion
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $nom = htmlspecialchars($_POST['nom']);
+                $taux = htmlspecialchars($_POST['taux']);
+                $dateDebut = htmlspecialchars($_POST['dateDebut']);
+                $dateFin = htmlspecialchars($_POST['dateFin']);
+
+                echo Promotion::ajoutPromo($idVehicule, $nom, $taux, $dateDebut, $dateFin);
+            break;
+            case 'modifierPromo': //Modification de promotion
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                $idPromo = htmlspecialchars($_POST['idPromo']);
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $nom = htmlspecialchars($_POST['nom']);
+                $statut = htmlspecialchars($_POST['statut']);
+                $taux = htmlspecialchars($_POST['taux']);
+                $dateDebut = htmlspecialchars($_POST['dateDebut']);
+                $dateFin = htmlspecialchars($_POST['dateFin']);
+
+                echo Promotion::modifierPromo($idPromo, $idVehicule, $nom, $taux, $statut, $dateDebut, $dateFin);
+            break;
+            case 'supprimerPromo': //Suppréssion de promotion
+                include_once('Classes/Promotion.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_GET['id']);
+
+                echo Promotion::supprimerPromo($id);
+            break;
+
+            //******************************Traitement des navettes******************************
+            case 'ajoutNavette': //Ajout d'une navette
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                $idClient = htmlspecialchars($_POST['idClient']);
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                $date = htmlspecialchars($_POST['date']);
+                $destination = htmlspecialchars($_POST['destination']);
+                $heureDebut = htmlspecialchars($_POST['heureDebut']);
+                $heureFin = htmlspecialchars($_POST['heureFin']);
+
+                echo Navette::ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $destination, $heureDebut, $heureFin);
+            break;
+            case 'modifierNavette': //Modification d'une navette
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                $idNavette = htmlspecialchars($_POST['idNavette']);
+                $idClient = htmlspecialchars($_POST['idClient']);
+                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                $date = htmlspecialchars($_POST['date']);
+                $destination = htmlspecialchars($_POST['destination']);
+                $heureDebut = htmlspecialchars($_POST['heureDebut']);
+                $heureFin = htmlspecialchars($_POST['heureFin']);
+
+                echo Navette::modifierNavette($idNavette, $idClient, $idVehicule, $idChauffeur, $date, $destination, $heureDebut, $heureFin);
+            break;
+            case 'afficheNavette': //Affichage des navettes
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                if(isset($_GET['statut'])){
+                    $statut = htmlspecialchars($_GET['statut']);
+                }
+                else{
+                    $statut = '';
+                }
+                $choix = htmlspecialchars($_GET['choix']);
+
+                echo Navette::afficheNavette($choix, $statut);
+            break;
+            case 'supprimerNavette': //Suppression de navette
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_GET['id']);
+
+                echo Navette::supprimerNavette($id);
+            break;
+            case 'annulerNavette': //Annulation de navette
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                $id = htmlspecialchars($_GET['id']);
+
+                echo Navette::changerStatutNavette($id, 'Annulé');
             break;
 
             default :
