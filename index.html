@@ -12,6 +12,7 @@
     </div>
    
     <script src="jquery.js"></script>
+    <!--
     <script>
         $(document).ready(function(){
             $.post('http://localhost/API-SenDrive/senDrive.php',{
@@ -47,12 +48,12 @@
                 console.log(data)
             })
         })
-    </script> 
+    </script>  -->
      
-            <form action="traitement.php?nature=doc&cible=processus" method="post" enctype="multipart/form-data">
+            <form action="traitement.php?nature=photo&cible=utilisateur&id=2" method="post" enctype="multipart/form-data">
                 <p>
                     Formulaire d'envoi de fichier :<br /><br />
-                    <input type="file" name="monfichier" /><br /><br />
+                    <input type="file" name="monfichier" /><br /><br /> 
                     <input type="submit" value="Envoyer le fichier" />
                 </p>
             </form>

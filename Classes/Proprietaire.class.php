@@ -13,7 +13,7 @@
         //Fonctions
         public static function afficheProprio(){
             global $bdd;
-            $requete = 'SELECT * FROM Proprietaire';
+            $requete = 'SELECT proprietaire.*, raisonSociale from proprietaire, raisonsociale where proprietaire.idRaisonSociale = raisonSociale.idRaisonSociale;';
             $reponse = $bdd->query($requete);
             if($proprios=$reponse->fetchAll()){
                 $proprios =  json_encode($proprios, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

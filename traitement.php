@@ -1,4 +1,6 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding");
     //Vérification de la reception des paramètres attendus
     if (isset($_GET['nature']) AND isset($_GET['cible']) ){
         //Sécurisation des données reçues

@@ -81,7 +81,7 @@
 
         public static function afficheVehicules(){
             global $bdd;
-            $reqAfficheVehicule = "SELECT DISTINCT marque, modele, typeVehicule, CONCAT(prix, ' FCFA') AS prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
+            $reqAfficheVehicule = "SELECT DISTINCT v.idVehicule, marque, modele, typeVehicule, CONCAT(prix, ' FCFA') AS prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
             $reponse = $bdd->query($reqAfficheVehicule);
             
             if($vehicules = $reponse->fetchAll()){
@@ -99,7 +99,7 @@
 
         public static function filtreVehicule($filtre){ //Affiche des critères de véhicule selon le filtre
             global $bdd;
-            if ($filtre=='marque' || $filtre=='modele' || $filtre=='typevehicule' || $filtre=='carburant'){
+            if ($filtre=='marque' || $filtre=='modele' || $filtre=='typevehicule' || $filtre=='carburant' || $filtre=='proprietaire' ||  $filtre=='raisonSociale'){
                 $requete = "SELECT * FROM $filtre";
             }
             else{

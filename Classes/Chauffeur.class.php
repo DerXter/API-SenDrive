@@ -78,7 +78,7 @@
 
         public static function afficheChauffeurs(){
             global $bdd;
-            $reqAfficheChauffeur = "SELECT DISTINCT idChauffeur, prenom, nom, permis, adresse, telephone, cheminPhoto, statut FROM Chauffeur";
+            $reqAfficheChauffeur = "SELECT * FROM chauffeur";
             if($reponse = $bdd->query($reqAfficheChauffeur)){
                 $chauffeurs = $reponse->fetchAll();
                 //Conversion du format du tableau en JSON

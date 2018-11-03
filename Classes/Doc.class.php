@@ -11,7 +11,7 @@
             global $bdd;
             $nature_autorises = array('contrat', 'fiche', 'processus', 'facture', 'gestion');
             if(in_array($nature, $nature_autorises)){
-                $requete = "SELECT idDocument, titre, cheminDocument FROM Documentation WHERE nature=?";
+                $requete = "SELECT idDocument, titre, cheminDocument, nature FROM Documentation WHERE nature=?";
                 $reponse = $bdd->prepare($requete);
                 $reponse->execute(array($nature));
                 //Vérification de l'éxistence des documents demandés

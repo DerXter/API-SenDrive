@@ -22,6 +22,10 @@
             $this->statut = $data['statut'];
             $this->idPersonnel = $data['idPersonnel'];
             $this->cheminPhoto = $data['cheminPhoto'];
+            $this->prenom = $data['prenom'];
+            $this->nom = $data['nom'];
+
+
 
             $reponse->closeCursor();
         } //End __construct
