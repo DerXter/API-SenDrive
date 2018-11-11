@@ -253,8 +253,10 @@
                 $idVehicule = htmlspecialchars($_POST['idVehicule']); 
                 $dateDepart = htmlspecialchars($_POST['dateDebut']);
                 $dateArrivee = htmlspecialchars($_POST['dateFin']);
+                $destination = htmlspecialchars($_POST['destination']);
+
                 
-                echo Reservation::ajoutReservation($idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee);
+                echo Reservation::ajoutReservation($idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination);
             break;
             case 'changerStatutReservation': //Annulation d'une reservation
                 include_once('Classes/Reservation.class.php');

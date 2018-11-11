@@ -181,7 +181,8 @@
                             echo "Dates ajoutées / ";
                         } 
                         else{
-                            echo "Une erreur est survenue lors de l'ajout des dates / ";
+                            $errorA = $response->error;
+                            echo "Une erreur est survenue lors de l'ajout des dates / $errorA ";
                             return false;
                         }
                         //Récupération de l'Id de la dernière date entrée
