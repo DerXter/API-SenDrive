@@ -30,7 +30,7 @@
         public static function ajoutProprio($raisonSociale, $proprietaire, $dateNaissance, $numIdentite, $telephone, $adresse, $email){
             global $bdd;
             //Vérification de l'unicité du proprietaire ajouté
-            if(Proprietaire::verifDoublons('numeroIdentite', 'Proprietaire', $numeroIdentite)){
+            if(Proprietaire::verifDoublons('numeroIdentite', 'Proprietaire', $numIdentite)){
                 echo "Numéro d'identité déjà utilisé !";
                 return false;
             }
@@ -54,7 +54,7 @@
                 ));
                 //Vérification de la réussite de l'ajout
                 if($reponse->rowCount() > 0){
-                    echo "Partenaire ajouté !";
+                    echo "OK. Partenaire ajouté !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de l'ajout du partenaire !";
@@ -69,11 +69,11 @@
             global $bdd;
             $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
             //Vérification de l'unicité du proprietaire ajouté
-            if(Proprietaire::verifDoublons('numeroIdentite', 'Proprietaire', $numeroIdentite)){
-                echo "Numéro d'identité déjà utilisé !";
-                return false;
-            }
-            else{
+           // if(Proprietaire::verifDoublons('numeroIdentite', 'Proprietaire', $numIdentite)){
+           //     echo "Numéro d'identité déjà utilisé !";
+           //     return false;
+           // }
+           // else{
                 $idRaisonSociale = Proprietaire::returnId('idRaisonSociale', 'RaisonSociale', 'raisonSociale', $raisonSociale);
                 if ($idRaisonSociale==false){
                     return false;
@@ -93,7 +93,7 @@
                 ));
                 //Vérification de la réussite de la mise à jour du propriétaire (qui est le partenaire)
                 if($reponse->rowCount() > 0){
-                    echo "Partenaire mis à jour !";
+                    echo "OK. Partenaire mis à jour !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de la mise à jour du partenaire !";
@@ -103,7 +103,7 @@
                 $reponse->closeCursor();
 
                 } //End else (raisonSocial)
-            } //End else if(verifDoublons)
+            //} //End else if(verifDoublons)
         } //End modifProprio
 
         public static function supprimerProprio($id){
@@ -113,7 +113,7 @@
             $reponse->execute(array($id));
             //Vérification de la réussite de la suppréssion
             if($reponse->rowCount() > 0){
-                echo "Partenaire supprimé !";
+                echo "OK. Partenaire supprimé !";
             } 
             else{
                 echo "Une erreur est survenue lors de la suppréssion du partenaire !";

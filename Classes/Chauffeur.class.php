@@ -93,7 +93,7 @@
             }
         } //End afficheChauffeurs()
 
-        public static function ajoutChauffeur($prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire){
+        public static function ajoutChauffeur($prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $commentaire){
             global $bdd;
             //Vérification de l'unicité du chauffeur ajouté
             if(Chauffeur::verifDoublons('numeroIdentite', 'Chauffeur', $numeroIdentite)){
@@ -103,120 +103,67 @@
             else{
                 //Mie en conformité des dates
                 $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
-                $dateDebut = date("Y-m-d", strtotime($dateDebut));
-                $dateFin = date("Y-m-d", strtotime($dateFin));
-                //Vérification de la conformité de la période
-                if ($dateDebut >= $dateFin){
-                    echo "La date de fin ne peut être supérieure à la date de début de disponibilité !";
+                //Insertion du Chauffeur dans la base
+                $reqInsertChauffeur = "INSERT INTO Chauffeur ( prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, commentaire) VALUES ( :prenom, :nom, :dateNaissance, :numeroIdentite, :permis, :adresse, :telephone, :commentaire)";
+                $reponse = $bdd->prepare($reqInsertChauffeur);
+                $reponse->execute(array(
+                    'prenom' => $prenom, 
+                    'nom' => $nom, 
+                    'dateNaissance' => $dateNaissance, 
+                    'numeroIdentite' => $numeroIdentite, 
+                    'permis' => $permis, 
+                    'adresse' => $adresse, 
+                    'telephone' => $telephone, 
+                    'commentaire' => $commentaire
+                ));
+                //Vérification de la réussite de l'ajout
+                if($reponse->rowCount() > 0){
+                    echo "OK. Chauffeur ajouté !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de l'ajout du chauffeur !";
                     return false;
                 }
-                else{  
-                    //Ajout des dates dans la base
-                    $requete = 'INSERT INTO Disponibilite (dateDebut, dateFin) VALUES(:dateDebut, :dateFin)';
-                    $reponse = $bdd->prepare($requete);
-                    $reponse->execute(array(
-                        'dateDebut' => $dateDebut,
-                        'dateFin' => $dateFin
-                    ));
-                    //Vérification de la réussite de l'ajout
-                    if($reponse->rowCount() > 0){
-                        echo "Dates ajoutées !";
-                    } 
-                    else{
-                        echo "Une erreur est survenue lors de l'ajout des dates !";
-                        return false;
-                    }
-                    //Récupération de l'Id de la dernière date entrée
-                    $reqLastIdDate = 'SELECT idDisponibilite FROM Disponibilite ORDER BY idDisponibilite DESC LIMIT 0,1';
-                    $reponse = $bdd->query($reqLastIdDate);
-                    $data = $reponse->fetch();
-                    $idDisponibilite = $data['idDisponibilite'];
-                    //Insertion du Chauffeur dans la base
-                    $reqInsertChauffeur = "INSERT INTO Chauffeur (idDate, prenom, nom, dateNaissance, numeroIdentite, permis, adresse, telephone, commentaire) VALUES (:idDate, :prenom, :nom, :dateNaissance, :numeroIdentite, :permis, :adresse, :telephone, :commentaire)";
-                    $reponse = $bdd->prepare($reqInsertChauffeur);
-                    $reponse->execute(array(
-                        'idDate' => $idDisponibilite,
-                        'prenom' => $prenom, 
-                        'nom' => $nom, 
-                        'dateNaissance' => $dateNaissance, 
-                        'numeroIdentite' => $numeroIdentite, 
-                        'permis' => $permis, 
-                        'adresse' => $adresse, 
-                        'telephone' => $telephone, 
-                        'commentaire' => $commentaire
-                    ));
-                    //Vérification de la réussite de l'ajout
-                    if($reponse->rowCount() > 0){
-                        echo "Chauffeur ajouté !";
-                    } 
-                    else{
-                        echo "Une erreur est survenue lors de l'ajout du chauffeur !";
-                        return false;
-                    }
-                } //End else
             } //End else if(verifDoublons)
 
         } //End ajoutChauffeur()
 
-        public static function modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire){
+        public static function modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $commentaire){
             global $bdd;
             //Vérification de l'unicité du chauffeur ajouté
-            if(Chauffeur::verifDoublons('numeroIdentite', 'Chauffeur', $numeroIdentite)){
-                echo "Numéro d'identité déjà utilisé !";
-                return false;
-            }
-            else{
+            //if(Chauffeur::verifDoublons('numeroIdentite', 'Chauffeur', $numeroIdentite)){
+            //    echo "Numéro d'identité déjà utilisé !";
+            //    return false;
+            //}
+            //else{
                 //Mie en conformité des dates
                 $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
-                $dateDebut = date("Y-m-d", strtotime($dateDebut));
-                $dateFin = date("Y-m-d", strtotime($dateFin));
-                //Vérification de la conformité de la période
-                if ($dateDebut >= $dateFin){
-                    echo "La date de fin ne peut être supérieure à la date de début de disponibilité !";
-                    return false;
-                }
-                else{  
-                    //Modification des dates de la base
-                    $idDate = Chauffeur::returnId('idDate', 'Chauffeur', 'idChauffeur', $idChauffeur);
-                    $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
-                    $reponse = $bdd->prepare($reqIdDisponibilite);
-                    $reponse->execute(array($dateDebut, $dateFin, $idDate));
-                    //Vérification de la réussite de la mise à jour des dates
-                    if($reponse->rowCount() > 0){
-                        echo "Dates mises à jour !";
-                    } 
-                    else{
-                        echo "Une erreur est survenue lors de la mise à jour des dates !";
-                        return false;
-                    }
 
-                        $requete = 'UPDATE Chauffeur SET idDate=:idDate, prenom=:prenom, nom=:nom, dateNaissance=:dateNaissance, numeroIdentite=:numeroIdentite, permis=:permis, adresse=:adresse, telephone=:telephone, commentaire=:commentaire WHERE idChauffeur=:idChauffeur';
-                        $reponse = $bdd->prepare($requete);
-                        $reponse->execute(array(
-                            'idDate' => $idDate,
-                            'prenom' => $prenom, 
-                            'nom' => $nom, 
-                            'dateNaissance' => $dateNaissance, 
-                            'numeroIdentite' => $numeroIdentite, 
-                            'permis' => $permis, 
-                            'adresse' => $adresse, 
-                            'telephone' => $telephone, 
-                            'commentaire' => $commentaire,
-                            'idChauffeur' => $idChauffeur
-                
-                        ));
-                        //Vérification de la réussite de la mise à jour du chauffeur
-                        if($reponse->rowCount() > 0){
-                            echo "Chauffeur mis à jour !";
-                        } 
-                        else{
-                            echo "Une erreur est survenue lors de la modification du chauffeur !";
-                        return false;
-                        }
+                $requete = 'UPDATE Chauffeur SET prenom=:prenom, nom=:nom, dateNaissance=:dateNaissance, numeroIdentite=:numeroIdentite, permis=:permis, adresse=:adresse, telephone=:telephone, commentaire=:commentaire WHERE idChauffeur=:idChauffeur';
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array(
+                    'prenom' => $prenom, 
+                    'nom' => $nom, 
+                    'dateNaissance' => $dateNaissance, 
+                    'numeroIdentite' => $numeroIdentite, 
+                    'permis' => $permis, 
+                    'adresse' => $adresse, 
+                    'telephone' => $telephone, 
+                    'commentaire' => $commentaire,
+                    'idChauffeur' => $idChauffeur
+        
+                ));
+                //Vérification de la réussite de la mise à jour du chauffeur
+                if($reponse->rowCount() > 0){
+                    echo "OK. Chauffeur mis à jour !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de la modification du chauffeur !";
+                return false;
+                }
                      
                     $reponse->closeCursor();
-                    } //End else (dateDebut, dateFin)
-            } //End else if(verifDoublons)
+            //} //End else if(verifDoublons)
 
         } //End modifierChauffeur()
 
@@ -227,7 +174,7 @@
             $reponse->execute(array($id));
             //Vérification de la réussite de la suppréssion du chauffeur
             if($reponse->rowCount() > 0){
-                echo "Chauffeur supprimé !";
+                echo "OK. Chauffeur supprimé !";
             } 
             else{
                 echo "Une erreur est survenue lors de la suppréssion du chauffeur!";

@@ -54,10 +54,8 @@
                 $adresse = htmlspecialchars($_POST['adresse']);
                 $telephone = htmlspecialchars($_POST['telephone']);
                 $commentaire = htmlspecialchars($_POST['commentaire']);
-                $dateDebut = htmlspecialchars($_POST['dateDebut']);
-                $dateFin = htmlspecialchars($_POST['dateFin']);
 
-                echo Chauffeur::ajoutChauffeur($prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire);
+                echo Chauffeur::ajoutChauffeur($prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $commentaire);
             break;
             case 'modifierChauffeur': //Modification de chauffeurs 
                 include_once('Classes/Chauffeur.class.php');
@@ -71,10 +69,8 @@
                 $adresse = htmlspecialchars($_POST['adresse']);
                 $telephone = htmlspecialchars($_POST['telephone']);
                 $commentaire = htmlspecialchars($_POST['commentaire']);
-                $dateDebut = htmlspecialchars($_POST['dateDebut']);
-                $dateFin = htmlspecialchars($_POST['dateFin']);
 
-                echo Chauffeur::modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $dateDebut, $dateFin, $commentaire);
+                echo Chauffeur::modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $commentaire);
             break;
             case 'supprimerChauffeur': //Suppréssion de chauffeurs
                 include_once('Classes/Chauffeur.class.php');
@@ -112,8 +108,6 @@
                 $idType = htmlspecialchars($_POST['idType']);
                 $idProprietaire = htmlspecialchars($_POST['idProprietaire']);
                 $idCarburant = htmlspecialchars($_POST['idCarburant']);
-                $dateDebut = htmlspecialchars($_POST['dateDebut']);
-                $dateFin = htmlspecialchars($_POST['dateFin']);
                 $immatriculation = htmlspecialchars($_POST['immatriculation']);
                 $climatisation = htmlspecialchars($_POST['climatisation']);
                 $nbPorte = htmlspecialchars($_POST['nbPorte']);
@@ -122,7 +116,7 @@
                 $prix = htmlspecialchars($_POST['prix']);
                 $boiteDeVitesse = htmlspecialchars($_POST['boiteDeVitesse']);
 
-                echo Vehicule::ajoutVehicule($idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse);
+                echo Vehicule::ajoutVehicule($idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse);
             break;
             case 'modifierVehicule': //Modification de véhicule
                 include_once('Classes/Vehicule.class.php');
@@ -133,8 +127,6 @@
                 $idType = htmlspecialchars($_POST['idType']);
                 $idProprietaire = htmlspecialchars($_POST['idProprietaire']);
                 $idCarburant = htmlspecialchars($_POST['idCarburant']);
-                $dateDebut = htmlspecialchars($_POST['dateDebut']);
-                $dateFin = htmlspecialchars($_POST['dateFin']);
                 $immatriculation = htmlspecialchars($_POST['immatriculation']);
                 $climatisation = htmlspecialchars($_POST['climatisation']);
                 $nbPorte = htmlspecialchars($_POST['nbPorte']);
@@ -143,7 +135,7 @@
                 $prix = htmlspecialchars($_POST['prix']);
                 $boiteDeVitesse = htmlspecialchars($_POST['boiteDeVitesse']);
 
-                echo Vehicule::modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $dateDebut, $dateFin, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse);
+                echo Vehicule::modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse);
             break;
             case 'filtrage': //filtrage de véhicule selon plusieurs critères
                 include_once('Classes/Vehicule.class.php');
