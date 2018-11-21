@@ -1,0 +1,4 @@
+AuthName "Cette partie est reservee aux administrateurs du site. Veuillez vous authentifier : "
+AuthType Basic
+AuthUserFile "/var/www/html/API-SenDrive/Classes/.htpasswd"
+Require valid-user
