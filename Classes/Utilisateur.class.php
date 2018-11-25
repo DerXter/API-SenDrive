@@ -30,7 +30,7 @@
         public static function ajoutUtilisateur($login, $password, $statut, $numIdentite){
             global $bdd;
             // Hachage du mot de passe
-            $pass_hache = sha1($password);
+            $pass_hache = hash('sha256', $password);
 
             $idPersonnel = Utilisateur::returnId('idPersonnel', 'Personnel', 'numeroIdentite', $numIdentite);
             $reqAjoutUtilisateur = 'INSERT INTO Utilisateur (login, password, statut, idPersonnel) VALUES (:login, :password, :statut, :idPersonnel)';
@@ -72,7 +72,7 @@
         public static function connexion($login, $password){
             global $bdd;
             // Hachage du mot de passe
-            $pass_hache = sha1($password);
+            $pass_hache = hash('sha256', $password);
 
             // Vérification des identifiants
             $reqVerif = 'SELECT idUtilisateur FROM Utilisateur WHERE login = :login AND password = :password';
