@@ -226,10 +226,12 @@
                 'dateFin' => $dateArrivee));
              //On retourne l'ensemble des chauffeurs réservés
              while ($dataId=$reponse->fetch()){
-                array_push($data, $dataId['idChauffeur']);
+                if($dataId['idChauffeur']!=null){
+                    array_push($data, $dataId['idChauffeur']);
+                }
             }
             if(empty($data)){
-                echo "Aucun chauffeur trouvé";
+                //echo "Aucun chauffeur trouvé";
                 return false;
             }
             else{

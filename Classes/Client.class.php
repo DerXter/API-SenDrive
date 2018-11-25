@@ -10,9 +10,9 @@
         private $_destination;
 
         //Methodes
-        public static function ajoutClient($nom, $prenom, $telephone, $adresse, $mail, $destination){
+        public static function ajoutClient($nom, $prenom, $telephone, $adresse, $mail){
             global $bdd;
-            $requete = 'INSERT INTO Clientele (nom, prenom, email, telephone, adresse, destination) VALUES(:nom, :prenom, :mail, :telephone, :adresse, :destination)';
+            $requete = 'INSERT INTO Clientele (nom, prenom, email, telephone, adresse) VALUES(:nom, :prenom, :mail, :telephone, :adresse)';
             $reponse = $bdd->prepare($requete);
             $reponse->execute(array(
                 'nom' => $nom,
@@ -20,7 +20,6 @@
                 'telephone' => $telephone,
                 'adresse' => $adresse,
                 'mail' => $mail,
-                'destination' => $destination
             ));
             //Vérification de la réussite de l'ajout
             if($reponse->rowCount() > 0){

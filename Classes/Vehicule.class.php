@@ -61,9 +61,9 @@
                     //Récupération de l'ensemble des véhicules car aucun véhicule n'est reservé
                     $reqAfficheVehicule = "SELECT DISTINCT idVehicule, marque, modele, typeVehicule, CONCAT(prix, ' FCFA') AS prix, immatriculation, carburant, boiteDeVitesse, nombreDePortes, nombreDePlaces, climatisation, proprietaire, cheminPhoto, v.description FROM Marque ma, Modele mo, TypeVehicule ty, Carburant ca, Proprietaire p, Vehicule v, Disponibilite WHERE v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND idType=idTypeVehicule AND v.idCarburant=ca.idCarburant AND v.idProprietaire=p.idProprietaire";
                     //Vérification et retour du résultat
-                    $reponse = $bdd->query($reqAfficheVehicule);
-                    if( $vehicules = $reponse->fetchAll()){
+                    if($reponse = $bdd->query($reqAfficheVehicule) ){
                         #Pour se retrouver au final, qu'avec les véhicules libres entre les dates spécifiées
+                        $vehicules = $reponse->fetchAll();
                         //Conversion du format du tableau en JSON
                         $vehicules = json_encode($vehicules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);     
                         $reponse->closeCursor();
@@ -462,7 +462,7 @@
                 array_push($data, $dataId['idVehicule']);
             }
             if(empty($data)){
-                echo "Aucun vehicule trouvé";
+                //echo "Aucun vehicule trouvé";
                 return false;
             }
             else{

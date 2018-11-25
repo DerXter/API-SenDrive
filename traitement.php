@@ -128,7 +128,7 @@ header("Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Ca
                 }
                 else{
                    if( move_uploaded_file($_FILES['monfichier']['tmp_name'], $cheminFichier) ){ //Déplacement du fichier dans le répertoire adéquoit
-                    echo "L'envoi a bien été effectué !";
+                    echo "L'envoi a bien été effectué ! OK.";
                     }
                     else{
                         echo ': Une erreur est survenue lors de l\'upload. Vérifier l\'éxistence du droit de suppression. ';

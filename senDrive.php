@@ -213,9 +213,9 @@
                 $telephone = htmlspecialchars($_POST['telephone']);
                 $adresse = htmlspecialchars($_POST['adresse']);
                 $mail = htmlspecialchars($_POST['mail']);
-                $destination = htmlspecialchars($_POST['destination']);
+            
 
-                echo Client::ajoutClient($nom, $prenom, $telephone, $adresse, $mail, $destination);
+                echo Client::ajoutClient($nom, $prenom, $telephone, $adresse, $mail);
             break;
             case 'afficheClients': //Affichage des clients
                 include_once('Classes/Client.class.php');
@@ -263,14 +263,19 @@
                 //Sécurisation des données reçues
                 $idReservation = htmlspecialchars($_POST['idReservation']);
                 $idVehicule = htmlspecialchars($_POST['idVehicule']); 
-                $idClient= htmlspecialchars($_POST['idClient']);
-                $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                $idClient = htmlspecialchars($_POST['idClient']);
+                if(!isset($_POST['idChauffeur'])){
+                    $idChauffeur = null;
+                }
+                else{
+                    //Sécurisation de l'id du chauffeur
+                    $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
+                }                
                 $dateDepart = htmlspecialchars($_POST['dateDebut']);
                 $dateArrivee = htmlspecialchars($_POST['dateFin']);
                 $statut = htmlspecialchars($_POST['statut']);
-                $prix = htmlspecialchars($_POST['prix']);
                 
-                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut, $prix);
+                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut);
             break;
             case 'supprimerReservation': //Suppréssion de réservations
             include_once('Classes/Reservation.class.php');

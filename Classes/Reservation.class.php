@@ -150,7 +150,7 @@
                 //On calcule le montant que va couter la reservation
                 $prix = Reservation::calculPrix($idVehicule, $dateDepart, $dateArrivee);
 
-                if($idChauffeur != -1){   
+                if($idChauffeur != 'NULL'){   
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
                     if (Reservation::checkReserve($idChauffeur, 'chauffeur', $dateDepart, $dateArrivee)){
                         echo "Ce chauffeur a déjà été réservé à cette période !";
@@ -166,6 +166,7 @@
                         }else{
                             //Récupération de l'Id du dernier client entré
                             $clientID = Reservation::returnLastId('idClient', 'Clientele');
+
                         }
                         
                         //Ajout des dates dans la base            
@@ -215,7 +216,7 @@
                         $reponse->execute(array($nbLocation, $idVehicule));
                         //Vérification de la réussite de la mise à jour
                         if($reponse->rowCount() > 0){
-                            echo "Nombre de location du véhicule mis à jour / ";
+                            echo "Nombre de location du véhicule mis à jour / OK.";
                         } 
                         else{
                             echo "Une erreur est survenue lors de la mise à jour du nombre de location / ";
@@ -236,7 +237,7 @@
             } //End else if ($dataId vehicule)
         } //End ajoutReservation()
 
-        public static function modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDebut, $dateFin, $statut, $prix, $destination){
+        public static function modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDebut, $dateFin, $statut){
             global $bdd;
             //Vérification du statut
             $statut_autorises = array('En cours', 'Annulé', 'Terminé');
@@ -257,6 +258,10 @@
             //Le véhicule est disponible, on passe à la vérification de la disponibilité du chauffeur
  
             else{
+
+                 //Calcul du nouveau prix
+                $prix = Reservation::calculPrix($idVehicule, $dateDebut, $dateFin);
+
             //Le véhicule choisi est disponible
 verifChauffeur: if($idChauffeur != -1){   
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
@@ -281,8 +286,9 @@ verifChauffeur: if($idChauffeur != -1){
                             echo "Une erreur est survenue lors de la mise à jour des dates !";
                             return false;
                         }
+
                         //Mise à jour de la réservation
-                        $requete = 'UPDATE Reservation SET idVehicule=:idVehicule, idClient=:idClient, idChauffeur=:idChauffeur, idDate=:idDate, statut=:statut, prix=:prix, destination=:destination WHERE idReservation=:idReservation';
+                        $requete = 'UPDATE Reservation SET idVehicule=:idVehicule, idClient=:idClient, idChauffeur=:idChauffeur, idDate=:idDate, statut=:statut, prix=:prix WHERE idReservation=:idReservation';
                         $reponse = $bdd->prepare($requete);
                         $reponse->execute(array(
                             'idReservation' => $idReservation,
@@ -292,12 +298,11 @@ verifChauffeur: if($idChauffeur != -1){
                             'idChauffeur' => $idChauffeur,
                             'statut' => $statut,
                             'prix' => $prix,
-                            'destination' => $destination
                             
                         ));
                         //Vérification de la réussite de la mise à jour
                         if($reponse->rowCount() > 0){
-                            echo "Réservation mise à jour !";
+                            echo "OK. Réservation mise à jour !";
                         } 
                         else{
                             echo "Une erreur est survenue lors de la modification de la réservation !";
@@ -333,8 +338,9 @@ verifChauffeur: if($idChauffeur != -1){
              while ($dataId=$reponse->fetch()){
                 // $dataId contient les id de tous les $nature qui ont été réservés
                 // Et chaque id est comparé avec l'id fourni      
-                if($dataId[$nameId]==$id){
+                if($dataId[$nameId]==$id && $id!=null){
                     $result=true; //Alors le véhicule/chauffeur est réservé
+                    echo " Id de la reservation sous les memes dates :"+ $id + " \n";
                     break;
                 }
               
@@ -374,7 +380,7 @@ verifChauffeur: if($idChauffeur != -1){
                 $reponse->execute(array($statut, $idReservation));
                 //Vérification de la réussite de la mise à jour du statut
                 if($reponse->rowCount() > 0){
-                    echo "Statut de la réservation mis à jour !";
+                    echo "OK. Statut de la réservation mis à jour !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de la mise à jour du statut de la réservation !";
