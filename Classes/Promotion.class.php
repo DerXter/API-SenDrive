@@ -65,6 +65,24 @@
 
         } //End affichePromo(dateDebut, dateFin)
 
+
+        public static function afficheToutesPromos(){
+            global $bdd;
+            $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, marque, modele, immatriculation, dateDebut, dateFin, statut FROM Promotion p, Vehicule v, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idVehicule=v.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele";
+
+                $reponse = $bdd->prepare($reqAffichePromo);
+                $reponse->execute(array());
+                if($promo = $reponse->fetchAll()){
+                    $promo = json_encode($promo, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    return $promo;
+                }
+                else{
+                    echo "Aucune promotion trouvée !";
+                    return false;
+                }
+
+        } //End affichePromo(dateDebut, dateFin)
+
         public static function ajoutPromo($idVehicule, $nom, $taux, $dateDebut, $dateFin){
             global $bdd;
             //Vérification de l'élligibilité du taux

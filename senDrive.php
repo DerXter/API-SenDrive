@@ -448,6 +448,11 @@
 
                 echo Promotion::affichePromos($dateDebut, $dateFin);
             break;
+            case 'afficheToutesPromos': //Affichage de toutes les promotions
+                include_once('Classes/Promotion.class.php');
+
+                echo Promotion::afficheToutesPromos();
+            break;
             case 'ajoutPromo': //Ajout d'une promotion
                 include_once('Classes/Promotion.class.php');
                 //Sécurisation des données reçues
