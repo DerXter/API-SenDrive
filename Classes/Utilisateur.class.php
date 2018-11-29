@@ -31,8 +31,8 @@
             global $bdd;
             // Hachage du mot de passe
             $pass_hache = hash('sha256', $password);
-
             $idPersonnel = Utilisateur::returnId('idPersonnel', 'Personnel', 'numeroIdentite', $numIdentite);
+            $idPersonnel = (int)$idPersonnel;
             $reqAjoutUtilisateur = 'INSERT INTO Utilisateur (login, password, statut, idPersonnel) VALUES (:login, :password, :statut, :idPersonnel)';
             $reponse = $bdd->prepare($reqAjoutUtilisateur);
             $reponse->execute(array(
