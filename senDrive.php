@@ -305,6 +305,25 @@
 
             echo Utilisateur::ajoutUtilisateur($login, $password, $statut, $numIdentite);
             break;
+            case 'modifierUtilisateur': //Modification d'un utilisateur
+            include_once('Classes/Utilisateur.class.php');
+            //Sécurisation des données reçues
+            $login = htmlspecialchars($_POST['login']);
+            $id = htmlspecialchars($_POST['id']);
+            $statut = htmlspecialchars($_POST['statut']);
+            $idPersonnel = htmlspecialchars($_POST['idPersonnel']);
+
+            echo Utilisateur::modifierUtilisateur($id, $login, $statut, $idPersonnel);
+            break;
+            case 'changePassword': //changement de mot de passe
+            include_once('Classes/Utilisateur.class.php');
+            //Sécurisation des données reçues
+            $id = htmlspecialchars($_POST['id']);
+            $oldPassword = htmlspecialchars($_POST['oldPassword']);
+            $newPassword = htmlspecialchars($_POST['newPassword']);
+            
+            echo Utilisateur::changePassword($id, $oldPassword, $newPassword);
+            break;
             case 'afficheUtilisateurs': //Affichage des utilisateurs
             include_once('Classes/Utilisateur.class.php');
             
