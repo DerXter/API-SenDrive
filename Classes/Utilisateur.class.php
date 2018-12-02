@@ -3,7 +3,6 @@
         //Attributs
         private $idUtilisateur;
         private $login;
-        private $password;
         private $statut;
         private $idPersonnel;
         private $cheminPhoto;
@@ -18,12 +17,9 @@
             //Affectation des données de la base à l'objet
             $this->idUtilisateur = $id;
             $this->login = $data['login'];
-            $this->password = $data['password'];
             $this->statut = $data['statut'];
             $this->idPersonnel = $data['idPersonnel'];
             $this->cheminPhoto = $data['cheminPhoto'];
-            $this->prenom = $data['prenom'];
-            $this->nom = $data['nom'];
 
 
 
