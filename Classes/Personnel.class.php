@@ -13,7 +13,7 @@
         private $email;
 
         //Fonctions
-        public static function affichePersonnel(){
+        public static function affichePersonnels(){
             global $bdd;
             $requete = 'SELECT idPersonnel, civilite, fonction, nom, prenom, dateNaissance, numeroIdentite, adresse, telephone, email FROM Personnel p, Civilite c, Fonction f WHERE p.idCivilite=c.idCivilite AND p.idFonction=f.idFonction';
             $reponse = $bdd->query($requete);
@@ -26,7 +26,22 @@
                 return false;
             }
 
-        } //End affichePersonnel()
+        } //End affichePersonnels()
+        public static function affichePersonnel($id){
+            global $bdd;
+            $requete = 'SELECT prenom, nom, dateNaissance, numeroIdentite, civilite, fonction, adresse, telephone, email FROM Personnel p, Civilite c, Fonction f WHERE p.idCivilite=c.idCivilite AND p.idFonction=f.idFonction AND idPersonnel=?';
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($id));
+            if ($personnel = $reponse->fetchAll()){
+                $personnel = json_encode($personnel, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                return $personnel;
+            }
+            else{
+                echo "Aucun personnel trouvé !";
+                return false;
+            }
+
+        } //End affichePersonnel($id)
 
         public static function ajoutPersonnel($civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email){
             global $bdd;
