@@ -68,6 +68,22 @@
             }
             
         } //End afficheUtilisateurs()
+
+        public function afficheUtilisateur($id){
+            global $bdd;
+            $reqAfficheUtilisateur = 'SELECT login, statut, idPersonnel, cheminPhoto FROM Utilisateur WHERE idUtilisateur=?';
+            $reponse = $bdd->prepare($reqAfficheUtilisateur);
+            $reponse->execute(array($id));
+            if ($utilisateurs = $reponse->fetchAll()){
+                $utilisateurs = json_encode($utilisateurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); //Conversion du format du tableau en JSON
+                $reponse->closeCursor();
+                return $utilisateurs;
+            }
+            else{
+                echo "Aucun utilisateur ne correspond à cet identifiant !";
+                return false;
+            }
+        }
         
         public static function connexion($login, $password){
             global $bdd;

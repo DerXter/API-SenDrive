@@ -51,6 +51,7 @@ dans le cas contraire.
 * __afficheReservation(statut)__ : Affichage des réservations selon le statut : 'En cours', 'Annulé' ou 'Terminé'.    
 * __annulerReservation(idReservation)__ : Annulation d'une reservation     
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
+* __afficheUtilisateur(id)__ : Affichage d'un utilisateur spécifié par son id   
 * __afficheProprio()__ : Affichage des proprietaires
   
 > __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune donnée à afficher n'a été trouvée.    

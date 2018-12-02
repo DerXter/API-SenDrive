@@ -310,6 +310,15 @@
             
             echo Utilisateur::afficheUtilisateurs();
             break;
+
+            case 'afficheUtilisateur': //Affichage d'un utilisateur spécifié par son id
+            include_once('Classes/Utilisateur.class.php');
+            if(isset($_GET['id'])){
+                $id = htmlspecialchars($_GET['id']);
+            }
+            echo Utilisateur::afficheUtilisateur($id);
+            break;
+
             case 'connexion': //connexion des utilisateurs
             include_once('Classes/Utilisateur.class.php');
             //Sécurisation des données reçues
