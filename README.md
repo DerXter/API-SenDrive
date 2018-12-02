@@ -51,6 +51,7 @@ dans le cas contraire.
 * __afficheReservation(statut)__ : Affichage des réservations selon le statut : 'En cours', 'Annulé' ou 'Terminé'.    
 * __annulerReservation(idReservation)__ : Annulation d'une reservation     
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
+* __afficheUtilisateur(id)__ : Affichage d'un utilisateur spécifié par son id   
 * __afficheProprio()__ : Affichage des proprietaires
   
 > __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune donnée à afficher n'a été trouvée.    
@@ -85,7 +86,10 @@ dans le cas contraire.
 > __IMPORTANT:__ Il faudra ajouter d'abord le client ensuite la reservation vue que dans la table *Reservation*, il y'aura l'id du client en question.
 * __modifierReservation(idReservation, idClient, idVehicule, idChauffeur, dateDebut, dateFin, statut, prix, destination)__ : Modification d'une réservation       
 * __ajoutUtilisateur(login, password, statut, numIdentite)__ : Ajout d'utilisateurs   
-> __IMPORTANT:__ L'utilisateur doit être au préalable dans la table *Personnel*   
+> __IMPORTANT:__ L'utilisateur doit se trouver au préalable dans la table *Personnel*   
+* __modifierUtilisateur(id, login, statut, idPersonnel)__ : Modification d'un utilisateur  
+> __IMPORTANT:__ L'*idPersonnel* spécifié doit se trouver au préalable dans la table *Personnel*  
+* __changePassword(id, oldPassword, newPassword)__: Changement de mot de passe  
 * __ajoutProprio(raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Ajout de propriétaire  
 > __IMPORTANT:__ Les raisons sociales possibles sont: *Particulier* et  *Professionnel*. 
 * __modifProprio(idProprietaire, raisonSociale, proprietaire, dateNaissance, numIdentite, telephone, adresse, email)__ : Modification de propriétaire  

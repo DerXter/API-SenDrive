@@ -55,7 +55,7 @@
                     ));
                     //Vérification de la réussite de l'ajout
                     if($reponse->rowCount() > 0){
-                        echo "OK. Ajout réussi !";
+                        echo "Ajout réussi !";
                     } 
                     else{
                         echo "Une erreur est survenue lors de l'ajout du personnel !";
@@ -74,11 +74,11 @@
         public static function modifierPersonnel($idPersonnel, $civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email){
             global $bdd;
             //Vérification de l'unicité du personnel ajouté
-            //if(Personnel::verifDoublons('numeroIdentite', 'Personnel', $numeroIdentite)){
-            //    echo "Numéro d'identité déjà utilisé !";
-            //    return false;
-            //}
-           // else{
+            if(Personnel::verifDoublons('numeroIdentite', 'Personnel', $numeroIdentite)){
+                echo "Numéro d'identité déjà utilisé !";
+                return false;
+            }
+            else{
                 $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
                 $idCivilite = Personnel::returnId('idCivilite', 'Civilite', 'civilite', $civilite);
                 $idFonction = Personnel::returnId('idFonction', 'Fonction', 'fonction', $poste);
@@ -99,7 +99,7 @@
                     ));
                     //Vérification de la réussite de la modification
                     if($reponse->rowCount() > 0){
-                        echo "OK. Personnel mis à jour !";
+                        echo "Personnel mis à jour !";
                     } 
                     else{
                         echo "Une erreur est survenue lors de la mise à jour du personnel !";
@@ -112,7 +112,7 @@
                     return flase;
                 }
                 $reponse->closeCursor();
-            //} //End else if (VerifDoublons)
+            } //End else if (VerifDoublons)
         } //End modifierPersonnel()
 
         public static function supprimerPersonnel($id){
@@ -122,7 +122,7 @@
             $reponse->execute(array($id));
             //Vérification de la réussite de la suppréssion
             if($reponse->rowCount() > 0){
-                echo "OK. Personnel supprimé !";
+                echo "Personnel supprimé !";
             } 
             else{
                 echo "Une erreur est survenue lors de la suppréssion du personnel !";

@@ -29,29 +29,105 @@
         //Fonctions
         public static function ajoutUtilisateur($login, $password, $statut, $numIdentite){
             global $bdd;
-            // Hachage du mot de passe
-            $pass_hache = hash('sha256', $password);
-            $idPersonnel = Utilisateur::returnId('idPersonnel', 'Personnel', 'numeroIdentite', $numIdentite);
-            $idPersonnel = (int)$idPersonnel;
-            $reqAjoutUtilisateur = 'INSERT INTO Utilisateur (login, password, statut, idPersonnel) VALUES (:login, :password, :statut, :idPersonnel)';
-            $reponse = $bdd->prepare($reqAjoutUtilisateur);
-            $reponse->execute(array(
-                'login' => $login,
-                'password' => $pass_hache,
-                'statut' => $statut,
-                'idPersonnel' => $idPersonnel 
-            ));
-            //Vérification de la réussite de l'ajout
-            if($reponse->rowCount() > 0){
-                echo "Utilisateur ajouté !";
-            } 
+            if(Utilisateur::checkLogin($login)){
+                echo "Ce nom d'utilisateur est déjà utilisé !";
+            }
             else{
-                echo "Une erreur est survenue lors de l'ajout de l'utilisateur' !";
+                // Hachage du mot de passe
+                $pass_hache = hash('sha256', $password);
+                $idPersonnel = Utilisateur::returnId('idPersonnel', 'Personnel', 'numeroIdentite', $numIdentite);
+                $idPersonnel = (int)$idPersonnel;
+                $reqAjoutUtilisateur = 'INSERT INTO Utilisateur (login, password, statut, idPersonnel) VALUES (:login, :password, :statut, :idPersonnel)';
+                $reponse = $bdd->prepare($reqAjoutUtilisateur);
+                $reponse->execute(array(
+                    'login' => $login,
+                    'password' => $pass_hache,
+                    'statut' => $statut,
+                    'idPersonnel' => $idPersonnel 
+                ));
+                //Vérification de la réussite de l'ajout
+                if($reponse->rowCount() > 0){
+                    echo "Utilisateur ajouté !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de l'ajout de l'utilisateur' !";
+                    return false;
+                }
+
+                $reponse->closeCursor();
+            } //End else checkLogin
+            
+        } //End ajoutUtilisateur()
+
+        public static function modifierUtilisateur($id, $login, $statut, $idPersonnel){
+            global $bdd;
+            $loginActuel = Utilisateur::getLogin($id);
+            if($loginActuel!=-1){
+                if(strcasecmp($login, $loginActuel)==0 || ($login!=$loginActuel && !Utilisateur::checkLogin($login))){
+                    $reqAjoutUtilisateur = 'UPDATE Utilisateur SET login=:login, statut=:statut, idPersonnel=:idPersonnel WHERE idUtilisateur=:id';
+                    $reponse = $bdd->prepare($reqAjoutUtilisateur);
+                    $reponse->execute(array(
+                        'login' => $login,
+                        'id' => $id,
+                        'statut' => $statut,
+                        'idPersonnel' => $idPersonnel 
+                    ));
+                    //Vérification de la réussite de la modification
+                    if($reponse->rowCount() > 0){
+                        echo "Utilisateur modifié !";
+                    } 
+                    else{
+                        echo "Une erreur est survenue lors de la modification de l'utilisateur' !";
+                        return false;
+                    }
+    
+                    $reponse->closeCursor();
+                    
+                } //End first if
+                else{
+                    echo "Ce nom d'utilisateur est déjà utilisé !";
+                    return false;
+                }
+                
+            } //End if (Utilisateur::getLogin)
+            else{
+                echo "Aucun utilisateur ne correspond à cet identifiant !";
                 return false;
             }
+            
+            
+        } //End modifierUtilisateur()
 
-            $reponse->closeCursor();
-        } //End ajoutUtilisateur()
+        public static function changePassword($id, $oldPassword, $newPassword){
+            // Hachage de l'ancien mot de passe
+            $oldPass_hache = hash('sha256', $oldPassword);
+            $currentPass = Utilisateur::getPassword($id);
+            if($currentPass!=-1 && $currentPass!=$oldPass_hache){
+                echo "Mot de passe incorrect !";
+                return false;
+            }
+            else if($currentPass!=-1 && $currentPass==$oldPass_hache){
+                global $bdd;
+                // Hachage du nouveau mot de passe
+                $newPass_hache = hash('sha256', $newPassword);
+                $requete = "UPDATE Utilisateur SET password=? WHERE idUtilisateur=?";
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($newPass_hache, $id));
+                if($reponse->rowCount() > 0){
+                    echo "Mot de passe modifié !";
+                    return true;
+                }
+                else{
+                    echo "Une erreur est survenue lors de la modification du mot de passe !";
+                    return false;
+                }
+            } //End else if
+            else{
+                echo "Aucun utilisateur ne correspond à cet identifiant !";
+                return false; 
+            }
+
+        } //End changePassword()
 
         public static function afficheUtilisateurs(){
             global $bdd;
@@ -68,6 +144,22 @@
             }
             
         } //End afficheUtilisateurs()
+
+        public static function afficheUtilisateur($id){
+            global $bdd;
+            $reqAfficheUtilisateur = 'SELECT login, statut, idPersonnel, cheminPhoto FROM Utilisateur WHERE idUtilisateur=?';
+            $reponse = $bdd->prepare($reqAfficheUtilisateur);
+            $reponse->execute(array($id));
+            if ($utilisateurs = $reponse->fetchAll()){
+                $utilisateurs = json_encode($utilisateurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); //Conversion du format du tableau en JSON
+                $reponse->closeCursor();
+                return $utilisateurs;
+            }
+            else{
+                echo "Aucun utilisateur ne correspond à cet identifiant !";
+                return false;
+            }
+        }
         
         public static function connexion($login, $password){
             global $bdd;
@@ -95,6 +187,53 @@
             }
             
         } //End connexion
+
+        public static function checkLogin($login){
+            global $bdd;
+            $requete = "SELECT login FROM Utilisateur WHERE login LIKE ? ";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($login));
+            if($reponse->fetch()){
+                $reponse->closeCursor();
+                return true;
+            }
+            else{
+                $reponse->closeCursor();
+                return false;
+            }
+
+        }
+
+        public static function getLogin($id){
+            global $bdd;
+            $requete = "SELECT login FROM Utilisateur WHERE idUtilisateur=? ";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($id));
+            if($data=$reponse->fetch()){
+                $reponse->closeCursor();
+                return $data['login'];
+            }
+            else{
+                $reponse->closeCursor();
+                return -1;
+            }
+
+        } //End getLogin
+        public static function getPassword($id){
+            global $bdd;
+            $requete = "SELECT password FROM Utilisateur WHERE idUtilisateur=? ";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($id));
+            if($data=$reponse->fetch()){
+                $reponse->closeCursor();
+                return $data['password'];
+            }
+            else{
+                $reponse->closeCursor();
+                return -1;
+            }
+
+        } //End getPassword
 
         public static function returnId($nomID, $table, $attribut, $valeur){
             global $bdd;
