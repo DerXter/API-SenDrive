@@ -389,10 +389,18 @@
             break;
 
             //******************************Traitement du personnel******************************
-            case 'affichePersonnel': //Affichage du personnel
+            case 'affichePersonnels': //Affichage du personnel
             include_once('Classes/Personnel.class.php');
             
-            echo Personnel::affichePersonnel();
+            echo Personnel::affichePersonnels();
+            break;
+            case 'affichePersonnel': //Affichage d'un membre du personnel selon son id
+            include_once('Classes/Personnel.class.php');
+            if(isset($_GET['id'])){
+                $id = htmlspecialchars($_GET['id']);
+
+                echo Personnel::affichePersonnel($id);
+            }
             break;
             case 'ajoutPersonnel': //Ajout du personnel
                 include_once('Classes/Personnel.class.php');

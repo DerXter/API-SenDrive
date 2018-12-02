@@ -55,7 +55,8 @@ dans le cas contraire.
 * __afficheProprio()__ : Affichage des proprietaires
   
 > __IMPORTANT__ : Les fonctions d'affichage retournent *false* si aucune donnée à afficher n'a été trouvée.    
-* __affichePersonnel__ : Affichage du personnel   
+* __affichePersonnels__ : Affichage du personnel   
+* __affichePersonnel(id)__ : Affichage d'un membre du personnel selon son id  
 * __afficheDoc(nature)__ : Affichage des fichiers de documentation dont la nature est spécifiée  
 > __NOTE :__ Les natures disponibles sont :  
 * contrat    
