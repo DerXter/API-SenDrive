@@ -89,11 +89,11 @@
         public static function modifierPersonnel($idPersonnel, $civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email){
             global $bdd;
             //Vérification de l'unicité du personnel ajouté
-            if(Personnel::verifDoublons('numeroIdentite', 'Personnel', $numeroIdentite)){
-                echo "Numéro d'identité déjà utilisé !";
-                return false;
-            }
-            else{
+            //if(Personnel::verifDoublons('numeroIdentite', 'Personnel', $numeroIdentite)){
+            //    echo "Numéro d'identité déjà utilisé !";
+            //    return false;
+            //}
+            //else{
                 $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
                 $idCivilite = Personnel::returnId('idCivilite', 'Civilite', 'civilite', $civilite);
                 $idFonction = Personnel::returnId('idFonction', 'Fonction', 'fonction', $poste);
@@ -127,7 +127,7 @@
                     return flase;
                 }
                 $reponse->closeCursor();
-            } //End else if (VerifDoublons)
+           // } //End else if (VerifDoublons)
         } //End modifierPersonnel()
 
         public static function supprimerPersonnel($id){
