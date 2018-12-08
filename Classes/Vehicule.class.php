@@ -269,20 +269,40 @@
 
         public static function supprimerVehicule($id){
             global $bdd;
-            $requete = 'DELETE FROM Vehicule WHERE idVehicule=?';
-            $reponse = $bdd->prepare($requete);
-            $reponse->execute(array($id));
-            //Vérification de la réussite de la suppréssion
-            if($reponse->rowCount() > 0){
-                echo "OK. Véhicule supprimé !";
-            } 
-            else{
-                echo "Une erreur est survenue lors de la suppréssion du véhicule !";
-                return false;
+            if(Vehicule::checkVehicule($id)){
+                echo "Ce véhicule est en cours de réservation.";
+                return false;      
             }
-            $reponse->closeCursor();
+            else{
+                $requete = 'DELETE FROM Vehicule WHERE idVehicule=?';
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($id));
+                //Vérification de la réussite de la suppréssion
+                if($reponse->rowCount() > 0){
+                    echo "OK. Véhicule supprimé !";
+                    return true;
+                } 
+                else{
+                    echo "Une erreur est survenue lors de la suppréssion du véhicule !";
+                    return false;
+                }
+                $reponse->closeCursor();
+            }
 
         } //End supprimerVehicule($id)
+
+        public static function checkVehicule($id){
+            global $bdd;
+            $requete = "SELECT idVehicule FROM Reservation WHERE statut='En cours' AND idVehicule=?";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($id));
+            if($reponse->fetch()){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
 
         public static function ajoutMarque($marque){
             global $bdd;

@@ -132,8 +132,7 @@
         /*FRONT - Ajout infos pour besoins front */
         public static function afficheUtilisateurs(){
             global $bdd;
-            $reqAfficheUtilisateur = 'SELECT
-            idUtilisateur, prenom, nom, dateNaissance, numeroIdentite, fonction, adresse, telephone, email, login, statut, idPersonnel, cheminPhoto FROM Utilisateur NATURAL JOIN (Personnel NATURAL JOIN Fonction)';
+            $reqAfficheUtilisateur = 'SELECT idUtilisateur, prenom, nom, civilite, dateNaissance, numeroIdentite, fonction, adresse, telephone, email, login, statut, idPersonnel, cheminPhoto FROM Utilisateur NATURAL JOIN (Personnel NATURAL JOIN (Fonction NATURAL JOIN Civilite))';
             $reponse = $bdd->query($reqAfficheUtilisateur);
             if ($utilisateurs = $reponse->fetchAll()){
                 $utilisateurs = json_encode($utilisateurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); //Conversion du format du tableau en JSON
@@ -149,7 +148,7 @@
 
         public static function afficheUtilisateur($id){
             global $bdd;
-            $reqAfficheUtilisateur = 'SELECT idUtilisateur, prenom, nom, dateNaissance, numeroIdentite, fonction, adresse, telephone, email, login, statut, idPersonnel, cheminPhoto FROM Utilisateur NATURAL JOIN (Personnel NATURAL JOIN Fonction) WHERE idUtilisateur=?';
+            $reqAfficheUtilisateur = 'SELECT idUtilisateur, prenom, nom, civilite, dateNaissance, numeroIdentite, fonction, adresse, telephone, email, login, statut, idPersonnel, cheminPhoto FROM Utilisateur NATURAL JOIN (Personnel NATURAL JOIN (Fonction NATURAL JOIN Civilite)) WHERE idUtilisateur=?';
             $reponse = $bdd->prepare($reqAfficheUtilisateur);
             $reponse->execute(array($id));
             if ($utilisateurs = $reponse->fetchAll()){

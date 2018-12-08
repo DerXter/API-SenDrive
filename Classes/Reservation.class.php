@@ -136,13 +136,13 @@
 
 
         /*FRONT - Possibilité de choisir un client déjà present -> rajout attribut idClient */
-        public static function ajoutReservation($idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination){
+        public static function ajoutReservation($idReservation, $idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination, $statut){
             global $bdd;
             //Ajustement du format des dates
             $dateDepart = date("Y-m-d", strtotime($dateDepart));
             $dateArrivee = date("Y-m-d", strtotime($dateArrivee));
             //On vérifie si l'id du véhicule choisi fait ou non partie des véhicules réservés à cette période
-            if (Reservation::checkReserve($idVehicule, 'vehicule', $dateDepart, $dateArrivee)){
+            if (Reservation::checkReserve($idReservation, $idVehicule, 'vehicule', $dateDepart, $dateArrivee)){
                 // Le véhicule n'est pas disponible
                 echo "Ce véhicule a déjà été réservé à cette période !";
                 return false;
@@ -155,7 +155,7 @@
 
                 if($idChauffeur != 'NULL'){   
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
-                    if (Reservation::checkReserve($idChauffeur, 'chauffeur', $dateDepart, $dateArrivee)){
+                    if (Reservation::checkReserve($idReservation, $idChauffeur, 'chauffeur', $dateDepart, $dateArrivee)){
                         echo "Ce chauffeur a déjà été réservé à cette période !";
                         return false;
                         }    
@@ -241,103 +241,43 @@
         } //End ajoutReservation()
 
         public static function modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDebut, $dateFin, $statut, $destination){
-            global $bdd;
-            //Vérification du statut
-            $statut_autorises = array('En cours', 'Annulé', 'Terminé');
-            if(!in_array($statut, $statut_autorises)){
-                echo "Statut non autorisé. Les statuts autorisés sont: 'En cours', 'Annulé' et 'Terminé'";
-                return false;
-            }
-            //Ajustement du format des dates
-            $dateDebut = date("Y-m-d", strtotime($dateDebut));
-            $dateFin = date("Y-m-d", strtotime($dateFin));
-
-            //On vérifie si l'id du véhicule choisi fait ou non partie des véhicules réservés à cette période
-            if (Reservation::checkReserve($idVehicule, 'vehicule', $dateDebut, $dateFin)){
-                //Si le véhicule est réservé
-                    echo "Ce véhicule a déjà été réservé à cette période !";
-                    return false;
-            }
-            //Le véhicule est disponible, on passe à la vérification de la disponibilité du chauffeur
- 
-            else{
-
-                 //Calcul du nouveau prix
-                $prix = Reservation::calculPrix($idVehicule, $dateDebut, $dateFin);
-
-            //Le véhicule choisi est disponible
-verifChauffeur: if($idChauffeur != -1){   
-                    //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
-                    if (Reservation::checkReserve($idChauffeur, 'chauffeur', $dateDebut, $dateFin)){
-                        # Le chauffeur est réservé
-                        echo "Ce chauffeur a déjà été réservé à cette période !";
-                        return false;
-                    }    
-                    
-                    else{
-                        #Le chauffeur choisi est disponible
-                        //Modification des dates de la base
-    updateReservation:  $idDate = Reservation::returnId('idDate', 'Reservation', 'idReservation', $idReservation);
-                        $reqIdDisponibilite = "UPDATE Disponibilite SET dateDebut=?, dateFin=? WHERE idDisponibilite=?";
-                        $reponse = $bdd->prepare($reqIdDisponibilite);
-                        $reponse->execute(array($dateDebut, $dateFin, $idDate));
-                        //Vérification de la réussite de l'ajout
-                        if($reponse->rowCount() > 0){
-                            echo "Dates mises à jour / ";
-                        } 
-                        else{
-                            echo "Une erreur est survenue lors de la mise à jour des dates !";
-                            return false;
-                        }
-
-                        //Mise à jour de la réservation
-                        $requete = 'UPDATE Reservation SET idVehicule=:idVehicule, idClient=:idClient, idChauffeur=:idChauffeur, idDate=:idDate, statut=:statut, prix=:prix, destination=:destination WHERE idReservation=:idReservation';
-                        $reponse = $bdd->prepare($requete);
-                        $reponse->execute(array(
-                            'idReservation' => $idReservation,
-                            'idVehicule' => $idVehicule,
-                            'idClient' => $idClient,
-                            'idDate' => $idDate,
-                            'idChauffeur' => $idChauffeur,
-                            'statut' => $statut,
-                            'prix' => $prix,
-                            'destination' => $destination
-                            
-                        ));
-                        //Vérification de la réussite de la mise à jour
-                        if($reponse->rowCount() > 0){
-                            echo "OK. Réservation mise à jour !";
-                        } 
-                        else{
-                            echo "Une erreur est survenue lors de la modification de la réservation !";
-                            return false;
-                        }
-
-                    } //End else if($dataId chauffeur)
-
-                } //End if($idChauffeur!=-1)
-                else{
-                    //Aucun chauffeur n'est choisi, on passe directement à l'insertion de la réservation dans la base de données
-                    $idChauffeur=NULL;
-                    goto updateReservation;
-                } 
-            
-
-                $reponse->closeCursor();
-            } //End else if ($dataId vehicule)
+            //Annulation de la réservation
+            Reservation::changerStatutReservation($idReservation, 'Annulé');
+            //Ajout d'une nouvelle
+            Reservation::ajoutReservation($idReservation, $idVehicule, $idChauffeur, $idClient, $dateDebut, $dateFin, $destination, $statut);
             
         } //End modifierReservation()
 
-        public static function checkReserve($id, $nature, $dateDepart, $dateArrivee){
+        public static function sameDate($id, $debut, $fin){
+            global $bdd;
+            $requete = "SELECT dateDebut, dateFin FROM Disponibilite WHERE idDisponibilite=?";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($id));
+            if($data=$reponse->fetch()){
+                if($data['dateDebut']==$debut && $data['dateFin']==$fin){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+        }
+
+
+        public static function checkReserve($idReservation, $id, $nature, $dateDepart, $dateArrivee){
             global $bdd;
             $nameId = 'id'.$nature;
             $result=false; //Flag nous permettant de savoir si l'id indiqué correspond ou pas à un chauffeur/véhicule réservé
             //On récupère l'ensemble des id$nature des $nature qui ont été réservés à la période spécifiée
-            $reqRecupIdDisponibilite = "SELECT DISTINCT $nameId FROM Reservation, Disponibilite WHERE dateDebut<=:dateFin AND dateFin>=:dateDebut AND statut='En cours' AND idDate=idDisponibilite";
+            $reqRecupIdDisponibilite = "SELECT DISTINCT $nameId FROM Reservation, Disponibilite WHERE dateDebut<=:dateFin AND dateFin>=:dateDebut AND statut='En cours' AND idDate=idDisponibilite AND idReservation!=:idReservation";
             $reponse = $bdd->prepare($reqRecupIdDisponibilite);
             $reponse->execute(array(
                 'dateDebut' => $dateDepart, 
-                'dateFin' => $dateArrivee));
+                'dateFin' => $dateArrivee,
+                'idReservation' => $idReservation));
              //On vérifie si l'id du véhicule/chauffeur choisi fait ou non partie des $nature réservés à cette période
              while ($dataId=$reponse->fetch()){
                 // $dataId contient les id de tous les $nature qui ont été réservés
@@ -349,7 +289,7 @@ verifChauffeur: if($idChauffeur != -1){
                 }
               
             }
-            return $result==true ? true : false;
+            return $result;
             
         } //End checkReserve()
 
@@ -379,18 +319,24 @@ verifChauffeur: if($idChauffeur != -1){
                 
             } //End if
             else{
-                $reqReserv = "UPDATE Reservation SET statut=? WHERE idReservation=?";
-                $reponse = $bdd->prepare($reqReserv);
-                $reponse->execute(array($statut, $idReservation));
-                //Vérification de la réussite de la mise à jour du statut
-                if($reponse->rowCount() > 0){
-                    echo "OK. Statut de la réservation mis à jour !";
-                } 
-                else{
-                    echo "Une erreur est survenue lors de la mise à jour du statut de la réservation !";
-                    return false;
+                if(Reservation::getStatut($idReservation)==$statut){
+                    return true;
                 }
-                $reponse->closeCursor();
+                else{
+                    $reqReserv = "UPDATE Reservation SET statut=? WHERE idReservation=?";
+                    $reponse = $bdd->prepare($reqReserv);
+                    $reponse->execute(array($statut, $idReservation));
+                    //Vérification de la réussite de la mise à jour du statut
+                    if($reponse->rowCount() > 0){
+                        echo "OK. Statut de la réservation mis à jour !";
+                    } 
+                    else{
+                        echo "Une erreur est survenue lors de la mise à jour du statut de la réservation !";
+                        return false;
+                    }
+                    $reponse->closeCursor();
+                }   
+                
             } //End first else
             
             
@@ -422,6 +368,21 @@ verifChauffeur: if($idChauffeur != -1){
             }
             else{
                 echo "Aucun prix trouvé !";
+                return -1;
+            }
+
+        } //End getPrix
+
+        public static function getStatut($idReservation){
+            global $bdd;
+            $reqPrix = "SELECT statut FROM Reservation WHERE idReservation=?";
+            $reponse = $bdd->prepare($reqPrix);
+            $reponse->execute(array($idReservation));
+            if($data = $reponse->fetch()){
+                return $data['statut'];
+            }
+            else{
+                echo "Aucun statut trouvé !";
                 return -1;
             }
 

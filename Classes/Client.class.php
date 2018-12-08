@@ -11,27 +11,34 @@
 
         //Methodes
         public static function ajoutClient($nom, $prenom, $telephone, $adresse, $mail){
-            /* FRONT - Un client peut avoir plusieurs destinations selon la reservation - enregistrer destination dans reservation plutot */
-            
             global $bdd;
-            $requete = 'INSERT INTO Clientele (nom, prenom, email, telephone, adresse) VALUES(:nom, :prenom, :mail, :telephone, :adresse)';
-            $reponse = $bdd->prepare($requete);
-            $reponse->execute(array(
-                'nom' => $nom,
-                'prenom' => $prenom,
-                'telephone' => $telephone,
-                'adresse' => $adresse,
-                'mail' => $mail,
-            ));
-            //Vérification de la réussite de l'ajout
-            if($reponse->rowCount() > 0){
-                echo "OK. Client ajouté !";
-            } 
-            else{
-                echo "Une erreur est survenue lors de l'ajout du client !";
+            if(Client::checkDoublon("email", $mail) || Client::checkDoublon("telephone", $telephone)){
+                echo "Numéro de téléphone ou mail déjà utilisé.";
                 return false;
             }
-            $reponse->closeCursor();
+            else{
+                $requete = 'INSERT INTO Clientele (nom, prenom, email, telephone, adresse) VALUES(:nom, :prenom, :mail, :telephone, :adresse)';
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array(
+                    'nom' => $nom,
+                    'prenom' => $prenom,
+                    'telephone' => $telephone,
+                    'adresse' => $adresse,
+                    'mail' => $mail,
+                ));
+                //Vérification de la réussite de l'ajout
+                if($reponse->rowCount() > 0){
+                    echo "OK. Client ajouté !";
+                    return true;
+                } 
+                else{
+                    echo "Une erreur est survenue lors de l'ajout du client !";
+                    return false;
+                }
+                $reponse->closeCursor();
+
+            } //End else
+            
         } //End ajoutClient()
 
         public static function afficheClients(){
@@ -49,5 +56,17 @@
                 return false;
             }
         } //End afficheClients()
+        public static function checkDoublon($nature, $valeur){
+            global $bdd;
+            $doublon = false;
+            $requete = "SELECT $nature FROM Clientele WHERE $nature=?";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($valeur));
+            while($data = $reponse->fetch()){
+                $doublon = true;
+                break;
+            }
+            return $doublon;
+        } //End checkDoublon
 
     } //End class Client

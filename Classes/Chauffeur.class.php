@@ -173,21 +173,40 @@
 
         public static function supprimerChauffeur($id){
             global $bdd;
-            $requete = 'DELETE FROM Chauffeur WHERE idChauffeur=?';
-            $reponse = $bdd->prepare($requete);
-            $reponse->execute(array($id));
-            //Vérification de la réussite de la suppréssion du chauffeur
-            if($reponse->rowCount() > 0){
-                echo "OK. Chauffeur supprimé !";
-            } 
-            else{
-                echo "Une erreur est survenue lors de la suppréssion du chauffeur!";
-                return false;
+            if(Chauffeur::checkChauffeur($id)){
+                echo "Ce chauffeur est en cours de réservation.";
+                return false; 
             }
-            $reponse->closeCursor();
+            else{
+                $requete = 'DELETE FROM Chauffeur WHERE idChauffeur=?';
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($id));
+                //Vérification de la réussite de la suppréssion du chauffeur
+                if($reponse->rowCount() > 0){
+                    echo "OK. Chauffeur supprimé !";
+                } 
+                else{
+                    echo "Une erreur est survenue lors de la suppréssion du chauffeur!";
+                    return false;
+                }
+                $reponse->closeCursor();
 
+            }
+    
         } //End supprimerChauffeur($id)
 
+        public static function checkChauffeur($id){
+            global $bdd;
+            $requete = "SELECT idChauffeur FROM Reservation WHERE statut='En cours' AND idChauffeur=?";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($id));
+            if($reponse->fetch()){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
 
         public static function returnId($nomID, $table, $attribut, $valeur){
             global $bdd;
