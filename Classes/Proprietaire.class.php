@@ -13,6 +13,7 @@
         //Fonctions
         public static function afficheProprio(){
             global $bdd;
+            /*FRONT - besoin info raison sociale du proprio */
             $requete = 'SELECT proprietaire.*, raisonSociale from proprietaire, raisonsociale where proprietaire.idRaisonSociale = raisonSociale.idRaisonSociale;';
             $reponse = $bdd->query($requete);
             if($proprios=$reponse->fetchAll()){
@@ -68,6 +69,7 @@
         public static function modifProprio($idProprietaire, $raisonSociale, $proprietaire, $dateNaissance, $numIdentite, $telephone, $adresse, $email){
             global $bdd;
             $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
+            /*FRONT - Possibilité de modifier les infos proprietaire sans changer le numID*/
             //Vérification de l'unicité du proprietaire ajouté
            // if(Proprietaire::verifDoublons('numeroIdentite', 'Proprietaire', $numIdentite)){
            //     echo "Numéro d'identité déjà utilisé !";

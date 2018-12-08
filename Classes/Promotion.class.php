@@ -65,7 +65,7 @@
 
         } //End affichePromo(dateDebut, dateFin)
 
-
+        /* FRONT - Besoin liste de toutes les promos pour la gestion */
         public static function afficheToutesPromos(){
             global $bdd;
             $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, marque, modele, immatriculation, dateDebut, dateFin, statut FROM Promotion p, Vehicule v, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idVehicule=v.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele";

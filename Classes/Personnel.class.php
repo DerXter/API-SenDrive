@@ -88,6 +88,7 @@
 
         public static function modifierPersonnel($idPersonnel, $civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email){
             global $bdd;
+            /*FRONT - Possibilité de chnager les infos du personnel sans modifier le numID */
             //Vérification de l'unicité du personnel ajouté
             //if(Personnel::verifDoublons('numeroIdentite', 'Personnel', $numeroIdentite)){
             //    echo "Numéro d'identité déjà utilisé !";

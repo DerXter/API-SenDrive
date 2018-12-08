@@ -11,6 +11,8 @@
 
         //Methodes
         public static function ajoutClient($nom, $prenom, $telephone, $adresse, $mail){
+            /* FRONT - Un client peut avoir plusieurs destinations selon la reservation - enregistrer destination dans reservation plutot */
+            
             global $bdd;
             $requete = 'INSERT INTO Clientele (nom, prenom, email, telephone, adresse) VALUES(:nom, :prenom, :mail, :telephone, :adresse)';
             $reponse = $bdd->prepare($requete);

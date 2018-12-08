@@ -21,8 +21,9 @@
             $dateDebut = date("Y-m-d", strtotime($dateDebut));
             $dateFin = date("Y-m-d", strtotime($dateFin));
             //Vérification de la conformité de la période
-            if ($dateDebut > $dateFin){
-                echo "La date de départ ne peut être supérieure à la date de d'arrivée !";
+            if ($dateDebut > $dateFin){  
+                /* FRONT - Strictement superieur car dateDebut peut etre egal à dateFin*/
+                echo "La date de d'arrivée ne peut être supérieure à la date de de départ !";
                 return false;
             }
             else{
@@ -78,6 +79,7 @@
 
         public static function afficheChauffeurs(){
             global $bdd;
+            /* FRONT - Select * car besoin en front de toutes les donnees */
             $reqAfficheChauffeur = "SELECT * FROM chauffeur";
             if($reponse = $bdd->query($reqAfficheChauffeur)){
                 $chauffeurs = $reponse->fetchAll();
@@ -94,6 +96,7 @@
         } //End afficheChauffeurs()
 
         public static function ajoutChauffeur($prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $commentaire){
+            /*FRONT -  Suppression dateDebut et dateFin non prises en compte dans la bdd*/
             global $bdd;
             //Vérification de l'unicité du chauffeur ajouté
             if(Chauffeur::verifDoublons('numeroIdentite', 'Chauffeur', $numeroIdentite)){
@@ -130,6 +133,7 @@
 
         public static function modifierChauffeur($idChauffeur, $prenom, $nom, $dateNaissance, $numeroIdentite, $permis, $adresse, $telephone, $commentaire){
             global $bdd;
+            /* FRONT -  Verification des doublons mise en commentaire - Possibilité de changer les infos chauffeur sans modifier son numID */
             //Vérification de l'unicité du chauffeur ajouté
             //if(Chauffeur::verifDoublons('numeroIdentite', 'Chauffeur', $numeroIdentite)){
             //    echo "Numéro d'identité déjà utilisé !";
@@ -231,7 +235,6 @@
                 }
             }
             if(empty($data)){
-                //echo "Aucun chauffeur trouvé";
                 return false;
             }
             else{

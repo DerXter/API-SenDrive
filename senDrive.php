@@ -233,7 +233,7 @@
                     //Sécurisation de l'id du chauffeur
                     $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
                 }
-                //Vérification de l'id du client - Client déjà connu
+                //Vérification de l'id du client - Client déjà connu /*FRONT - Ajout idClient */
                 if(!isset($_POST['idClient'])){
                     $idClient = 'NULL';
                 }
@@ -274,12 +274,9 @@
                 $dateArrivee = htmlspecialchars($_POST['dateFin']);
                 $statut = htmlspecialchars($_POST['statut']);
                 
-                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut);
-
-                $prix = htmlspecialchars($_POST['prix']);
                 $destination = htmlspecialchars($_POST['destination']);
                 
-                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut, $prix, $destination);
+                echo Reservation::modifierReservation($idReservation, $idClient, $idVehicule, $idChauffeur, $dateDepart, $dateArrivee, $statut, $destination);
             break;
             case 'supprimerReservation': //Suppréssion de réservations
             include_once('Classes/Reservation.class.php');

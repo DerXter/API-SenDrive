@@ -129,6 +129,7 @@
 
         } //End changePassword()
 
+        /*FRONT - Ajout infos pour besoins front */
         public static function afficheUtilisateurs(){
             global $bdd;
             $reqAfficheUtilisateur = 'SELECT

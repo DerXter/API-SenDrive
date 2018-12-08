@@ -11,6 +11,7 @@
             global $bdd;
             $nature_autorises = array('contrat', 'fiche', 'processus', 'facture', 'gestion');
             if(in_array($nature, $nature_autorises)){
+                /*FRONT - besoin front nature doc */
                 $requete = "SELECT idDocument, titre, cheminDocument, nature FROM Documentation WHERE nature=?";
                 $reponse = $bdd->prepare($requete);
                 $reponse->execute(array($nature));
