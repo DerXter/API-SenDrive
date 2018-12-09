@@ -39,7 +39,10 @@ Les requêtes devront être structurées de la sorte :
 * __connexion(login, password)__ : connexion des utilisateurs  
 > __IMPORTANT:__ Si réussie, la fonction retourne un *array* contenant les informations de l'utilisateur connecté et retoune *false* si non.  
 * __afficheVehicules()__ : Affichage de tous les véhicules
-* __afficheVehicule(dateDebut, dateFin)__ : Affichage des véhicules disponibles entre les dates indiquées  
+* __afficheVehicule(dateDebut, dateFin)__ : Affichage des véhicules disponibles entre les dates indiquées
+* __afficheModele(id)__: Affichage d'un modèle selon l'id de la marque  
+> __NOTE :__ Si l'id de la marque n'est pas spécifié, tous les modèles seront affichés.  
+* __afficheMarques()__: Affichage des marques des véhicules   
 * __filtreVehicule(filtre)__ : Affichage des critères de véhicule selon __un__ filtre indiqué à la fois    
 > __IMPORTANT :__ Utiliser comme filtre, *clim-oui* pour afficher les véhicules climatisés et *clim-non*,  
 dans le cas contraire.  

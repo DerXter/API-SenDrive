@@ -235,7 +235,6 @@
         public static function modifierVehicule($idVehicule, $idMarque, $idModele, $idType, $idProprietaire, $idCarburant, $immatriculation, $climatisation, $nbPorte, $nbPlace, $description, $prix, $boiteDeVitesse){
             global $bdd;
 
-
             $requete = 'UPDATE Vehicule SET idMarque=:idMarque, idModele=:idModele, idType=:idType, idProprietaire=:idProprietaire, idCarburant=:idCarburant, immatriculation=:immatriculation, climatisation=:climatisation, nombreDePortes=:nombreDePortes, nombreDePlaces=:nombreDePlaces, description=:description, prix=:prix, boiteDeVitesse=:boiteDeVitesse WHERE idVehicule=:idVehicule';
             $reponse = $bdd->prepare($requete);
             $reponse->execute(array(
@@ -375,6 +374,43 @@
             } //End first else
             
         } //End ajoutType()
+
+        public static function afficheModele($idMarque){
+            global $bdd;
+            if($idMarque==""){
+                $requete = "SELECT modele FROM Modele";
+                $reponse = $bdd->query($requete);
+            }
+            else{
+                $requete = "SELECT modele FROM Modele WHERE idMarque=?";
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($idMarque));
+            }
+            if($modele = $reponse->fetchAll()){
+                $modele = json_encode($modele, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); 
+                $reponse->closeCursor();
+                return $modele;
+            }
+            else{
+                echo "Aucun modéle trouvé.";
+                return false;
+            }
+        }
+
+        public static function afficheMarques(){
+            global $bdd;
+            $requete = "SELECT marque FROM Marque";
+            $reponse = $bdd->query($requete);
+            if($marque=$reponse->fetchAll()){
+                $marque = json_encode($marque, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);     
+                $reponse->closeCursor();
+                return $marque;
+            }
+            else{
+                echo "Aucune marque trouvée.";
+                return false;
+            }
+        }
 
         public static function supprimerCaracVehicule($carac, $id){
             global $bdd;

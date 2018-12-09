@@ -172,6 +172,23 @@
 
                 echo Vehicule::ajoutModele($modele, $id);
             break;
+            case 'afficheModele': //Affichage d'un modèle selon l'id de la marque
+            include_once('Classes/Vehicule.class.php');
+            //Sécurisation des données reçues
+            if(isset($_GET['id'])){
+                $id = htmlspecialchars($_GET['id']);
+            }
+            else{
+                $id="";
+            }
+
+            echo Vehicule::afficheModele($id); 
+            break;
+            case 'afficheMarques': //Affichage des marques
+            include_once('Classes/Vehicule.class.php');
+            
+            echo Vehicule::afficheMarques(); 
+            break;
             case 'ajoutTypeVehicule': //Ajout d'un type de véhicule
                 include_once('Classes/Vehicule.class.php');
                 //Sécurisation des données reçues
@@ -241,13 +258,25 @@
                     //Sécurisation de l'id du chauffeur
                     $idClient = htmlspecialchars($_POST['idClient']);
                 }
+                if(!isset($_POST['statut'])){
+                    $statut = "En cours";
+                }
+                else{
+                    $statut = htmlspecialchars($_POST['statut']);
+                }
+                if(!isset($_POST['idReservation'])){
+                    $idReservation = 0;
+                }
+                else{
+                    $idReservation = htmlspecialchars($_POST['idReservation']);
+                }
                 //Sécurisation des données reçues
                 $idVehicule = htmlspecialchars($_POST['idVehicule']); 
                 $dateDepart = htmlspecialchars($_POST['dateDebut']);
                 $dateArrivee = htmlspecialchars($_POST['dateFin']);
                 $destination = htmlspecialchars($_POST['destination']);
                 
-                echo Reservation::ajoutReservation($idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination);
+                echo Reservation::ajoutReservation($idReservation, $idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination, $statut);
             break;
             case 'changerStatutReservation': //Annulation d'une reservation
                 include_once('Classes/Reservation.class.php');

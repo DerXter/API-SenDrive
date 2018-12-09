@@ -163,7 +163,7 @@
                     else{
                         #Le chauffeur choisi est disponible
                         //Mise à jour du statut de la réservation
-    insertReservation:  $statutReservation = 'En cours';
+    insertReservation:  $statutReservation =$statut;
                         if($idClient != -1){
                             $clientID = $idClient;
                         }else{
