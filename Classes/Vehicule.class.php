@@ -395,7 +395,7 @@
                 echo "Aucun modéle trouvé.";
                 return false;
             }
-        }
+        } //End afficheModele
 
         public static function afficheMarques(){
             global $bdd;
