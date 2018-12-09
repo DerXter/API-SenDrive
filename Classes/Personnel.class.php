@@ -88,13 +88,12 @@
 
         public static function modifierPersonnel($idPersonnel, $civilite, $poste, $nom, $prenom, $dateNaissance, $numeroIdentite, $adresse, $telephone, $email){
             global $bdd;
-            /*FRONT - Possibilité de chnager les infos du personnel sans modifier le numID */
             //Vérification de l'unicité du personnel ajouté
-            //if(Personnel::verifDoublons('numeroIdentite', 'Personnel', $numeroIdentite)){
-            //    echo "Numéro d'identité déjà utilisé !";
-            //    return false;
-            //}
-            //else{
+            if(Personnel::verifPersonnel($idPersonnel, $numeroIdentite)){
+                echo "Numéro d'identité déjà utilisé !";
+                return false;
+            }
+            else{
                 $dateNaissance = date("Y-m-d", strtotime($dateNaissance));
                 $idCivilite = Personnel::returnId('idCivilite', 'Civilite', 'civilite', $civilite);
                 $idFonction = Personnel::returnId('idFonction', 'Fonction', 'fonction', $poste);
@@ -125,10 +124,10 @@
                 } //End if
                 else{
                     echo "Civilité ou Fonction choisi(e) indisponible !";
-                    return flase;
+                    return false;
                 }
                 $reponse->closeCursor();
-           // } //End else if (VerifDoublons)
+            } //End else if (VerifPersonnel)
         } //End modifierPersonnel()
 
         public static function supprimerPersonnel($id){
@@ -147,6 +146,20 @@
             $reponse->closeCursor();
 
         } //End supprimerPersonnel($id)
+
+        public static function verifPersonnel($idPersonnel, $numeroIdentite){
+            global $bdd;
+            $requete = "SELECT idPersonnel FROM Personnel WHERE numeroIdentite=? AND idPersonnel!=?";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($numeroIdentite, $idPersonnel));
+            if($reponse->fetch()){
+                return true;
+            } 
+            else{
+                return false;
+            }
+            $reponse->closeCursor();
+        }
 
         public static function returnId($nomID, $table, $attribut, $valeur){
             global $bdd;
@@ -175,7 +188,7 @@
                 } //End if
             } //End while ()
             $reponse->closeCursor();
-            return $result==true ? true : false; //Retourne true s'il y'a un doublon et false dans le cas contraire
+            return $result;
         } //End verifDoublons()
 
     } //End Personnel
