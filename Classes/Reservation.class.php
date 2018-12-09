@@ -153,7 +153,7 @@
                 //On calcule le montant que va couter la reservation
                 $prix = Reservation::calculPrix($idVehicule, $dateDepart, $dateArrivee);
 
-                if($idChauffeur != 'NULL'){   
+                if($idChauffeur != -1){   
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
                     if (Reservation::checkReserve($idReservation, $idChauffeur, 'chauffeur', $dateDepart, $dateArrivee)){
                         echo "Ce chauffeur a déjà été réservé à cette période !";
@@ -164,7 +164,7 @@
                         #Le chauffeur choisi est disponible
                         //Mise à jour du statut de la réservation
     insertReservation:  $statutReservation = 'En cours';
-                        if($idClient != 'NULL'){
+                        if($idClient != -1){
                             $clientID = $idClient;
                         }else{
                             //Récupération de l'Id du dernier client entré

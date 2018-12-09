@@ -227,7 +227,7 @@
                 include_once('Classes/Reservation.class.php');
                 //Vérification de l'id du chauffeur
                 if(!isset($_POST['idChauffeur'])){
-                    $idChauffeur = 'NULL';
+                    $idChauffeur = -1;
                 }
                 else{
                     //Sécurisation de l'id du chauffeur
@@ -235,17 +235,11 @@
                 }
                 //Vérification de l'id du client - Client déjà connu /*FRONT - Ajout idClient */
                 if(!isset($_POST['idClient'])){
-                    $idClient = 'NULL';
+                    $idClient = -1;
                 }
                 else{
                     //Sécurisation de l'id du chauffeur
                     $idClient = htmlspecialchars($_POST['idClient']);
-                }
-                if(!isset($_POST['statut'])){
-                    $statut = 'En cours';
-                }
-                if(!isset($_POST['idReservation'])){
-                    $idReservation = 0;
                 }
                 //Sécurisation des données reçues
                 $idVehicule = htmlspecialchars($_POST['idVehicule']); 
@@ -253,7 +247,7 @@
                 $dateArrivee = htmlspecialchars($_POST['dateFin']);
                 $destination = htmlspecialchars($_POST['destination']);
                 
-                echo Reservation::ajoutReservation($idReservation, $idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination, $statut);
+                echo Reservation::ajoutReservation($idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination);
             break;
             case 'changerStatutReservation': //Annulation d'une reservation
                 include_once('Classes/Reservation.class.php');
@@ -270,7 +264,7 @@
                 $idVehicule = htmlspecialchars($_POST['idVehicule']); 
                 $idClient = htmlspecialchars($_POST['idClient']);
                 if(!isset($_POST['idChauffeur'])){
-                    $idChauffeur = null;
+                    $idChauffeur = -1;
                 }
                 else{
                     //Sécurisation de l'id du chauffeur
