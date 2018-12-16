@@ -286,6 +286,15 @@
                 
                 echo Reservation::changerStatutReservation($idReservation, $statut);
             break;
+            case 'filtreReservation': //filtrage des reservations
+                include_once('Classes/Reservation.class.php');
+                //Sécurisation des données reçues
+                $element = htmlspecialchars($_GET['element']);
+                $statut = htmlspecialchars($_GET['statut']);
+                $id = htmlspecialchars($_GET['id']);
+                
+                echo Reservation::filtreReservation($element, $id, $statut);
+            break;
             case 'modifierReservation': //modificaction d'une réservation
                 include_once('Classes/Reservation.class.php');
                 //Sécurisation des données reçues
