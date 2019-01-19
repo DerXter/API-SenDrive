@@ -52,6 +52,7 @@ dans le cas contraire.
 * __afficheClients()__ : Affichage des clients  
 * __afficheReservations(choix)__ : Affichage des réservations selon le choix *avec* ou *sans* chauffeur.  
 * __afficheReservation(statut)__ : Affichage des réservations selon le statut : 'En cours', 'Annulé' ou 'Terminé'.    
+* __filtreReservation(element, id, statut)__: Filtrage des reservations selon l'élément qui est soit *vehicule* ou *chauffeur*  
 * __annulerReservation(idReservation)__ : Annulation d'une reservation     
 * __afficheUtilisateurs()__ : Affichage des utilisateurs  
 * __afficheUtilisateur(id)__ : Affichage d'un utilisateur spécifié par son id   
