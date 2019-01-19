@@ -219,7 +219,7 @@
                         $reponse->execute(array($nbLocation, $idVehicule));
                         //Vérification de la réussite de la mise à jour
                         if($reponse->rowCount() > 0){
-                            echo "Nombre de location du véhicule mis à jour / OK.";
+                            echo "Nombre de location du véhicule mis à jour / Succes.";
                         } 
                         else{
                             echo "Une erreur est survenue lors de la mise à jour du nombre de location / ";
@@ -301,7 +301,7 @@
             $reponse->execute(array($id));
             //Vérification de la réussite de la suppréssion
             if($reponse->rowCount() > 0){
-                echo "Réservation supprimée !";
+                echo "Succes. Réservation supprimée !";
             } 
             else{
                 echo "Une erreur est survenue lors de la suppréssion de la réservation !";
@@ -328,7 +328,7 @@
                     $reponse->execute(array($statut, $idReservation));
                     //Vérification de la réussite de la mise à jour du statut
                     if($reponse->rowCount() > 0){
-                        echo "OK. Statut de la réservation mis à jour !";
+                        echo "Succes. Statut de la réservation mis à jour !";
                     } 
                     else{
                         echo "Une erreur est survenue lors de la mise à jour du statut de la réservation !";

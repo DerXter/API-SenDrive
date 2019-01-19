@@ -55,7 +55,7 @@
                 ));
                 //Vérification de la réussite de l'ajout
                 if($reponse->rowCount() > 0){
-                    echo "OK. Partenaire ajouté !";
+                    echo "Succes. Partenaire ajouté !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de l'ajout du partenaire !";
@@ -95,7 +95,7 @@
                 ));
                 //Vérification de la réussite de la mise à jour du propriétaire (qui est le partenaire)
                 if($reponse->rowCount() > 0){
-                    echo "OK. Partenaire mis à jour !";
+                    echo "Succes. Partenaire mis à jour !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de la mise à jour du partenaire !";
@@ -115,7 +115,7 @@
             $reponse->execute(array($id));
             //Vérification de la réussite de la suppréssion
             if($reponse->rowCount() > 0){
-                echo "OK. Partenaire supprimé !";
+                echo "Succes. Partenaire supprimé !";
             } 
             else{
                 echo "Une erreur est survenue lors de la suppréssion du partenaire !";

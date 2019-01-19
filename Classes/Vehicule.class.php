@@ -221,7 +221,7 @@
             ));
             //Vérification de l'ajout de véhicule
             if($reponse->rowCount() > 0){
-                echo "OK. Véhicule ajouté !";
+                echo "Succes. Véhicule ajouté !";
             } 
             else{
                 echo "Une erreur est survenue lors de l'ajout du véhicule !";
@@ -255,7 +255,7 @@
             ));
             //Vérification de la réussite de la mise à jour
             if($reponse->rowCount() > 0){
-                echo "OK. Véhicule mis à jour !";
+                echo "Succes. Véhicule mis à jour !";
             } 
             else{
                 echo "Une erreur est survenue lors de la modification du véhicule !";
@@ -278,7 +278,7 @@
                 $reponse->execute(array($id));
                 //Vérification de la réussite de la suppréssion
                 if($reponse->rowCount() > 0){
-                    echo "OK. Véhicule supprimé !";
+                    echo "Succes. Véhicule supprimé !";
                     return true;
                 } 
                 else{
@@ -315,7 +315,7 @@
                 $reponse = $bdd->prepare($requete);
                 $reponse->execute(array($marque));
                 if($reponse->rowCount() > 0){
-                    echo "Marque ajoutée.";
+                    echo "Succes. Marque ajoutée.";
                     return true;
                 }
                 else{
@@ -339,7 +339,7 @@
                 $reponse = $bdd->prepare($requete);
                 $reponse->execute(array($idMarque, $modele));
                 if($reponse->rowCount() > 0){
-                    echo "Modele ajouté.";
+                    echo "Succes. Modele ajouté.";
                     return true;
                 }
                 else{
@@ -363,7 +363,7 @@
                 $reponse = $bdd->prepare($requete);
                 $reponse->execute(array($type));
                 if($reponse->rowCount() > 0){
-                    echo "Type de véhicule ajouté.";
+                    echo "Succes. Type de véhicule ajouté.";
                     return true;
                 }
                 else{
@@ -378,11 +378,11 @@
         public static function afficheModele($idMarque){
             global $bdd;
             if($idMarque==""){
-                $requete = "SELECT modele FROM Modele";
+                $requete = "SELECT * FROM Modele";
                 $reponse = $bdd->query($requete);
             }
             else{
-                $requete = "SELECT modele FROM Modele WHERE idMarque=?";
+                $requete = "SELECT * FROM Modele WHERE idMarque=?";
                 $reponse = $bdd->prepare($requete);
                 $reponse->execute(array($idMarque));
             }
@@ -399,7 +399,7 @@
 
         public static function afficheMarques(){
             global $bdd;
-            $requete = "SELECT marque FROM Marque";
+            $requete = "SELECT * FROM Marque";
             $reponse = $bdd->query($requete);
             if($marque=$reponse->fetchAll()){
                 $marque = json_encode($marque, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);     
@@ -422,7 +422,7 @@
                 $reponse->execute(array($id));
                 //Vérification de la réussite de la suppréssion
                 if($reponse->rowCount() > 0){
-                    echo "$carac supprimé(e) !";
+                    echo "Succes. $carac supprimé(e) !";
                     return true;
                 } 
                 else{

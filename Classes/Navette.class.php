@@ -47,7 +47,7 @@
                                 'statut' => $statut
                             ));
                             if($reponse->rowCount() > 0){
-                                echo "Navette ajoutée";
+                                echo "Succes. Navette ajoutée";
                                 return true;
                             }
                             else{
@@ -109,7 +109,7 @@
                                 'statut' => $statut
                             ));
                             if($reponse->rowCount() > 0){
-                                echo "Navette mise à jour";
+                                echo "Succes. Navette mise à jour";
                                 return true;
                             }
                             else{
@@ -142,7 +142,7 @@
             $reponse->execute(array($id));
             //Vérification de la réussite de la suppréssion
             if($reponse->rowCount() > 0){
-                echo "Navette supprimée !";
+                echo "Succes. Navette supprimée !";
             } 
             else{
                 echo "Une erreur est survenue lors de la suppréssion de la navette !";
@@ -165,7 +165,7 @@
                 $reponse->execute(array($statut, $idNavette));
                 //Vérification de la réussite de la mise à jour du statut
                 if($reponse->rowCount() > 0){
-                    echo "Statut de la navette mis à jour !";
+                    echo "Succes. Statut de la navette mis à jour !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de la mise à jour du statut de la navette !";

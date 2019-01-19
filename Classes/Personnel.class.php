@@ -70,7 +70,7 @@
                     ));
                     //Vérification de la réussite de l'ajout
                     if($reponse->rowCount() > 0){
-                        echo "Ajout réussi !";
+                        echo "Succes. Ajout réussi !";
                     } 
                     else{
                         echo "Une erreur est survenue lors de l'ajout du personnel !";
@@ -114,7 +114,7 @@
                     ));
                     //Vérification de la réussite de la modification
                     if($reponse->rowCount() > 0){
-                        echo "Personnel mis à jour !";
+                        echo "Succes. Personnel mis à jour !";
                     } 
                     else{
                         echo "Une erreur est survenue lors de la mise à jour du personnel !";
@@ -137,7 +137,7 @@
             $reponse->execute(array($id));
             //Vérification de la réussite de la suppréssion
             if($reponse->rowCount() > 0){
-                echo "Personnel supprimé !";
+                echo "Succes. Personnel supprimé !";
             } 
             else{
                 echo "Une erreur est survenue lors de la suppréssion du personnel !";
