@@ -134,11 +134,12 @@
             
         } //End afficheReservation(statut)
 
-        public static function filtreReservation($element, $id, $statut){
+        public static function filtreReservationA($element, $id, $statut){
+            //Filtre les reservations avec chauffeur
             global $bdd;
-            $statut_autorises = array('En cours', 'Annulé', 'Terminé');
-            if(in_array($statut, $statut_autorises)){
-
+            $data = array();
+            if($element!=null){
+                //$element doit être vehicule ou chauffeur
                 if($element=="vehicule"){
                     $element = "v.id".ucfirst($element);
                 }
@@ -149,29 +150,111 @@
                     echo "Veuillez spécifier comme élément: vehicule ou chauffeur";
                     return false;
                 }
-                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation,CONCAT(re.prix, ' FCFA') AS prix, v.cheminPhoto, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND statut=? AND $element=?";
-                $reponse = $bdd->prepare($reqAfficheReserv);
-                $reponse->execute(array($statut, $id));
-                //var_dump ($reponse->fetchAll());
-                if ($reponse->rowCount() > 0){
-                    $reservations = $reponse->fetchAll();
-                    $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                    $reponse->closeCursor();
+            } //End if($element)
+            if($id!=null){
+                if($statut!=null){
+                    $statut_autorises = array('En cours', 'Annulé', 'Terminé');
+                    if(in_array($statut, $statut_autorises)){
+                        $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation,CONCAT(re.prix, ' FCFA') AS prix, v.cheminPhoto, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND statut=? AND $element=?";                  
+                        $data = array($statut, $id);
+                    } //End if(array)
+                    else{
+                        echo "Statut non disponible. Les statuts disponibles sont: 'En cours', 'Annulé' ou 'Terminé'.";
+                        return false;
+                    }
+                    
+                } //End if(statut)
+                else{
+                    $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation,CONCAT(re.prix, ' FCFA') AS prix, v.cheminPhoto, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND $element=?";
+                    $data = array($id);
+                }
+            } //End if($id)
+            //Id null et statut non null
+            else if($statut!=null){
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation,CONCAT(re.prix, ' FCFA') AS prix, v.cheminPhoto, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate AND statut=?";                  
+                $data = array($statut);
+            }
+            else
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, marque, modele, immatriculation,CONCAT(re.prix, ' FCFA') AS prix, v.cheminPhoto, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate";                  
 
-                    return $reservations;
-                }
-                else {
-                    echo "Aucune réservation n'a été trouvée !";
-                    return false;
-                }
-            } //End if(array)
-            else{
-                echo "Statut non disponible. Les statuts disponibles sont: 'En cours', 'Annulé' ou 'Terminé'.";
+
+            //************************Fin Vérification********************** */
+            $reponse = $bdd->prepare($reqAfficheReserv);
+            $reponse->execute($data);
+            //var_dump ($reponse->fetchAll());
+            if ($reponse->rowCount() > 0){
+                $reservations = $reponse->fetchAll();
+                $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $reponse->closeCursor();
+
+                return $reservations;
+            }
+            else {
+                echo "Aucune réservation n'a été trouvée !";
                 return false;
             }
-            
-            
-        } //End filtreReservation(element, statut)
+        } //End filtreReservationA(element, statut)
+
+        public static function filtreReservationS($element, $id, $statut){
+            //Filtre les reservations sans chauffeur
+            global $bdd;
+            $data = array();
+            if($element!=null){
+                //$element doit être vehicule ou chauffeur
+                if($element=="vehicule"){
+                    $element = "v.id".ucfirst($element);
+                }
+                else if($element=="chauffeur"){
+                    $element = "ch.id".ucfirst($element);
+                }
+                else{
+                    echo "Veuillez spécifier comme élément: vehicule ou chauffeur";
+                    return false;
+                }
+            } //End if($element)
+            if($id!=null){
+                if($statut!=null){
+                    $statut_autorises = array('En cours', 'Annulé', 'Terminé');
+                    if(in_array($statut, $statut_autorises)){
+                        $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, v.idVehicule, marque, modele, immatriculation, v.cheminPhoto,  CONCAT(re.prix, ' FCFA') AS prix, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, re.statut FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate AND statut=? AND $element=?";                  
+                        $data = array($statut, $id);
+                    } //End if(array)
+                    else{
+                        echo "Statut non disponible. Les statuts disponibles sont: 'En cours', 'Annulé' ou 'Terminé'.";
+                        return false;
+                    }
+                    
+                } //End if(statut)
+                else{
+                    $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, v.idVehicule, marque, modele, immatriculation, v.cheminPhoto,  CONCAT(re.prix, ' FCFA') AS prix, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, re.statut FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate AND $element=?";
+                    $data = array($id);
+                }
+            } //End if($id)
+            //Id null et statut non null
+            else if($statut!=null){
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, v.idVehicule, marque, modele, immatriculation, v.cheminPhoto,  CONCAT(re.prix, ' FCFA') AS prix, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, re.statut FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate AND statut=?";                  
+                $data = array($statut);
+            }
+            else
+                $reqAfficheReserv = "SELECT idReservation, cl.prenom AS prenomClient, cl.nom AS nomClient, cl.email, v.idVehicule, marque, modele, immatriculation, v.cheminPhoto,  CONCAT(re.prix, ' FCFA') AS prix, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, re.statut FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate";                  
+
+
+            //************************Fin Vérification********************** */
+            $reponse = $bdd->prepare($reqAfficheReserv);
+            $reponse->execute($data);
+            //var_dump ($reponse->fetchAll());
+            if ($reponse->rowCount() > 0){
+                $reservations = $reponse->fetchAll();
+                $reservations = json_encode($reservations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $reponse->closeCursor();
+
+                return $reservations;
+            }
+            else {
+                echo "Aucune réservation n'a été trouvée !";
+                return false;
+            }
+        } //End filtreReservationS(element, statut)
 
 
         /*FRONT - Possibilité de choisir un client déjà present -> rajout attribut idClient */
