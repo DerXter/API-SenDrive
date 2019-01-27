@@ -286,14 +286,41 @@
                 
                 echo Reservation::changerStatutReservation($idReservation, $statut);
             break;
-            case 'filtreReservation': //filtrage des reservations
+            case 'filtreReservationA': //filtrage des reservations avec chauffeur
                 include_once('Classes/Reservation.class.php');
                 //Sécurisation des données reçues
-                $element = htmlspecialchars($_GET['element']);
-                $statut = htmlspecialchars($_GET['statut']);
-                $id = htmlspecialchars($_GET['id']);
+                if(isset($_GET['element']))
+                    $element = htmlspecialchars($_GET['element']);
+                else
+                    $element = null;
+                if(isset($_GET['statut']))
+                    $statut = htmlspecialchars($_GET['statut']);
+                else
+                    $statut = null;
+                if(isset($_GET['id']))
+                    $id = htmlspecialchars($_GET['id']);
+                else    
+                    $id = null;
                 
-                echo Reservation::filtreReservation($element, $id, $statut);
+                echo Reservation::filtreReservationA($element, $id, $statut);
+            break;
+            case 'filtreReservationS': //filtrage des reservations avec chauffeur
+                include_once('Classes/Reservation.class.php');
+                //Sécurisation des données reçues
+                if(isset($_GET['element']))
+                    $element = htmlspecialchars($_GET['element']);
+                else
+                    $element = null;
+                if(isset($_GET['statut']))
+                    $statut = htmlspecialchars($_GET['statut']);
+                else
+                    $statut = null;
+                if(isset($_GET['id']))
+                    $id = htmlspecialchars($_GET['id']);
+                else    
+                    $id = null;
+                
+                echo Reservation::filtreReservationS($element, $id, $statut);
             break;
             case 'modifierReservation': //modificaction d'une réservation
                 include_once('Classes/Reservation.class.php');
