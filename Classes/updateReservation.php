@@ -1,5 +1,7 @@
 <?php
     include_once('connexion.php');
+    $cpSucces = 0; //Nombre de mise à jour réussie
+    $cpEchec = 0; //Nombre de mise à jour échouée
     $dateDuJour = date('Y-m-d');
     $datesFinReservation = "SELECT DISTINCT idReservation, dateFin FROM Disponibilite, Reservation WHERE idDate=idDisponibilite AND statut='En cours'";
 
@@ -10,15 +12,21 @@
             $updateReservation = "UPDATE Reservation SET statut='Terminé' WHERE idReservation=?";
             $rep = $bdd->prepare($updateReservation);
             $rep->execute(array($reservation['idReservation']));
-            if($rep->rowCount() > 0)
+            if($rep->rowCount() > 0){
                 $rapport .= "Réservation no". $reservation['idReservation']." mise à jour !\r\n";
-            else
-                $rapport .= "Réservation no". $reservation['idReservation']." non mise à jour !\r\n";
+                $cpSucces++;
+            }
+            else{
+                $rapport .= "****************Réservation no". $reservation['idReservation']." non mise à jour !****************\r\n";
+                $cpEchec++;
+            }
             $rep->closeCursor();
         } //End if
     } //End while
     $reponse->closeCursor();
     $rapport .= "\nMise à jour Terminée ! \n";
+    $rapport .= "\r\nMise à jour réussie: ".$cpSucces."\r\n";
+    $rapport .= "Mise à jour échouée: ".$cpEchec."\r\n";
 
     // ***************************** Génération et envoie du mail *****************************
     // Destinataire

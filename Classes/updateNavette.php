@@ -1,5 +1,7 @@
 <?php
     include_once('connexion.php');
+    $cpSucces = 0; //Nombre de mise à jour réussie
+    $cpEchec = 0; //Nombre de mise à jour échouée
     //Récupération de la date du jour
     $dateDuJour = date('Y-m-d');
     //Récupération de l'heure qu'il fait
@@ -11,7 +13,7 @@
 
     $heuresFinNavette = "SELECT DISTINCT idNavette, heureFin, date FROM Horaire h, Navette n WHERE n.idHoraire=h.idHoraire AND statut='En cours'";
     $rapport="";
-    
+
     global $bdd;
     $reponse = $bdd->query($heuresFinNavette);
     while($navette=$reponse->fetch()){
@@ -19,15 +21,21 @@
             $updateNavette = "UPDATE Navette SET statut='Terminé' WHERE idNavette=?";
             $rep = $bdd->prepare($updateNavette);
             $rep->execute(array($navette['idNavette']));
-            if($rep->rowCount() > 0)
+            if($rep->rowCount() > 0){
                 $rapport .= "Navette no". $navette['idNavette']." mise à jour !\r\n";
-            else
-                $rapport .= "Navette no". $navette['idNavette']." non mise à jour !\r\n";
+                $cpSucces++;
+            }
+            else{
+                $rapport .= "****************Navette no". $navette['idNavette']." non mise à jour !****************\r\n";
+                $cpEchec++;
+            }
             $rep->closeCursor();
         } //End if
     } //End while
     $reponse->closeCursor();
     $rapport .= "\r\nMise à jour Terminée ! \r\n";
+    $rapport .= "\r\nMise à jour réussie: ".$cpSucces."\r\n";
+    $rapport .= "Mise à jour échouée: ".$cpEchec."\r\n";
 
 
     // ***************************** Génération et envoie du mail *****************************

@@ -3,6 +3,8 @@
     $dateDuJour = date('Y-m-d');
     $datesFinPromo = "SELECT DISTINCT idPromo, dateFin FROM Disponibilite, Promotion WHERE idDate=idDisponibilite AND statut='En cours'";
     $rapport="";
+    $cpSucces = 0; //Nombre de mise à jour réussie
+    $cpEchec = 0; //Nombre de mise à jour échouée
 
     global $bdd;
     $reponse = $bdd->query($datesFinPromo);
@@ -11,15 +13,22 @@
             $updatePromotion = "UPDATE Promotion SET statut='Terminé' WHERE idPromo=?";
             $rep = $bdd->prepare($updatePromotion);
             $rep->execute(array($promotion['idPromo']));
-            if($rep->rowCount() > 0)
+            if($rep->rowCount() > 0){
                 $rapport .= "Promotion no". $promotion['idPromo']." mise à jour !\r\n";
-            else
-                $rapport .= "Promotion no". $promotion['idPromo']." non mise à jour !\r\n";
+                $cpSucces++;
+            }
+            else{
+                $rapport .= "****************Promotion no". $promotion['idPromo']." non mise à jour !****************\r\n";
+                $cpEchec++;
+            }
             $rep->closeCursor();
         } //End if
     } //End while
     $reponse->closeCursor();
     $rapport .= "\nMise à jour Terminée ! \n";
+    $rapport .= "\r\nMise à jour réussie: ".$cpSucces."\r\n";
+    $rapport .= "Mise à jour échouée: ".$cpEchec."\r\n";
+    
 
     // ***************************** Génération et envoie du mail *****************************
     // Destinataire
