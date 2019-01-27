@@ -10,7 +10,8 @@
     $heureActuelle = $heure.':'.$minute.':'.$seconde;
 
     $heuresFinNavette = "SELECT DISTINCT idNavette, heureFin, date FROM Horaire h, Navette n WHERE n.idHoraire=h.idHoraire AND statut='En cours'";
-
+    $rapport="";
+    
     global $bdd;
     $reponse = $bdd->query($heuresFinNavette);
     while($navette=$reponse->fetch()){
