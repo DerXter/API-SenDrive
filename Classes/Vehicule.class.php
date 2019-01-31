@@ -414,7 +414,7 @@
 
         public static function supprimerCaracVehicule($carac, $id){
             global $bdd;
-            $type_authorise = array('marque', 'modele', 'typevoiture', 'typeVoiture');
+            $type_authorise = array('marque', 'modele', 'typevehicule', 'typeVehicule');
             if(in_array($carac, $type_authorise)){
                 $idName = 'id'.$carac;
                 $requete = "DELETE FROM $carac WHERE $idName=?";
@@ -426,7 +426,7 @@
                     return true;
                 } 
                 else{
-                    echo "Une erreur est survenue lors de la suppréssion de la/du $carac !";
+                    echo "Une erreur est survenue lors de la suppression de la/du $carac !";
                     return false;
                 }
                 $reponse->closeCursor();
