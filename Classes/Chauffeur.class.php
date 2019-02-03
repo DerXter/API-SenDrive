@@ -121,7 +121,7 @@
                 ));
                 //Vérification de la réussite de l'ajout
                 if($reponse->rowCount() > 0){
-                    echo "OK. Chauffeur ajouté !";
+                    echo "Succes. Chauffeur ajouté !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de l'ajout du chauffeur !";
@@ -159,7 +159,7 @@
                 ));
                 //Vérification de la réussite de la mise à jour du chauffeur
                 if($reponse->rowCount() > 0){
-                    echo "OK. Chauffeur mis à jour !";
+                    echo "Succes. Chauffeur mis à jour !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de la modification du chauffeur !";
@@ -183,7 +183,7 @@
                 $reponse->execute(array($id));
                 //Vérification de la réussite de la suppréssion du chauffeur
                 if($reponse->rowCount() > 0){
-                    echo "OK. Chauffeur supprimé !";
+                    echo "Succes. Chauffeur supprimé !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de la suppréssion du chauffeur!";

@@ -28,7 +28,7 @@
                 ));
                 //Vérification de la réussite de l'ajout
                 if($reponse->rowCount() > 0){
-                    echo "OK. Client ajouté !";
+                    echo "Succes. Client ajouté !";
                     return true;
                 } 
                 else{

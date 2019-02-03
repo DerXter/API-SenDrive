@@ -47,7 +47,7 @@
                 ));
                 //Vérification de la réussite de l'ajout
                 if($reponse->rowCount() > 0){
-                    echo "Utilisateur ajouté !";
+                    echo "Succes. Utilisateur ajouté !";
                 } 
                 else{
                     echo "Une erreur est survenue lors de l'ajout de l'utilisateur' !";
@@ -74,7 +74,7 @@
                     ));
                     //Vérification de la réussite de la modification
                     if($reponse->rowCount() > 0){
-                        echo "Utilisateur modifié !";
+                        echo "Succes. Utilisateur modifié !";
                     } 
                     else{
                         echo "Une erreur est survenue lors de la modification de l'utilisateur' !";
@@ -114,7 +114,7 @@
                 $reponse = $bdd->prepare($requete);
                 $reponse->execute(array($newPass_hache, $id));
                 if($reponse->rowCount() > 0){
-                    echo "Mot de passe modifié !";
+                    echo "Succes. Mot de passe modifié !";
                     return true;
                 }
                 else{

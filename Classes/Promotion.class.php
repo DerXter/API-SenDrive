@@ -109,7 +109,7 @@
                         'statut' => $statut
                     ));
                     if($reponse->rowCount() > 0){
-                        echo "Promotion ajoutée";
+                        echo "Succes. Promotion ajoutée";
                         return true;
                     }
                     else{
@@ -161,7 +161,7 @@
                         'statut' => $statut
                     ));
                     if($reponse->rowCount() > 0){
-                        echo "Promotion mise à jour";
+                        echo "Succes. Promotion mise à jour";
                         return true;
                     }
                     else{
@@ -199,7 +199,7 @@
             $reponse->execute(array($id));
             //Vérification de la réussite de la suppréssion de la promotion
             if($reponse->rowCount() > 0){
-                echo "Promotion supprimée !";
+                echo "Succes. Promotion supprimée !";
             } 
             else{
                 echo "Une erreur est survenue lors de la suppréssion de la promotion !";

@@ -46,7 +46,7 @@
                     $reponse = $bdd->prepare($requete);
                     $reponse->execute(array($id));
                     if($reponse->rowCount() > 0){
-                        echo 'OK. Fichier supprimé.';
+                        echo 'Succes. Fichier supprimé.';
                         return true;
                     }
                     else{
