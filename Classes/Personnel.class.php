@@ -181,8 +181,8 @@
             $result=false; //Flag me permettant de savoir s'il y'a un doublon ou pas
             $requete = "SELECT $donnee FROM $table";
             $reponse = $bdd->query($requete);
-            while($data = $reponse->fetch()){
-                if($valeur==$data[$donnee]){
+            while($data = $reponse->fetch()){  
+                if(strcasecmp($valeur, $data[$donnee])==0){ //Comparaison insensible à la casse
                     $result = true;
                     break;
                 } //End if
@@ -191,4 +191,26 @@
             return $result;
         } //End verifDoublons()
 
+        public function ajoutFonction($fonction){
+            if(Personnel::verifDoublons("fonction", "Fonction", $fonction)){
+                echo "Ce poste existe déjà !";
+            }
+            else{
+                global $bdd;
+                $ajoutFonction = "INSERT INTO Fonction SET fonction=?";
+                $reponse = $bdd->prepare($ajoutFonction);
+                $reponse->execute(array($fonction));
+                if($reponse->rowCount()>0){
+                    echo "Fonction ajoutée !";
+                    return true;
+                }
+                else{
+                    echo "Fonction non ajoutée !";
+                    return false;
+                }
+
+            } //End else
+            
+            
+        } //AjoutFonction
     } //End Personnel
