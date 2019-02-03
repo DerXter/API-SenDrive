@@ -511,6 +511,14 @@
 
             echo Personnel::supprimerPersonnel($id);
             break;
+            case 'ajoutFonction': //Ajout d'une fonction d'un personnel
+            include_once('Classes/Personnel.class.php');
+            if(isset($_POST['poste'])){
+                $poste = htmlspecialchars($_POST['poste']);
+
+                echo Personnel::ajoutFonction($poste);
+            }
+            break;
 
             //******************************Traitement de la documentation******************************
             case 'afficheDoc': //Affichage des fichiers de documentation dont la nature est spécifiée
