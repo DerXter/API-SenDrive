@@ -99,7 +99,7 @@
 
         public static function filtreVehicule($filtre){ //Affiche des critères de véhicule selon le filtre
             global $bdd;
-            if ($filtre=='marque' || $filtre=='modele' || $filtre=='typevehicule' || $filtre=='carburant' || $filtre=='proprietaire' ||  $filtre=='raisonSociale'){
+            if ($filtre=='marque' || $filtre=='modele' || $filtre=='typevehicule' || $filtre=='carburant' || $filtre=='proprietaire' ||  $filtre=='raisonSociale' || $filtre=='fonction'){
                 $requete = "SELECT * FROM $filtre";
             }
             else{

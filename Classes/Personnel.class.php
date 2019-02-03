@@ -201,7 +201,7 @@
                 $reponse = $bdd->prepare($ajoutFonction);
                 $reponse->execute(array($fonction));
                 if($reponse->rowCount()>0){
-                    echo "Fonction ajoutée !";
+                    echo "Succes. Fonction ajoutée !";
                     return true;
                 }
                 else{
