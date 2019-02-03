@@ -147,7 +147,10 @@
                 }
                 else{
                     //Ajout des dates dans la base
-                    $idDate = Promotion::modifierDate($idPromo, $dateDebut, $dateFin);
+                    if(Promotion::sameDate($idPromo, $dateDebut, $dateFin)){
+                        echo "der";
+                        $idDate = Promotion::modifierDate($idPromo, $dateDebut, $dateFin);
+                    }
                     $reqModifPromo = "UPDATE Promotion SET idVehicule=:idVehicule, nom=:nom, taux=:taux, statut=:statut WHERE idPromo=:idPromo";
                     $reponse = $bdd->prepare($reqModifPromo);
                     $reponse->execute(array(
@@ -175,6 +178,19 @@
             }
             
         } //End modifierPromo
+
+        public static function sameDate($id, $debut, $fin){
+            global $bdd;
+            $requete = "SELECT dateDebut, dateFin FROM Disponibilite, Promotion WHERE idDate=idDisponibilite AND idPromo=? AND dateDebut=? AND dateFin=?";
+            $reponse = $bdd->prepare($requete);
+            $reponse->execute(array($id, $debut, $fin));
+            if($data=$reponse->fetch()){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
 
         public static function supprimerPromo($id){
             global $bdd;
