@@ -188,20 +188,20 @@
                 } //End if
                 else{
                     if($choix=='avec'){
-                       $reqAfficheNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, destination, statut FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur AND statut=?";
+                       $reqAfficheNavette = "SELECT DISTINCT idNavette, v.idVehicule, ca.idChauffeur, c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, destination, statut FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur AND statut=?";
                     }
                     else if($choix=='sans'){
-                       $reqAfficheNavette = "SELECT DISTINCT prenom AS prenom_client, nom AS nom_client, marque, modele, immatriculation, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, destination, statut FROM Clientele c, Vehicule v, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND n.idChauffeur IS NULL AND statut=?";
+                       $reqAfficheNavette = "SELECT DISTINCT idNavette, v.idVehicule, prenom AS prenom_client, nom AS nom_client, marque, modele, immatriculation, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, destination, statut FROM Clientele c, Vehicule v, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND n.idChauffeur IS NULL AND statut=?";
                     }
             
                 } //End else if(!empty)
             } //End if(!empty)
             else{
                 if($choix=='avec'){
-                    $reqAfficheNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, destination, statut FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur";
+                    $reqAfficheNavette = "SELECT DISTINCT idNavette, v.idVehicule, ca.idChauffeur, c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, destination, statut FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur";
                 }
                 else{
-                    $reqAfficheNavette = "SELECT DISTINCT prenom AS prenom_client, nom AS nom_client, marque, modele, immatriculation, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, destination, statut FROM Clientele c, Vehicule v, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND n.idChauffeur IS NULL";
+                    $reqAfficheNavette = "SELECT DISTINCT idNavette, v.idVehicule, prenom AS prenom_client, nom AS nom_client, marque, modele, immatriculation, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, destination, statut FROM Clientele c, Vehicule v, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND n.idChauffeur IS NULL";
                 }
             }
             $reponse = $bdd->prepare($reqAfficheNavette);
