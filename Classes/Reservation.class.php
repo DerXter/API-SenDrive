@@ -442,6 +442,7 @@
             } //End if
             else{
                 if(Reservation::getStatut($idReservation)==$statut){
+                    echo "Cette réservation est déjà annulée";
                     return true;
                 }
                 else{

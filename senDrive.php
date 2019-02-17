@@ -278,13 +278,12 @@
                 
                 echo Reservation::ajoutReservation($idReservation, $idVehicule, $idChauffeur, $idClient, $dateDepart, $dateArrivee, $destination, $statut);
             break;
-            case 'changerStatutReservation': //Annulation d'une reservation
+            case 'annulerReservation': //Annulation d'une reservation
                 include_once('Classes/Reservation.class.php');
                 //Sécurisation des données reçues
-                $idReservation = htmlspecialchars($_GET['idReservation']);
-                $statut = htmlspecialchars($_GET['statut']);
+                $idReservation = htmlspecialchars($_GET['id']);
                 
-                echo Reservation::changerStatutReservation($idReservation, $statut);
+                echo Reservation::changerStatutReservation($idReservation, 'Annulé');
             break;
             case 'filtreReservationA': //filtrage des reservations avec chauffeur
                 include_once('Classes/Reservation.class.php');
