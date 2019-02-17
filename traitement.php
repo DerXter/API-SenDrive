@@ -145,6 +145,6 @@ header("Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Ca
             echo "Fichier trop volumineux !";
         }
         } //End if(isset)
-        else{
-            echo "Aucun fichier reçu !";
-        }
+    else{
+        echo "Aucun fichier reçu !";
+    }

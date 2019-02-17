@@ -519,6 +519,14 @@
                 echo Personnel::ajoutFonction($poste);
             }
             break;
+            case 'supprimerFonction': //Ajout d'une fonction d'un personnel
+            include_once('Classes/Personnel.class.php');
+            if(isset($_GET['id'])){
+                $id = htmlspecialchars($_GET['id']);
+
+                echo Personnel::supprimerFonction($id);
+            }
+            break;
 
             //******************************Traitement de la documentation******************************
             case 'afficheDoc': //Affichage des fichiers de documentation dont la nature est spécifiée
@@ -603,11 +611,12 @@
                 $idVehicule = htmlspecialchars($_POST['idVehicule']);
                 $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
                 $date = htmlspecialchars($_POST['date']);
+                $depart = htmlspecialchars($_POST['depart']);
                 $destination = htmlspecialchars($_POST['destination']);
                 $heureDebut = htmlspecialchars($_POST['heureDebut']);
                 $heureFin = htmlspecialchars($_POST['heureFin']);
 
-                echo Navette::ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $destination, $heureDebut, $heureFin);
+                echo Navette::ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin);
             break;
             case 'modifierNavette': //Modification d'une navette
                 include_once('Classes/Navette.class.php');
@@ -617,11 +626,12 @@
                 $idVehicule = htmlspecialchars($_POST['idVehicule']);
                 $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
                 $date = htmlspecialchars($_POST['date']);
+                $depart = htmlspecialchars($_POST['depart']);
                 $destination = htmlspecialchars($_POST['destination']);
                 $heureDebut = htmlspecialchars($_POST['heureDebut']);
                 $heureFin = htmlspecialchars($_POST['heureFin']);
 
-                echo Navette::modifierNavette($idNavette, $idClient, $idVehicule, $idChauffeur, $date, $destination, $heureDebut, $heureFin);
+                echo Navette::modifierNavette($idNavette, $idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin);
             break;
             case 'afficheNavette': //Affichage des navettes
                 include_once('Classes/Navette.class.php');
@@ -635,6 +645,27 @@
                 $choix = htmlspecialchars($_GET['choix']);
 
                 echo Navette::afficheNavette($choix, $statut);
+            break;
+            case 'filtreNavette': //Affichage des navettes selon le vehicule ou le chauffeur
+                include_once('Classes/Navette.class.php');
+                //Sécurisation des données reçues
+                if(isset($_GET['idVehicule'])){
+                    $idVehicule = htmlspecialchars($_GET['idVehicule']);
+                }
+                else
+                    $idVehicule = '';
+                if(isset($_GET['idChauffeur'])){
+                    $idChauffeur = htmlspecialchars($_GET['idChauffeur']);
+                }
+                else
+                    $idChauffeur = '';
+                if(isset($_GET['choix'])){
+                    $choix = htmlspecialchars($_GET['choix']);
+                }
+                else
+                    $choix = '';
+
+                echo Navette::filtreNavette($idVehicule, $idChauffeur, $choix);
             break;
             case 'supprimerNavette': //Suppression de navette
                 include_once('Classes/Navette.class.php');
