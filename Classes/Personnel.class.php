@@ -210,7 +210,22 @@
                 }
 
             } //End else
+        } //End fonction ajoutFonction
+
+            public static function supprimerFonction($id){
+                global $bdd;
+                $requete = 'DELETE FROM Fonction WHERE idFonction=?';
+                $reponse = $bdd->prepare($requete);
+                $reponse->execute(array($id));
+                //Vérification de la réussite de la suppréssion
+                if($reponse->rowCount() > 0)
+                    echo "Succes. Fonction supprimée !";
+                else{
+                    echo "Une erreur est survenue lors de la suppréssion de cette fonction !";
+                    return false;
+                } //
+                $reponse->closeCursor();
+    
+            } //End supprimerFonction($id)
             
-            
-        } //AjoutFonction
     } //End Personnel
