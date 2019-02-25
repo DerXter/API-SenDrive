@@ -615,8 +615,9 @@
                 $destination = htmlspecialchars($_POST['destination']);
                 $heureDebut = htmlspecialchars($_POST['heureDebut']);
                 $heureFin = htmlspecialchars($_POST['heureFin']);
+                $prix = htmlspecialchars($_POST['prix']);
 
-                echo Navette::ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin);
+                echo Navette::ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix);
             break;
             case 'modifierNavette': //Modification d'une navette
                 include_once('Classes/Navette.class.php');
@@ -630,8 +631,9 @@
                 $destination = htmlspecialchars($_POST['destination']);
                 $heureDebut = htmlspecialchars($_POST['heureDebut']);
                 $heureFin = htmlspecialchars($_POST['heureFin']);
+                $prix = htmlspecialchars($_POST['prix']);
 
-                echo Navette::modifierNavette($idNavette, $idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin);
+                echo Navette::modifierNavette($idNavette, $idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix);
             break;
             case 'afficheNavette': //Affichage des navettes
                 include_once('Classes/Navette.class.php');
@@ -642,9 +644,8 @@
                 else{
                     $statut = '';
                 }
-                $choix = htmlspecialchars($_GET['choix']);
 
-                echo Navette::afficheNavette($choix, $statut);
+                echo Navette::afficheNavette($statut);
             break;
             case 'filtreNavette': //Affichage des navettes selon le vehicule ou le chauffeur
                 include_once('Classes/Navette.class.php');
@@ -659,13 +660,8 @@
                 }
                 else
                     $idChauffeur = '';
-                if(isset($_GET['choix'])){
-                    $choix = htmlspecialchars($_GET['choix']);
-                }
-                else
-                    $choix = '';
 
-                echo Navette::filtreNavette($idVehicule, $idChauffeur, $choix);
+                echo Navette::filtreNavette($idVehicule, $idChauffeur);
             break;
             case 'supprimerNavette': //Suppression de navette
                 include_once('Classes/Navette.class.php');

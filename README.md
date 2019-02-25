@@ -80,10 +80,9 @@ dans le cas contraire.
 * __affichePromo(statut)__: Affichage des promotions selon le statut spécifié  
 * __affichePromos(dateDebut, dateFin)__: Affichage des promotions comprises entre deux dates  
 * __supprimerPromo(id)__ : Suppréssion de promotion   
-* __afficheNavette(choix, statut)__: Affichage des navettes  
-> __NOTE:__ Le statut est facultatif. S'il n'est pas indiqué, toutes les navettes *En cours*, *Annulé* comme *Terminé* sont affichées. Le choix est quant à lui obligatoire et permet de spécifier une affichage de navettes *sans* ou *avec* chauffeur.  
-* __filtreNavette(idVehicule, idChauffeur, choix)__ : Affichage des navettes selon le vehicule ou le chauffeur  
-> __NOTE:__ Le *choix* est à spécifier seulement dans le cas où seul *idVehicule* est renseigné.   
+* __afficheNavette(statut)__: Affichage des navettes  
+> __NOTE:__ Le statut est facultatif. S'il n'est pas indiqué, toutes les navettes *En cours*, *Annulé* comme *Terminé* sont affichées.  
+* __filtreNavette(idVehicule, idChauffeur)__ : Affichage des navettes selon le vehicule ou le chauffeur   
 * __supprimerNavette(id)__: Suppression de navette  
 * __annulerNavette(id)__: Annulation de navette
 
@@ -116,8 +115,8 @@ dans le cas contraire.
 > __NOTE :__ Cet attribut est défini par *carac* et peut valoir soit *marque*, *modele* ou *typeVehicule*. Dans le cas où il vaut *modele*, il faudra renseigner le paramètre *idMarque* car le modèle d'un véhicule dépend de la marque. C'est le seul cas où l'*idMarque* est obligatoire.  
 * __ajoutPromo(idVehicule, nom, taux, dateDebut, dateFin)__ : Ajout de promotion  
 * __modifierPromo(idPromo, idVehicule, nom, taux, statut, dateDebut, dateFin)__ : Modification de promotion  
-* __ajoutNavette(idClient, idVehicule, idChauffeur, date, destination, heureDebut, heureFin)__: Ajout d'une navette  
-* __modifierNavette(idNavette, idClient, idVehicule, idChauffeur, date, destination, heureDebut, heureFin)__: Modification d'une navette
+* __ajoutNavette(idClient, idVehicule, idChauffeur, date, destination, heureDebut, heureFin, prix)__: Ajout d'une navette  
+* __modifierNavette(idNavette, idClient, idVehicule, idChauffeur, date, destination, heureDebut, heureFin, prix)__: Modification d'une navette
 
   
 > __*IMPORTANT*__ : Dans le fichier *connexion.class.php*, il faudra mettre à jour la ligne au niveau du bloc "*Try*" en le remplaçant par :  
