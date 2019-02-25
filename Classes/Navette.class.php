@@ -16,7 +16,7 @@
             //Formalisation de la date
             $date = date("Y-m-d", strtotime($date));
             //Vérification de la conformité de la tranche horaire
-            if($heureDebut > $heureFin){
+            if($heureDebut >= $heureFin){
                 echo "L'heure de début ne peut être supérieure à l'heure de fin.";
                 return false;
             }
@@ -134,7 +134,7 @@
                 echo "Succes. Navette supprimée !";
             } 
             else{
-                echo "Une erreur est survenue lors de la suppréssion de la navette !";
+                echo "Une erreur est survenue lors de la suppression de la navette !";
                 return false;
             }
             $reponse->closeCursor();
@@ -195,7 +195,6 @@
                 echo "Aucune navette trouvée.";
                 return false;
             }
-
         } //End filtreNavette
 
         public static function afficheNavette($statut){
@@ -211,7 +210,7 @@
             
                 } //End else if(!empty)
             } //End if(!empty)
-            else{ 
+            else{
                 $reqAfficheNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, depart, destination, statut FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur";
             }
             $reponse = $bdd->prepare($reqAfficheNavette);
