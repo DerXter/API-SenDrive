@@ -12,13 +12,13 @@
         public static function affichePromo($statut){
             global $bdd;
             if(empty($statut)){
-                $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, marque, modele, immatriculation, dateDebut, dateFin, statut FROM Promotion p, Vehicule v, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idVehicule=v.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele";
+                $reqAffichePromo = "SELECT DISTINCT idPromo, nom as désignation, CONCAT(taux, ' %') AS taux, marque, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele";
                 $reponse = $bdd->query($reqAffichePromo);
             }
             else{
                 $statutAutorise = array('En cours', 'Annulé', 'Terminé');
                 if(in_array($statut, $statutAutorise)){
-                    $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, marque, modele, immatriculation, dateDebut, dateFin, statut FROM Promotion p, Vehicule v, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idVehicule=v.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND statut=?";
+                    $reqAffichePromo = "SELECT DISTINCT idPromo, nom as désignation, CONCAT(taux, ' %') AS taux, marque, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele AND statut=?";
                     $reponse = $bdd->prepare($reqAffichePromo);
                     $reponse->execute(array($statut));
                 }
@@ -44,7 +44,7 @@
             //Changement du format de la date en yyyy-mm-dd
             $dateDebut = date("Y-m-d", strtotime($dateDebut));
             $dateFin = date("Y-m-d", strtotime($dateFin));
-            $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, marque, modele, immatriculation, v.idVehicule, dateDebut, dateFin, statut FROM Promotion p, Vehicule v, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idVehicule=v.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND ((dateDebut<=:dateDepart AND dateFin>=:dateDepart) OR (dateDebut>=:dateDepart AND dateDebut<=:dateRetour))";
+            $reqAffichePromo = "SELECT DISTINCT idPromo, nom as désignation, CONCAT(taux, ' %') AS taux, marque, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele AND ((dateDebut<=:dateDepart AND dateFin>=:dateDepart) OR (dateDebut>=:dateDepart AND dateDebut<=:dateRetour))";
              //Vérification de la conformité de la période
              if ($dateDebut > $dateFin){
                 echo "La date d'arrivée ne peut être supérieure à la date de départ !";
@@ -69,25 +69,7 @@
 
         } //End affichePromo(dateDebut, dateFin)
 
-        /* FRONT - Besoin liste de toutes les promos pour la gestion */
-        public static function afficheToutesPromos(){
-            global $bdd;
-            $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, marque, modele, immatriculation, dateDebut, dateFin, statut FROM Promotion p, Vehicule v, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idVehicule=v.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele";
-
-                $reponse = $bdd->prepare($reqAffichePromo);
-                $reponse->execute(array());
-                if($promo = $reponse->fetchAll()){
-                    $promo = json_encode($promo, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                    return $promo;
-                }
-                else{
-                    echo "Aucune promotion trouvée !";
-                    return false;
-                }
-
-        } //End affichePromo(dateDebut, dateFin)
-
-        public static function ajoutPromo($idVehicule, $nom, $taux, $dateDebut, $dateFin){
+        public static function ajoutPromo($idMarque, $idModele, $nom, $taux, $dateDebut, $dateFin){
             global $bdd;
             //Vérification de l'élligibilité du taux
             if($taux>0 && $taux<100){
@@ -103,10 +85,11 @@
                     //Ajout des dates dans la base
                     $idDate = Promotion::ajoutDate($dateDebut, $dateFin);
                     $statut = 'En cours';
-                    $reqAjoutPromo = "INSERT INTO Promotion(idVehicule, nom, taux, idDate, statut) VALUES (:idVehicule, :nom, :taux, :idDate, :statut)";
+                    $reqAjoutPromo = "INSERT INTO Promotion(idMarque, idModele, nom, taux, idDate, statut) VALUES (:idVehicule, :nom, :taux, :idDate, :statut)";
                     $reponse = $bdd->prepare($reqAjoutPromo);
                     $reponse->execute(array(
-                        'idVehicule' => $idVehicule,
+                        'idMarque' => $idMarque,
+                        'idModele' => $idModele,
                         'nom' => $nom,
                         'taux' => $taux,
                         'idDate' => $idDate,
@@ -131,7 +114,7 @@
             
         } //End ajoutPromo
 
-        public static function modifierPromo($idPromo, $idVehicule, $nom, $taux, $statut, $dateDebut, $dateFin){
+        public static function modifierPromo($idPromo, $idMarque, $idModele, $nom, $taux, $dateDebut, $dateFin){
             global $bdd;
             //Vérification du statut
             $statut_autorises = array('En cours', 'Annulé', 'Terminé');
@@ -154,10 +137,11 @@
                     if(Promotion::sameDate($idPromo, $dateDebut, $dateFin)){
                         $idDate = Promotion::modifierDate($idPromo, $dateDebut, $dateFin);
                     }
-                    $reqModifPromo = "UPDATE Promotion SET idVehicule=:idVehicule, nom=:nom, taux=:taux, statut=:statut WHERE idPromo=:idPromo";
+                    $reqModifPromo = "UPDATE Promotion SET idMarque=:idMarque, idModele=:idModele nom=:nom, taux=:taux, statut=:statut WHERE idPromo=:idPromo";
                     $reponse = $bdd->prepare($reqModifPromo);
                     $reponse->execute(array(
-                        'idVehicule' => $idVehicule,
+                        'idMarque' => $idMarque,
+                        'idModele' => $idModele,
                         'nom' => $nom,
                         'taux' => $taux,
                         'idPromo' => $idPromo,
