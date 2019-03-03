@@ -565,21 +565,17 @@
 
                 echo Promotion::affichePromos($dateDebut, $dateFin);
             break;
-            case 'afficheToutesPromos': //Affichage de toutes les promotions
-                include_once('Classes/Promotion.class.php');
-
-                echo Promotion::afficheToutesPromos();
-            break;
             case 'ajoutPromo': //Ajout d'une promotion
                 include_once('Classes/Promotion.class.php');
                 //Sécurisation des données reçues
-                $idVehicule = htmlspecialchars($_POST['idVehicule']);
+                $idMarque = htmlspecialchars($_POST['idMarque']);
+                $idModele = htmlspecialchars($_POST['idModele']);
                 $nom = htmlspecialchars($_POST['nom']);
                 $taux = htmlspecialchars($_POST['taux']);
                 $dateDebut = htmlspecialchars($_POST['dateDebut']);
                 $dateFin = htmlspecialchars($_POST['dateFin']);
 
-                echo Promotion::ajoutPromo($idVehicule, $nom, $taux, $dateDebut, $dateFin);
+                echo Promotion::ajoutPromo($idMarque, $idModele, $nom, $taux, $dateDebut, $dateFin);
             break;
             case 'modifierPromo': //Modification de promotion
                 include_once('Classes/Promotion.class.php');
@@ -606,7 +602,10 @@
             case 'ajoutNavette': //Ajout d'une navette
                 include_once('Classes/Navette.class.php');
                 //Sécurisation des données reçues
-                $idClient = htmlspecialchars($_POST['idClient']);
+                if(isset($_POST['idClient']))
+                    $idClient = htmlspecialchars($_POST['idClient']);
+                else
+                    $idClient = '';
                 $idVehicule = htmlspecialchars($_POST['idVehicule']);
                 $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
                 $date = htmlspecialchars($_POST['date']);

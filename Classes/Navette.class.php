@@ -13,6 +13,9 @@
         //Fonctions
         public static function ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix){
             global $bdd;
+            if(empty($idClient))
+                $idClient = Navette::returnLastId('idClient', 'Clientele');
+                
             //Formalisation de la date
             $date = date("Y-m-d", strtotime($date));
             //Vérification de la conformité de la tranche horaire
@@ -324,6 +327,21 @@
         public static function returnId($nomID, $table, $attribut, $valeur){
             global $bdd;
             $requete = "SELECT $nomID FROM $table WHERE $attribut='$valeur'";
+            $reponse = $bdd->query($requete);
+            if ($data = $reponse->fetch()){
+                $id = $data[$nomID];
+                $reponse->closeCursor();
+                return $id;
+            }
+            else{
+                echo "Pas de $table trouvé(e) !";
+                return false;
+            }
+        } //End returnId()
+
+        public static function returnLastId($nomID, $table){
+            global $bdd;
+            $requete = "SELECT $nomID FROM $table ORDER BY $nomID DESC LIMIT 0, 1";
             $reponse = $bdd->query($requete);
             if ($data = $reponse->fetch()){
                 $id = $data[$nomID];
