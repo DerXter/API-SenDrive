@@ -95,7 +95,7 @@
                 $dateDebut = date("Y-m-d", strtotime($dateDebut));
                 $dateFin = date("Y-m-d", strtotime($dateFin));
                 //Vérification de la conformité de la période
-                if ($dateDebut >= $dateFin){
+                if ($dateDebut > $dateFin){
                     echo "La date d'arrivée ne peut être supérieure à la date de départ !";
                     return false;
                 }
@@ -145,7 +145,7 @@
                 $dateDebut = date("Y-m-d", strtotime($dateDebut));
                 $dateFin = date("Y-m-d", strtotime($dateFin));
                 //Vérification de la conformité de la période
-                if ($dateDebut >= $dateFin){
+                if ($dateDebut > $dateFin){
                     echo "La date d'arrivée ne peut être supérieure à la date de départ !";
                     return false;
                 }
