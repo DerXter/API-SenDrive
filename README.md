@@ -83,7 +83,8 @@ dans le cas contraire.
 * __supprimerPromo(id)__ : Suppréssion de promotion   
 * __afficheNavette(statut)__: Affichage des navettes  
 > __NOTE:__ Le statut est facultatif. S'il n'est pas indiqué, toutes les navettes *En cours*, *Annulé* comme *Terminé* sont affichées.  
-* __filtreNavette(idVehicule, idChauffeur)__ : Affichage des navettes selon le vehicule ou le chauffeur   
+* __filtreNavette(idVehicule, idChauffeur, statut)__ : Affichage des navettes selon le vehicule ou le chauffeur   
+> __NOTE:__ Le statut est facultatif.
 * __supprimerNavette(id)__: Suppression de navette  
 * __annulerNavette(id)__: Annulation de navette
 

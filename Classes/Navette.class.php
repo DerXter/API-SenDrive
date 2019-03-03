@@ -169,13 +169,13 @@
             
         } //End changerStatutNavette()
 
-        public static function filtreNavette($idVehicule, $idChauffeur){
+        public static function filtreNavette($idVehicule, $idChauffeur, $statut){
             global $bdd;
-            if(!empty($idChauffeur)){ //Seul le chauffeur est spécifié
+            if(!empty($idChauffeur) && empty($statut)){ //Seul le chauffeur est spécifié
                 $reqFiltreNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, depart, destination, statut, n.prix FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur AND n.idChauffeur=?";
                 $data = array($idChauffeur);
             }
-            else if(!empty($idVehicule)){ //Seul le véhicule est spécifié
+            else if(!empty($idVehicule) && empty($statut)){ //Seul le véhicule est spécifié
                 $reqFiltreNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, depart, destination, statut, n.prix FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur AND n.idVehicule=?";
                 $data = array($idVehicule);
             }
@@ -183,8 +183,20 @@
                 $reqFiltreNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, depart, destination, statut, n.prix FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur AND n.idVehicule=? AND n.idChauffeur=?";
                 $data = array($idVehicule, $idChauffeur);
             }
+            else if(!empty($idVehicule) && !empty($statut)){ //Seul le véhicule et le statut sont spécifiés
+                $reqFiltreNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, depart, destination, statut, n.prix FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur AND n.idVehicule=? AND n.statut=?";
+                $data = array($idVehicule, $statut);
+            }
+            else if(!empty($idChauffeur) && !empty($statut)){ //Seul le chauffeur et le statut sont spécifiés
+                $reqFiltreNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, depart, destination, statut, n.prix FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur AND n.idChauffeur=? AND n.statut=?";
+                $data = array($idChauffeur);
+            }
+            else if(!empty($idChauffeur) && !empty($idVehicule) && !empty($statut)){ //Les trois sont spécifiés
+                $reqFiltreNavette = "SELECT DISTINCT c.prenom AS prenom_client, c.nom AS nom_client, marque, modele, immatriculation, ca.prenom AS prenom_chauffeur, ca.nom AS nom_chauffeur, DATE_FORMAT(date, '%d/%m/%Y') AS date, heureDebut, heureFin, depart, destination, statut, n.prix FROM Clientele c, Vehicule v, Chauffeur ca, Marque ma, Modele mo, Horaire h, Navette n WHERE v.idVehicule=n.idVehicule AND v.idMarque=ma.idMarque AND v.idModele=mo.idModele AND n.idClient=c.idClient AND n.idHoraire=h.idHoraire AND ca.idChauffeur=n.idChauffeur AND n.idVehicule=? AND n.idChauffeur=? AND n.statut=?";
+                $data = array($idVehicule, $idChauffeur, $statut);
+            }
             else{
-                echo "Veuillez spécifiez au moins, un des deux paramètres.";
+                echo "Veuillez spécifiez au moins, un des trois paramètres.";
                 return false;
             }
             $reponse = $bdd->prepare($reqFiltreNavette);
