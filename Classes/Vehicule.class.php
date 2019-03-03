@@ -148,7 +148,7 @@
                 $dateDebut = date("Y-m-d", strtotime($dateDebut));
                 $dateFin = date("Y-m-d", strtotime($dateFin));
                 //Vérification de la conformité de la période
-                if ($dateDebut >= $dateFin){
+                if ($dateDebut > $dateFin){
                     echo "La date de début ne peut être supérieure à la date de fin !";
                     return false;
                 }

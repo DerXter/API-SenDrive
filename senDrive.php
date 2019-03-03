@@ -612,8 +612,8 @@
                 $date = htmlspecialchars($_POST['date']);
                 $depart = htmlspecialchars($_POST['depart']);
                 $destination = htmlspecialchars($_POST['destination']);
-                $heureDebut = htmlspecialchars($_POST['heureDebut']);
-                $heureFin = htmlspecialchars($_POST['heureFin']);
+                $heureDebut = htmlspecialchars($_POST['heureDepart']);
+                $heureFin = htmlspecialchars($_POST['heureRetour']);
                 $prix = htmlspecialchars($_POST['prix']);
 
                 echo Navette::ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix);
@@ -628,8 +628,8 @@
                 $date = htmlspecialchars($_POST['date']);
                 $depart = htmlspecialchars($_POST['depart']);
                 $destination = htmlspecialchars($_POST['destination']);
-                $heureDebut = htmlspecialchars($_POST['heureDebut']);
-                $heureFin = htmlspecialchars($_POST['heureFin']);
+                $heureDebut = htmlspecialchars($_POST['heureDepart']);
+                $heureFin = htmlspecialchars($_POST['heureRetour']);
                 $prix = htmlspecialchars($_POST['prix']);
 
                 echo Navette::modifierNavette($idNavette, $idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix);

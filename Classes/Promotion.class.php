@@ -152,7 +152,6 @@
                 else{
                     //Ajout des dates dans la base
                     if(Promotion::sameDate($idPromo, $dateDebut, $dateFin)){
-                        echo "der";
                         $idDate = Promotion::modifierDate($idPromo, $dateDebut, $dateFin);
                     }
                     $reqModifPromo = "UPDATE Promotion SET idVehicule=:idVehicule, nom=:nom, taux=:taux, statut=:statut WHERE idPromo=:idPromo";
