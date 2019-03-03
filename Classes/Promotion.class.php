@@ -250,11 +250,14 @@
         public static function checkPromo($idVehicule){
             //Fonction qui vérifie si un véhicule est en promotion ou pas
             global $bdd;
+            $id = self::getMarqueAndModele($idVehicule);
+            $idMarque = $id[0]['idMarque'];
+            $idModele = $id[0]['idModele'];
             $result=-1;
-            $reqCheckPromo = "SELECT idVehicule, idDate FROM Promotion";
+            $reqCheckPromo = "SELECT idMarque, idModele, idDate FROM Promotion";
             $reponse = $bdd->query($reqCheckPromo);
             while($data = $reponse->fetch()){
-                if($idVehicule==$data['idVehicule']){
+                if($idModele==$data['idModele'] && $idMarque==$data['idMarque']){
                     $result=$data['idDate'];
                     break;
                 }
@@ -262,6 +265,25 @@
             $reponse->closeCursor();
             return $result;
         } //End checkPromo(idVehicule)
+
+        public static function getMarqueAndModele($idVehicule){
+            //Fonction qui retourne la marque et le modele d'un véhicule spécifié
+            global $bdd;
+            $result=-1;
+            $req = "SELECT idMarque, idModele FROM Vehicule WHERE idVehicule=?";
+            $reponse = $bdd->prepare($req);
+            $reponse->execute(array($idVehicule));
+            if($data = $reponse->fetchAll()){
+    
+                $reponse->closeCursor();
+                return $data;
+            } //End while
+            else{
+                echo 'Vide';
+                return false;
+            } 
+            
+        } //End getMarqueAndModele
 
         public static function getTaux($idVehicule){
             //Fonction qui récupère le taux de promotion d'un véhicule
