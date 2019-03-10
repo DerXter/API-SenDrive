@@ -274,8 +274,8 @@
                 //Le véhicule choisi est disponible
                 //On calcule le montant que va couter la reservation
                 $prix = Reservation::calculPrix($idVehicule, $dateDepart, $dateArrivee);
-
-                if($idChauffeur != -1){   
+                
+                if($idChauffeur != -1){  
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
                     if (Reservation::checkReserve($idReservation, $idChauffeur, 'chauffeur', $dateDepart, $dateArrivee)){
                         echo "Ce chauffeur a déjà été réservé à cette période !";

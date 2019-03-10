@@ -658,8 +658,18 @@
                 }
                 else
                     $idChauffeur = '';
+                if(isset($_GET['statut'])){
+                    $statut = htmlspecialchars($_GET['statut']);
+                }
+                else
+                    $statut = '';
 
-                echo Navette::filtreNavette($idVehicule, $idChauffeur);
+                echo Navette::filtreNavette($idVehicule, $idChauffeur, $statut);
+            break;
+            case 'checkPromo':
+            include_once('Classes/Promotion.class.php');
+                $idVehicule = htmlspecialchars($_GET['idVehicule']);
+                echo Promotion::checkPromo($idVehicule);
             break;
             case 'supprimerNavette': //Suppression de navette
                 include_once('Classes/Navette.class.php');
