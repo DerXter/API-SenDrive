@@ -12,13 +12,13 @@
         public static function affichePromo($statut){
             global $bdd;
             if(empty($statut)){
-                $reqAffichePromo = "SELECT DISTINCT idPromo, nom as désignation, CONCAT(taux, ' %') AS taux, marque, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele";
+                $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, marque, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele";
                 $reponse = $bdd->query($reqAffichePromo);
             }
             else{
                 $statutAutorise = array('En cours', 'Annulé', 'Terminé');
                 if(in_array($statut, $statutAutorise)){
-                    $reqAffichePromo = "SELECT DISTINCT idPromo, nom as désignation, CONCAT(taux, ' %') AS taux, marque, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele AND statut=?";
+                    $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, marque, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele AND statut=?";
                     $reponse = $bdd->prepare($reqAffichePromo);
                     $reponse->execute(array($statut));
                 }
@@ -44,7 +44,7 @@
             //Changement du format de la date en yyyy-mm-dd
             $dateDebut = date("Y-m-d", strtotime($dateDebut));
             $dateFin = date("Y-m-d", strtotime($dateFin));
-            $reqAffichePromo = "SELECT DISTINCT idPromo, nom as désignation, CONCAT(taux, ' %') AS taux, marque, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele AND ((dateDebut<=:dateDepart AND dateFin>=:dateDepart) OR (dateDebut>=:dateDepart AND dateDebut<=:dateRetour))";
+            $reqAffichePromo = "SELECT DISTINCT idPromo, nom, CONCAT(taux, ' %') AS taux, ma.idMarque, marque, mo.idModele, modele, dateDebut, dateFin, statut FROM Promotion p, Disponibilite, Marque ma, Modele mo WHERE idDate=idDisponibilite AND p.idMarque=ma.idMarque AND p.idModele=mo.idModele AND ((dateDebut<=:dateDepart AND dateFin>=:dateDepart) OR (dateDebut>=:dateDepart AND dateDebut<=:dateRetour))";
              //Vérification de la conformité de la période
              if ($dateDebut > $dateFin){
                 echo "La date d'arrivée ne peut être supérieure à la date de départ !";
