@@ -117,7 +117,7 @@ dans le cas contraire.
 > __NOTE :__ Cet attribut est défini par *carac* et peut valoir soit *marque*, *modele* ou *typeVehicule*. Dans le cas où il vaut *modele*, il faudra renseigner le paramètre *idMarque* car le modèle d'un véhicule dépend de la marque. C'est le seul cas où l'*idMarque* est obligatoire.  
 * __ajoutPromo(idMarque, idModele, nom, taux, dateDebut, dateFin)__ : Ajout de promotion  
 * __modifierPromo(idPromo, idMarque, idModele, nom, taux, statut, dateDebut, dateFin)__ : Modification de promotion  
-* __ajoutNavette(idClient, idVehicule, idChauffeur, date, destination, heureDebut, heureFin, prix)__: Ajout d'une navette  
+* __ajoutNavette($nomClient, $prenomClient, $telephone, $adresse, $mail, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix)__: Ajout d'une navette  
 > __NOTE :__ Si l'*idClient* n'est pas spécifié, l'id du dernier client sera utilisé  
 * __modifierNavette(idNavette, idClient, idVehicule, idChauffeur, date, destination, heureDebut, heureFin, prix)__: Modification d'une navette
 

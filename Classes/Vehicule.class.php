@@ -155,6 +155,10 @@
                 else{
                     //On récupère les ids de l'ensemble des véhicules réservés
                     $vehicReserve = Vehicule::getReserve($dateDebut, $dateFin);
+                    if($vehicReserve==false){
+                        echo "Aucun véhicule de ce type n'est reservé entre les dates spécifiées";
+                        die;
+                    }
                     $suite6 = ' ';
                     //Formalisation de la requête
                     for($i=0; $i<count($vehicReserve); $i++){
@@ -169,7 +173,7 @@
             //Requête finale
             $requete = $requete_temp . $suite1 . $suite2 . $suite3 . $suite4 . $suite5 . $suite6; //Requête finale
             $reponse = $bdd->prepare($requete);
-         
+            echo $requete;
             //Formalisation de l'éxécution
             if($idMarque!=$val_interdit){
                 $data['idMarque'] = $idMarque;
@@ -186,7 +190,7 @@
             if ($climatisation!=$val_interdit){
                 $data['climatisation'] = $climatisation;
             } //End if(climatisation)
-          
+
             $reponse->execute($data); 
             if($vehicules = $reponse->fetchAll()){
                 $vehicules = json_encode($vehicules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); //Conversion du format du tableau en JSON

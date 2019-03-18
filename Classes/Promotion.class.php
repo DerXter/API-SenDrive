@@ -78,14 +78,14 @@
                 $dateFin = date("Y-m-d", strtotime($dateFin));
                 //Vérification de la conformité de la période
                 if ($dateDebut > $dateFin){
-                    echo "La date d'arrivée ne peut être supérieure à la date de départ !";
+                    echo "La date de départ ne peut être supérieure à la date d'arrivée !";
                     return false;
                 }
                 else{
                     //Ajout des dates dans la base
                     $idDate = Promotion::ajoutDate($dateDebut, $dateFin);
                     $statut = 'En cours';
-                    $reqAjoutPromo = "INSERT INTO Promotion(idMarque, idModele, nom, taux, idDate, statut) VALUES (:idVehicule, :nom, :taux, :idDate, :statut)";
+                    $reqAjoutPromo = "INSERT INTO Promotion(idMarque, idModele, nom, taux, idDate, statut) VALUES (:idMarque, :idModele, :nom, :taux, :idDate, :statut)";
                     $reponse = $bdd->prepare($reqAjoutPromo);
                     $reponse->execute(array(
                         'idMarque' => $idMarque,

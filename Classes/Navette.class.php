@@ -1,4 +1,5 @@
 <?php
+    include_once('Client.class.php');
     class Navette{
         //Attributs
         private $idNavette;
@@ -10,11 +11,15 @@
         private $destination;
         private $statut;
         //Fonctions
-        public static function ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix){
+        public static function ajoutNavette($nomClient, $prenomClient, $telephone, $adresse, $mail, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix){
             global $bdd;
-            if(empty($idClient))
-                $idClient = Navette::returnLastId('idClient', 'Clientele');
-                
+            //Ajout du client
+            $idClient = Client::ajoutClient($nomClient, $prenomClient, $telephone, $adresse, $mail);
+            if($idChauffeur==false){
+                echo "Erreur lors de l'ajout du client";
+                return false;
+            }
+
             //Formalisation de la date
             $date = date("Y-m-d", strtotime($date));
             //Vérification de la conformité de la tranche horaire

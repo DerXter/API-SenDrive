@@ -614,8 +614,13 @@
                 $heureDebut = htmlspecialchars($_POST['heureDepart']);
                 $heureFin = htmlspecialchars($_POST['heureRetour']);
                 $prix = htmlspecialchars($_POST['prix']);
+                $nom = htmlspecialchars($_POST['nom']);
+                $prenom = htmlspecialchars($_POST['prenom']);
+                $telephone = htmlspecialchars($_POST['telephone']);
+                $adresse = htmlspecialchars($_POST['adresse']);
+                $mail = htmlspecialchars($_POST['mail']);
 
-                echo Navette::ajoutNavette($idClient, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix);
+                echo Navette::ajoutNavette($nom, $prenom, $telephone, $adresse, $mail, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix);
             break;
             case 'modifierNavette': //Modification d'une navette
                 include_once('Classes/Navette.class.php');
