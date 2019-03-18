@@ -173,7 +173,7 @@
             //Requête finale
             $requete = $requete_temp . $suite1 . $suite2 . $suite3 . $suite4 . $suite5 . $suite6; //Requête finale
             $reponse = $bdd->prepare($requete);
-            echo $requete;
+
             //Formalisation de l'éxécution
             if($idMarque!=$val_interdit){
                 $data['idMarque'] = $idMarque;
