@@ -153,21 +153,23 @@
                     return false;
                 }
                 else{
+                    $suite6 = ' ';
                     //On récupère les ids de l'ensemble des véhicules réservés
                     $vehicReserve = Vehicule::getReserve($dateDebut, $dateFin);
-                    if($vehicReserve==false){
-                        echo "Aucun véhicule de ce type n'est reservé entre les dates spécifiées";
-                        die;
-                    }
-                    $suite6 = ' ';
-                    //Formalisation de la requête
-                    for($i=0; $i<count($vehicReserve); $i++){
-                        $cle = 'idVehic'.$i;
-                        $suite6 .= "AND v.idVehicule!=:$cle ";
+                    if($vehicReserve){
+                        //echo "Aucun véhicule de ce type n'est reservé entre les dates spécifiées";
+                        //die;
+                    //}else {
                         //Formalisation de la requête
-                        $data[$cle] = $vehicReserve[$i];
-                        
-                    } //End for
+                        for($i=0; $i<count($vehicReserve); $i++){
+                            $cle = 'idVehic'.$i;
+                            $suite6 .= "AND v.idVehicule!=:$cle ";
+                            //Formalisation de la requête
+                            $data[$cle] = $vehicReserve[$i];
+                            
+                        } //End for
+                    }
+                    
                 } //End else (date)
             } //End else
             //Requête finale
