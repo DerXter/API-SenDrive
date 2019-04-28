@@ -16,13 +16,15 @@
 
     global $bdd;
     $reponse = $bdd->query($heuresFinNavette);
+    echo "Mise à jour des navettes en cours .";
     while($navette=$reponse->fetch()){
+        echo ".";
         if(($dateDuJour==$navette['date'] && $heureActuelle>=$navette['heureFin']) || $dateDuJour>$navette['date']){
             $updateNavette = "UPDATE Navette SET statut='Terminé' WHERE idNavette=?";
             $rep = $bdd->prepare($updateNavette);
             $rep->execute(array($navette['idNavette']));
             if($rep->rowCount() > 0){
-                $rapport .= "Navette no". $navette['idNavette']." mise à jour !\r\n";
+                $rapport .= "\nNavette no". $navette['idNavette']." mise à jour !\r\n";
                 $cpSucces++;
             }
             else{
@@ -36,7 +38,7 @@
     $rapport .= "\r\nMise à jour Terminée ! \r\n";
     $rapport .= "\r\nMise à jour réussie: ".$cpSucces."\r\n";
     $rapport .= "Mise à jour échouée: ".$cpEchec."\r\n";
-
+    echo $rapport;
 
     // ***************************** Génération et envoie du mail *****************************
     // Destinataire
@@ -68,3 +70,7 @@
     
     // Envoie
     $resultat = mail($to, $subject, $message, $headers);
+    if($resultat)
+        echo "Rapport de la mise à jour envoyé à ".$to."\n";
+    else
+        echo "Erreur dans l'envoi du rapport\n";

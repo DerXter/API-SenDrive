@@ -8,13 +8,15 @@
 
     global $bdd;
     $reponse = $bdd->query($datesFinPromo);
+    echo "Mise à jour des promotions en cours .";
     while($promotion=$reponse->fetch()){
+        echo ".";
         if($dateDuJour>=$promotion['dateFin']){
             $updatePromotion = "UPDATE Promotion SET statut='Terminé' WHERE idPromo=?";
             $rep = $bdd->prepare($updatePromotion);
             $rep->execute(array($promotion['idPromo']));
             if($rep->rowCount() > 0){
-                $rapport .= "Promotion no". $promotion['idPromo']." mise à jour !\r\n";
+                $rapport .= "\nPromotion no". $promotion['idPromo']." mise à jour !\r\n";
                 $cpSucces++;
             }
             else{
@@ -28,7 +30,7 @@
     $rapport .= "\nMise à jour Terminée ! \n";
     $rapport .= "\r\nMise à jour réussie: ".$cpSucces."\r\n";
     $rapport .= "Mise à jour échouée: ".$cpEchec."\r\n";
-    
+    echo $rapport;
 
     // ***************************** Génération et envoie du mail *****************************
     // Destinataire
@@ -60,3 +62,7 @@
     
     // Envoie
     $resultat = mail($to, $subject, $message, $headers);
+    if($resultat)
+        echo "Rapport de la mise à jour envoyé à ".$to."\n";
+    else
+        echo "Erreur dans l'envoi du rapport\n";

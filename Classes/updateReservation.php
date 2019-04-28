@@ -4,16 +4,19 @@
     $cpEchec = 0; //Nombre de mise à jour échouée
     $dateDuJour = date('Y-m-d');
     $datesFinReservation = "SELECT DISTINCT idReservation, dateFin FROM Disponibilite, Reservation WHERE idDate=idDisponibilite AND statut='En cours'";
+    $rapport="";
 
     global $bdd;
     $reponse = $bdd->query($datesFinReservation);
+    echo "Mise à jour des réservations en cours .";
     while($reservation=$reponse->fetch()){
+        echo ".";
         if($dateDuJour>=$reservation['dateFin']){
             $updateReservation = "UPDATE Reservation SET statut='Terminé' WHERE idReservation=?";
             $rep = $bdd->prepare($updateReservation);
             $rep->execute(array($reservation['idReservation']));
             if($rep->rowCount() > 0){
-                $rapport .= "Réservation no". $reservation['idReservation']." mise à jour !\r\n";
+                $rapport .= "\nRéservation no". $reservation['idReservation']." mise à jour !\r\n";
                 $cpSucces++;
             }
             else{
@@ -27,7 +30,7 @@
     $rapport .= "\nMise à jour Terminée ! \n";
     $rapport .= "\r\nMise à jour réussie: ".$cpSucces."\r\n";
     $rapport .= "Mise à jour échouée: ".$cpEchec."\r\n";
-
+    echo $rapport;
     // ***************************** Génération et envoie du mail *****************************
     // Destinataire
     $to = "mbayederguene97@gmail.com";
@@ -58,3 +61,7 @@
     
     // Envoie
     $resultat = mail($to, $subject, $message, $headers);
+    if($resultat)
+        echo "Rapport de la mise à jour envoyé à ".$to."\n";
+    else
+        echo "Erreur dans l'envoi du rapport\n";
