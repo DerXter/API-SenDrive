@@ -171,6 +171,7 @@
                 } //End else (date)
             } //End else
             //Requête finale
+            $suite6 .= "AND statut=:statut";
             $requete = $requete_temp . $suite1 . $suite2 . $suite3 . $suite4 . $suite5 . $suite6; //Requête finale
             $reponse = $bdd->prepare($requete);
 
@@ -190,6 +191,7 @@
             if ($climatisation!=$val_interdit){
                 $data['climatisation'] = $climatisation;
             } //End if(climatisation)
+            $data['statut'] = 'En cours';
 
             $reponse->execute($data); 
             if($vehicules = $reponse->fetchAll()){

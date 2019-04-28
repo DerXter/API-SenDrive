@@ -602,10 +602,7 @@
             case 'ajoutNavette': //Ajout d'une navette
                 include_once('Classes/Navette.class.php');
                 //Sécurisation des données reçues
-                if(isset($_POST['idClient']))
-                    $idClient = htmlspecialchars($_POST['idClient']);
-                else
-                    $idClient = '';
+                
                 $idVehicule = htmlspecialchars($_POST['idVehicule']);
                 $idChauffeur = htmlspecialchars($_POST['idChauffeur']);
                 $date = htmlspecialchars($_POST['date']);
@@ -614,13 +611,8 @@
                 $heureDebut = htmlspecialchars($_POST['heureDepart']);
                 $heureFin = htmlspecialchars($_POST['heureRetour']);
                 $prix = htmlspecialchars($_POST['prix']);
-                $nom = htmlspecialchars($_POST['nom']);
-                $prenom = htmlspecialchars($_POST['prenom']);
-                $telephone = htmlspecialchars($_POST['telephone']);
-                $adresse = htmlspecialchars($_POST['adresse']);
-                $mail = htmlspecialchars($_POST['mail']);
 
-                echo Navette::ajoutNavette($nom, $prenom, $telephone, $adresse, $mail, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix);
+                echo Navette::ajoutNavette($idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix);
             break;
             case 'modifierNavette': //Modification d'une navette
                 include_once('Classes/Navette.class.php');

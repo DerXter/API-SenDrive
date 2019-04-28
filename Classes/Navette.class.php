@@ -11,10 +11,10 @@
         private $destination;
         private $statut;
         //Fonctions
-        public static function ajoutNavette($nomClient, $prenomClient, $telephone, $adresse, $mail, $idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix){
+        public static function ajoutNavette($idVehicule, $idChauffeur, $date, $depart, $destination, $heureDebut, $heureFin, $prix){
             global $bdd;
             //Ajout du client
-            $idClient = Client::ajoutClient($nomClient, $prenomClient, $telephone, $adresse, $mail);
+            $idClient = self::returnLastId('idClient', 'Clientele');
             if($idChauffeur==false){
                 echo "Erreur lors de l'ajout du client";
                 return false;
@@ -336,6 +336,7 @@
                 return false;
             }
         } //End returnId()
+
         public static function returnLastId($nomID, $table){
             global $bdd;
             $requete = "SELECT $nomID FROM $table ORDER BY $nomID DESC LIMIT 0, 1";

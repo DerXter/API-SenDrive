@@ -34,7 +34,7 @@
             }
             else{
                 // Hachage du mot de passe
-                $pass_hache = hash('sha256', $password);
+                $pass_hache = md5(sha1(hash('sha256', $password)));
                 $idPersonnel = Utilisateur::returnId('idPersonnel', 'Personnel', 'numeroIdentite', $numIdentite);
                 $idPersonnel = (int)$idPersonnel;
                 $reqAjoutUtilisateur = 'INSERT INTO Utilisateur (login, password, statut, idPersonnel) VALUES (:login, :password, :statut, :idPersonnel)';
@@ -100,7 +100,7 @@
 
         public static function changePassword($id, $oldPassword, $newPassword){
             // Hachage de l'ancien mot de passe
-            $oldPass_hache = hash('sha256', $oldPassword);
+            $oldPass_hache = md5(sha1(hash('sha256', $oldPassword)));;
             $currentPass = Utilisateur::getPassword($id);
             if($currentPass!=-1 && $currentPass!=$oldPass_hache){
                 echo "Mot de passe incorrect !";
@@ -109,7 +109,7 @@
             else if($currentPass!=-1 && $currentPass==$oldPass_hache){
                 global $bdd;
                 // Hachage du nouveau mot de passe
-                $newPass_hache = hash('sha256', $newPassword);
+                $newPass_hache = md5(sha1(hash('sha256', $newPassword)));;
                 $requete = "UPDATE Utilisateur SET password=? WHERE idUtilisateur=?";
                 $reponse = $bdd->prepare($requete);
                 $reponse->execute(array($newPass_hache, $id));
@@ -165,10 +165,10 @@
         public static function connexion($login, $password){
             global $bdd;
             // Hachage du mot de passe
-            $pass_hache = hash('sha256', $password);
+            $pass_hache = md5(sha1(hash('sha256', $password)));
 
             // Vérification des identifiants
-            $reqVerif = 'SELECT idUtilisateur FROM Utilisateur WHERE login = :login AND password = :password';
+            $reqVerif = 'SELECT idUtilisateur FROM Utilisateur WHERE login=:login AND password=:password';
             $reponse = $bdd->prepare($reqVerif);
             $reponse->execute(array(
             'login' => $login,
