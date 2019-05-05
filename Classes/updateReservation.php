@@ -27,9 +27,9 @@
         } //End if
     } //End while
     $reponse->closeCursor();
-    $rapport .= "\nMise à jour Terminée ! \n";
-    $rapport .= "\r\nMise à jour réussie: ".$cpSucces."\r\n";
-    $rapport .= "Mise à jour échouée: ".$cpEchec."\r\n";
+    $rapport .= "Mise à jour Terminée ! <br />";
+    $rapport .= "Mise à jour réussie: ".$cpSucces."<br />";
+    $rapport .= "Mise à jour échouée: ".$cpEchec."<br />";
     echo $rapport;
     // ***************************** Génération et envoie du mail *****************************
     // Destinataire

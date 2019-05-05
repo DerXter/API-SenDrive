@@ -327,7 +327,22 @@
                         //Vérification de la réussite de l'ajout
                         if($reponse->rowCount() > 0){
                             echo "Réservation ajoutée / ";
-                        } 
+                            //Récupération des informations du client
+                            $requete = "SELECT * FROM Clientele WHERE idClient=?";
+                            $reponse = $bdd->prepare($requete);
+                            $reponse->execute(array($clientID));
+                            if ($data = $reponse->fetch()){
+                                $message = "\nPrénom: ".$data['prenom'];
+                                $message .= "\nNom: ".$data['nom'];
+                                $message .= "\nAdresse".$data['adresse'];
+                                $message .= "\nPériode de réservation: ".date('d-m-Y', strtotime($dateDepart)).'-'.date('d-m-Y', strtotime($dateArrivee));
+                                $to = $data['email'];
+                                $reponse->closeCursor();
+                                envoieMail($to, "Résumé de votre réservation", "Réservation :", $message);
+                            } //End if
+                            //Récupération des informations du véhicule
+                            
+                        } //End if reponse 
                         else{
                             echo "Une erreur est survenue lors de l'ajout de la reservation / ";
                             return false;
@@ -637,6 +652,41 @@
                 return false;
             }
         } //End returnData()
+
+        /**
+         * Fonction d'envoi de mail avec intégration des headers.
+         */
+        public function envoieMail($to, $sujet, $titre, $message){
+            $message = nl2br($message);
+            // Mise en forme du méssage
+            $msg = "
+            <html>
+            <head>
+                <title>$titre</title>
+            </head>
+            <body>
+                <p>
+                    <h1> Résumé : </h1> <br />
+                    $message
+                </p>
+            </body>
+            </html>
+            ";
+            
+            // Pour envoyer un mail HTML, l en-tête Content-type doit être défini
+            $headers = "MIME-Version: 1.0" . "\n";
+            $headers .= "Content-type: text/html; charset=utf-8" . "\r\n";
+            
+            // En-têtes additionnels
+            $headers .= 'From: Sen\'Drive Solutions <no-reply@sendrive.com>' . "\r\n";
+            
+            // Envoie
+            $resultat = mail($to, $sujet, $msg, $headers);
+            if($resultat)
+                echo "Mail envoyé à ".$to."\n";
+            else
+                echo "Erreur dans l'envoi du mail\n";
+        } //End envoieMail
     } //End Reservation
     
   
