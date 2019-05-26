@@ -276,6 +276,8 @@
                 $prix = Reservation::calculPrix($idVehicule, $dateDepart, $dateArrivee);
                 
                 if($idChauffeur != -1){  //Avec chauffeur
+                    //Récupération des infos de la réservtaion avec chauffeur pour besoin d'envoie de mail
+                    $reqAfficheReserv = "SELECT cl.prenom AS prenomClient, cl.nom AS nomClient, cl.adresse, cl.email, marque, modele, immatriculation, CONCAT(re.prix, ' FCFA') AS prix, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate ORDER BY idReservation DESC LIMIT 0,1";
                     //On vérifie si l'id du chauffeur choisi fait ou non partie des chauffeurs réservés à cette période
                     if (Reservation::checkReserve($idReservation, $idChauffeur, 'chauffeur', $dateDepart, $dateArrivee)){
                         echo "Ce chauffeur a déjà été réservé à cette période !";
@@ -283,7 +285,6 @@
                         }    
                     
                     else{
-                        $reqAfficheReserv = "SELECT cl.prenom AS prenomClient, cl.nom AS nomClient, cl.adresse, cl.email, marque, modele, immatriculation, CONCAT(re.prix, ' FCFA') AS prix, ch.prenom AS prenomChauffeur, ch.nom AS nomChauffeur, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Chauffeur ch, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur=ch.idChauffeur AND idDisponibilite=re.idDate ORDER BY idReservation DESC LIMIT 0,1";
                         #Le chauffeur choisi est disponible
                         //Mise à jour du statut de la réservation
     insertReservation:  $statutReservation =$statut;
@@ -292,7 +293,6 @@
                         }else{
                             //Récupération de l'Id du dernier client entré
                             $clientID = Reservation::returnLastId('idClient', 'Clientele');
-
                         }
                         
                         //Ajout des dates dans la base            
@@ -331,21 +331,24 @@
                             //Récupération des informations de la réservation et envoie du mail
                             $reponse = $bdd->query($reqAfficheReserv);
                             if ($data = $reponse->fetch()){
-                                $message = "\nPrénom: ".$data['prenomClient'];
-                                $message .= "\nNom: ".$data['nomClient'];
-                                $message .= "\nAdresse".$data['adresse'];
-                                $message .= "\nPériode de réservation: ".date('d-m-Y', strtotime($dateDepart)).'-'.date('d-m-Y', strtotime($dateArrivee));
-                                $message .= "\nVéhicule réservée: ".$data['marque'].' '.$data['modele'];
-                                $message .= "\nPrix".$data['prix'];
-                                $message .= "\nDestination".$data['destination'];
+                                $message = "\n Résumé de votre réservation: \n";
+                                $message .= "\n\tPrénom du client: ".$data['prenomClient'];
+                                $message .= "\n\tNom du client: ".$data['nomClient'];
+                                $message .= "\n\tAdresse: ".$data['adresse'];
+                                $message .= "\n\tPériode de réservation: ".date('d-m-Y', strtotime($dateDepart)).' / '.date('d-m-Y', strtotime($dateArrivee));
+                                $message .= "\n\tVéhicule réservée: ".$data['marque'].' '.$data['modele'];
+                                $message .= "\n\tPrix: ".$data['prix'];
+                                $message .= "\n\tDestination: ".$data['destination'];
                                 if($idChauffeur != -1){
-                                    $message .= "\nPrénom du chauffeur".$data['prenomChauffeur'];
-                                    $message .= "\nNom du chauffeur".$data['nomChauffeur'];
+                                    $message .= "\n\tPrénom du chauffeur: ".$data['prenomChauffeur'];
+                                    $message .= "\n\tNom du chauffeur: ".$data['nomChauffeur'];
                                 }
-                                
                                 $to = $data['email'];
                                 $reponse->closeCursor();
+                                #Client
                                 envoieMail($to, "Résumé de votre réservation", "Réservation :", $message);
+                                #Gestionnaires SDS
+                                envoieMail("contact@sendrivesolutions.com, contacts.sdsolutions@gmail.com", "Résumé de la réservation", "Réservation :", $message);
                             } //End if
                             //Récupération des informations du véhicule
                             
@@ -377,9 +380,10 @@
                     $reqAfficheReserv = "SELECT cl.prenom AS prenomClient, cl.nom AS nomClient, cl.adresse, cl.email, marque, modele, immatriculation, CONCAT(re.prix, ' FCFA') AS prix, destination, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin, re.statut FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND re.idChauffeur IS NULL AND idDisponibilite=re.idDate ORDER BY idReservation DESC LIMIT 0,1";
                     //Aucun chauffeur n'est choisi, on passe directement à l'insertion de la réservation dans la base de données
                     $idChauffeur = NULL;
+                     //Récupération des infos de la réservtaion sans chauffeur pour besoin d'envoie de mail
+                     $reqAfficheReserv = "SELECT cl.prenom AS prenomClient, cl.nom AS nomClient, cl.adresse, cl.email, marque, modele, immatriculation, CONCAT(re.prix, ' FCFA') AS prix, destination, re.statut, DATE_FORMAT(dateDebut, '%d/%m/%Y') AS dateDebut, DATE_FORMAT(dateFin, '%d/%m/%Y') AS dateFin FROM Clientele cl, Vehicule v, Reservation re, Marque ma, Modele mo, Disponibilite where cl.idClient=re.idClient AND re.idVehicule=v.idVehicule AND ma.idMarque=v.idMarque AND mo.idModele=v.idModele AND idDisponibilite=re.idDate AND re.idChauffeur IS NULL ORDER BY idReservation DESC LIMIT 0,1";
                     goto insertReservation;
                 } 
-            
 
                 $reponse->closeCursor();
             } //End else if ($dataId vehicule)
@@ -666,6 +670,7 @@
          */
         public function envoieMail($to, $sujet, $titre, $message){
             $message = nl2br($message);
+            
             // Mise en forme du méssage
             $msg = "
             <html>
