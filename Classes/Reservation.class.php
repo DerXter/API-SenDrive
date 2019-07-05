@@ -327,7 +327,7 @@
                         ));
                         //Vérification de la réussite de l'ajout
                         if($reponse->rowCount() > 0){
-                            echo "Réservation ajoutée / ";
+                            echo "Réservation ajoutée - Succes. / ";
                             //Récupération des informations de la réservation et envoie du mail
                             $reponse = $bdd->query($reqAfficheReserv);
                             if ($data = $reponse->fetch()){
