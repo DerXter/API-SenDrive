@@ -1,8 +1,14 @@
 <?php
     $login = 'sendrive';
-    $password = 'sdsgestion*';
-    $host = 'den1.mysql4.gear.host';
+    $password ='senv2016drivemababa';
+    $host = 'vps618964.ovh.net';
     $db = 'sendrive';
+   
+    /*$login = 'root';
+    $password = '';
+    $host = 'localhost';
+    $db = 'sendrive';
+    */
 
     try{
         $bdd = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $login, $password);
